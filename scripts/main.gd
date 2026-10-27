@@ -1,6 +1,10 @@
 extends Node3D
 
 const SAVE_PATH := "user://nightbound_save.json"
+const GLIDE_MAX_STAMINA := 2.8
+var glide_stamina := 0.0
+var glide_active := false
+var checkpoint_position := Vector3(0, 1.5, 3)
 var player: CharacterBody3D
 var camera: Camera3D
 var hud: Label
