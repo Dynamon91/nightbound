@@ -16,7 +16,7 @@ jobs:
       - name: Install Godot 4.3
         run: |
           sudo apt-get update
-          sudo apt-get install -y unzip wget zip xvfb imagemagick xdotool
+          sudo apt-get install -y unzip wget zip xvfb imagemagick xdotool wmctrl
           wget -q https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip -O /tmp/godot.zip
           unzip -q /tmp/godot.zip -d /tmp/godot
           chmod +x /tmp/godot/Godot_v4.3-stable_linux.x86_64
@@ -33,22 +33,34 @@ jobs:
       - name: Capture actual game window screenshot
         if: github.event_name != 'pull_request'
         run: |
-          set -e
+          set -eu
           export LIBGL_ALWAYS_SOFTWARE=1
+          export GODOT_SILENCE_ROOT_WARNING=1
           xvfb-run -a sh -c '
+            set -eu
             Godot_v4.3-stable_linux.x86_64 --path . --rendering-method gl_compatibility --resolution 1280x720 --windowed >/tmp/nightbound-godot.log 2>&1 &
             game_pid=$!
-            sleep 15
-            window_id=$(xdotool search --onlyvisible --class Godot | head -n 1 || true)
-            if [ -n "$window_id" ]; then
-              import -window "$window_id" "$RUNNER_TEMP/Nightbound-gameplay.png"
-            else
-              import -window root -crop 1280x720+0+0 "$RUNNER_TEMP/Nightbound-gameplay.png"
+            window_id=""
+            for i in $(seq 1 40); do
+              window_id=$(xdotool search --onlyvisible --name "Nightbound" 2>/dev/null | tail -n 1 || true)
+              if [ -n "$window_id" ]; then break; fi
+              sleep 1
+            done
+            if [ -z "$window_id" ]; then
+              cat /tmp/nightbound-godot.log
+              kill "$game_pid" 2>/dev/null || true
+              exit 1
             fi
+            xdotool windowmap "$window_id" || true
+            xdotool windowactivate --sync "$window_id" || true
+            sleep 3
+            import -window "$window_id" "$RUNNER_TEMP/Nightbound-gameplay.png"
+            identify "$RUNNER_TEMP/Nightbound-gameplay.png"
             kill "$game_pid" 2>/dev/null || true
             wait "$game_pid" 2>/dev/null || true
           '
           test -s "$RUNNER_TEMP/Nightbound-gameplay.png"
+          test "$(identify -format '%wx%h' "$RUNNER_TEMP/Nightbound-gameplay.png")" = "1280x720"
       - name: Upload gameplay screenshot
         if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
