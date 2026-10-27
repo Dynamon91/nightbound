@@ -488,7 +488,6 @@ func _physics_process(delta: float) -> void:
 		var seed_node: MeshInstance3D = veilwood_seed_objects[seed_id]
 		if is_instance_valid(seed_node):
 			seed_node.rotate_y(delta * 1.0)
-			seed_node.position.y += sin(Time.get_ticks_msec() / 420.0 + float(seed_id.hash() % 10)) * delta * 0.08
 			if seed_node.global_position.distance_to(player.global_position) < 1.25:
 				veilwood_seeds += 1
 				collected_veilwood_seeds.append(seed_id)
