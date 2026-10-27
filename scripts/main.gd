@@ -176,9 +176,18 @@ func build_player() -> void:
 	body.scale = Vector3(0.85, 1.15, 0.7)
 	add_sphere(player, Vector3(0, 0.55, -0.22), 0.35, Color("#414866"))
 	for side in [-1.0, 1.0]:
-		var wing := add_box(player, Vector3(side * 0.82, 0.25, 0), Vector3(0.9, 0.08, 0.5), Color("#5c4a85"))
-		wing.rotation.z = side * -0.2
-		add_sphere(player, Vector3(side * 0.22, 0.62, -0.48), 0.075, Color("#f8df8b"))
+		var ear := add_sphere(player, Vector3(side * 0.24, 1.0, -0.31), 0.16, Color("#292c45"))
+		ear.scale = Vector3(0.65, 1.55, 0.55)
+		var eye := add_sphere(player, Vector3(side * 0.16, 0.66, -0.77), 0.065, Color("#f8df8b"))
+		eye.scale = Vector3(0.8, 1.0, 0.45)
+		var wing := add_box(player, Vector3(side * 0.88, 0.22, 0.03), Vector3(1.15, 0.10, 0.58), Color("#59416f"))
+		wing.rotation.z = side * -0.18
+		var tip := add_sphere(player, Vector3(side * 1.38, 0.12, -0.08), 0.22, Color("#302641"))
+		tip.scale = Vector3(1.8, 0.3, 0.75)
+		for finger in range(3):
+			var spar := add_box(player, Vector3(side * (0.78 + finger * 0.22), 0.18, 0.20 + finger * 0.08), Vector3(0.58, 0.045, 0.045), Color("#8a6da2"))
+			spar.rotation.y = side * (0.18 + finger * 0.12)
+	add_sphere(player, Vector3(0, 0.45, -0.79), 0.16, Color("#c6b5d9"))
 
 func build_camera() -> void:
 	camera = Camera3D.new()
