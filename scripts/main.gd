@@ -136,6 +136,17 @@ func build_world() -> void:
 	add_box(self, Vector3(2, 2.5, -18), Vector3(0.35, 5, 0.5), Color("#e4b85e"))
 	add_box(self, Vector3(0, 5, -18), Vector3(4.3, 0.35, 0.5), Color("#e4b85e"))
 	add_sphere(self, Vector3(0, 2.6, -18), 1.35, Color("#9367e8"))
+	# Concentric luminous rings give the realm gate a stronger focal silhouette.
+	for ring_scale in [1.0, 0.78]:
+		var ring := MeshInstance3D.new()
+		var ring_mesh := TorusMesh.new()
+		ring_mesh.inner_radius = 0.07 if ring_scale == 1.0 else 0.045
+		ring_mesh.outer_radius = 1.65 * ring_scale
+		ring.mesh = ring_mesh
+		ring.position = Vector3(0, 2.6, -17.65)
+		ring.rotation_degrees.x = 90
+		ring.material_override = material(Color("#bba0ff") if ring_scale == 1.0 else Color("#68e9ff"), 0.25)
+		add_child(ring)
 	# Collectibles are distributed across the expanded valley and its outer routes.
 	var crystal_positions: Array[Vector3] = [
 		Vector3(-5, 1.0, -5), Vector3(7, 1.5, -12), Vector3(-14, 1.2, -10),
