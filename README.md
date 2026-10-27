@@ -41,3 +41,7 @@ Nightbound's levels must be substantial, expansive 3D adventure spaces—not sho
 The GitHub Actions workflow imports/parses the project and launches the main scene headlessly for 120 frames. This confirms a basic automated startup check; it does **not** replace interactive visual testing or prove every mechanic works as intended.
 
 The preview image supplied separately is concept art, not a screenshot captured from a running build.
+
+## Mockups and inspiration archive
+
+See [`reference/MOCKUPS_AND_INSPIRATION.md`](reference/MOCKUPS_AND_INSPIRATION.md) for the visual direction archive, current mockup pointer, and Spyro reference links used to study classic 3D platformer exploration. Third-party references are linked for research; they are not project assets to copy. Concept art and actual gameplay screenshots are kept clearly distinguished.
