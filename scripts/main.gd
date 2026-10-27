@@ -115,10 +115,16 @@ func build_world() -> void:
 	add_box(self, Vector3(2, 2.5, -18), Vector3(0.35, 5, 0.5), Color("#e4b85e"))
 	add_box(self, Vector3(0, 5, -18), Vector3(4.3, 0.35, 0.5), Color("#e4b85e"))
 	add_sphere(self, Vector3(0, 2.6, -18), 1.35, Color("#9367e8"))
-	for i in range(11):
-		var p := Vector3(float((i * 7) % 31) - 15, 1.0 + float(i % 3) * 0.5, float((i * 11) % 31) - 15)
-		make_crystal(p, "crystal_%02d" % i)
-	for p in [Vector3(-8, 1.2, 0), Vector3(5, 1, -7), Vector3(20, 1, 3)]:
+	# Collectibles are distributed across the expanded valley and its outer routes.
+	var crystal_positions: Array[Vector3] = [
+		Vector3(-5, 1.0, -5), Vector3(7, 1.5, -12), Vector3(-14, 1.2, -10),
+		Vector3(-25, 1.5, -21), Vector3(-38, 3.2, -29), Vector3(25, 1.5, -23),
+		Vector3(38, 3.4, -33), Vector3(-25, 1.5, 24), Vector3(-38, 3.5, 35),
+		Vector3(25, 1.6, 25), Vector3(38, 3.7, 36)
+	]
+	for i in range(crystal_positions.size()):
+		make_crystal(crystal_positions[i], "crystal_%02d" % i)
+	for p in [Vector3(-8, 1.2, 0), Vector3(5, 1, -7), Vector3(20, 1, 3), Vector3(-37, 4.7, -38), Vector3(37, 4.8, 40)]:
 		var relic := add_sphere(self, p, 0.5, Color("#a9efff"))
 		relic.visible = false
 		secrets.append(relic)
