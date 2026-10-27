@@ -165,11 +165,24 @@ func build_world() -> void:
 		add_box(self, Vector3(side * 1.25, 0.65, 7), Vector3(0.14, 0.9, 9), Color("#68482f"))
 		for z in [3.5, 5.5, 7.5, 9.5, 11.0]:
 			add_box(self, Vector3(side * 1.25, 1.05, z), Vector3(0.22, 1.7, 0.22), Color("#815c3b"))
-	# Realm portal
-	add_box(self, Vector3(-2, 2.5, -18), Vector3(0.35, 5, 0.5), Color("#e4b85e"))
-	add_box(self, Vector3(2, 2.5, -18), Vector3(0.35, 5, 0.5), Color("#e4b85e"))
-	add_box(self, Vector3(0, 5, -18), Vector3(4.3, 0.35, 0.5), Color("#e4b85e"))
-	add_sphere(self, Vector3(0, 2.6, -18), 1.35, Color("#9367e8"))
+	# Rebuild the realm gate as a carved stone-and-crystal landmark, not a plain box frame.
+	add_solid_box(Vector3(-2.25, 2.4, -18), Vector3(0.75, 4.8, 1.0), Color("#45445f"))
+	add_solid_box(Vector3(2.25, 2.4, -18), Vector3(0.75, 4.8, 1.0), Color("#45445f"))
+	add_solid_box(Vector3(0, 4.85, -18), Vector3(5.1, 0.75, 1.0), Color("#56516e"))
+	for side in [-1.0, 1.0]:
+		for y in [1.0, 2.1, 3.2, 4.2]:
+			var rune := add_box(self, Vector3(side * 2.25, y, -17.42), Vector3(0.12, 0.42, 0.08), Color("#9b8cff"))
+		var cap := add_sphere(self, Vector3(side * 2.25, 5.2, -18), 0.45, Color("#7a6f9b"))
+		cap.scale = Vector3(1.0, 0.65, 0.85)
+	# Portal center uses a flattened glowing crystal-like orb with layered rings.
+	var portal_core := add_sphere(self, Vector3(0, 2.7, -18.05), 1.35, Color("#8759db"))
+	portal_core.scale = Vector3(0.88, 1.2, 0.35)
+	var core_glow := OmniLight3D.new()
+	core_glow.position = Vector3(0, 2.8, -16.8)
+	core_glow.light_color = Color("#9c75ff")
+	core_glow.light_energy = 1.6
+	core_glow.omni_range = 7.0
+	add_child(core_glow)
 	# Concentric luminous rings give the realm gate a stronger focal silhouette.
 	for ring_scale in [1.0, 0.78]:
 		var ring := MeshInstance3D.new()
