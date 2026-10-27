@@ -78,6 +78,24 @@ func add_sphere(parent: Node3D, pos: Vector3, radius: float, color: Color) -> Me
 	parent.add_child(item)
 	return item
 
+func add_rock(parent: Node3D, pos: Vector3, size: Vector3, color: Color, seed_value: int) -> MeshInstance3D:
+	# Faceted, irregular silhouettes read as moonlit stone rather than smooth placeholder blobs.
+	var item := MeshInstance3D.new()
+	var mesh := SphereMesh.new()
+	mesh.radius = 1.0
+	mesh.height = 2.0
+	mesh.radial_segments = 7
+	mesh.rings = 4
+	item.mesh = mesh
+	item.position = pos
+	item.scale = size
+	var rock_mat := material(color, 0.92)
+	rock_mat.metallic = 0.04
+	item.material_override = rock_mat
+	item.rotation = Vector3(float(seed_value % 5) * 0.09, float(seed_value % 7) * 0.31, float(seed_value % 3) * 0.07)
+	parent.add_child(item)
+	return item
+
 func add_crystal_shard(parent: Node3D, pos: Vector3, height: float, color: Color, width := 0.32) -> MeshInstance3D:
 	# Low-sided tapered prism gives crystals a deliberate faceted silhouette.
 	var item := MeshInstance3D.new()
@@ -149,19 +167,21 @@ func build_world() -> void:
 	add_solid_box(Vector3(0, 0.1, 7), Vector3(2.5, 0.4, 9), Color("#9b7047"))
 	# Distinct distant rock formations help orient the player while exploring.
 	for p in [Vector3(-44, 0.8, -5), Vector3(45, 0.8, 4), Vector3(-5, 0.8, 45), Vector3(5, 0.8, -45)]:
-		add_box(self, p, Vector3(5, 2.5, 4), Color("#777d7b"))
-		add_sphere(self, p + Vector3(0, 2.0, 0), 2.6, Color("#286b48"))
+		add_rock(self, p, Vector3(2.5, 1.25, 2.0), Color("#697487"), int(abs(p.x + p.z)))
+		var crown := add_sphere(self, p + Vector3(0, 2.0, 0), 2.6, Color("#286b48"))
+		crown.scale = Vector3(1.0, 0.85, 1.0)
 	for p in [Vector3(-24, 0.5, -19), Vector3(24, 0.5, -18), Vector3(27, 0.5, 18), Vector3(-26, 0.5, 22)]:
-		add_box(self, p, Vector3(2, 1.2, 1.7), Color("#777d7b"))
+		add_rock(self, p, Vector3(1.5, 0.9, 1.25), Color("#6e7487"), int(abs(p.x + p.z)))
 		add_box(self, p + Vector3(0, 2, 0), Vector3(0.45, 3, 0.45), Color("#76502e"))
-		add_sphere(self, p + Vector3(0, 4, 0), 1.8, Color("#286b48"))
+		var crown := add_sphere(self, p + Vector3(0, 4, 0), 1.8, Color("#286b48"))
+		crown.scale = Vector3(1.0, 1.25, 0.9)
 	# Layered cliff silhouettes add depth and break up the blocky horizon.
 	for i in range(18):
 		var side := -1.0 if i % 2 == 0 else 1.0
 		var z := -42.0 + float(i) * 5.0
 		var x := side * (43.0 + float(i % 3) * 2.5)
-		var rock := add_sphere(self, Vector3(x, 2.0 + float(i % 4) * 0.7, z), 3.0 + float(i % 3) * 0.8, Color("#343d59") if i % 2 == 0 else Color("#414967"))
-		rock.scale = Vector3(1.25, 1.8 + float(i % 3) * 0.25, 1.0)
+		var rock := add_rock(self, Vector3(x, 2.0 + float(i % 4) * 0.7, z), Vector3(3.8 + float(i % 3) * 0.55, 3.0 + float(i % 3) * 0.45, 3.0), Color("#343d59") if i % 2 == 0 else Color("#414967"), i)
+		rock.rotation.z += 0.08 if i % 2 == 0 else -0.06
 	# Small crystal clusters around the valley edges create more layered fantasy landmarks.
 	for p in [Vector3(-18, 1.0, -30), Vector3(18, 1.0, -33), Vector3(-42, 3.0, 14), Vector3(42, 3.0, 15), Vector3(-12, 1.0, 38), Vector3(13, 1.0, 39)]:
 		for k in range(3):
