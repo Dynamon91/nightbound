@@ -28,3 +28,5 @@ jobs:
           test -f scripts/main.gd
       - name: Import and parse project in headless mode
         run: Godot_v4.3-stable_linux.x86_64 --headless --editor --path . --quit
+      - name: Launch main scene for 120 frames
+        run: Godot_v4.3-stable_linux.x86_64 --headless --path . --quit-after 120
