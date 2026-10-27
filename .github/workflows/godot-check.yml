@@ -36,13 +36,13 @@ jobs:
           set -eu
           export LIBGL_ALWAYS_SOFTWARE=1
           export GODOT_SILENCE_ROOT_WARNING=1
-          xvfb-run -a sh -c '
+          xvfb-run -a -s "-screen 0 1280x720x24" sh -c '
             set -eu
-            Godot_v4.3-stable_linux.x86_64 --path . --rendering-method gl_compatibility --resolution 1280x720 --windowed >/tmp/nightbound-godot.log 2>&1 &
+            Godot_v4.3-stable_linux.x86_64 --path . --rendering-method gl_compatibility --display-driver x11 --resolution 1280x720 --windowed >/tmp/nightbound-godot.log 2>&1 &
             game_pid=$!
             window_id=""
             for i in $(seq 1 40); do
-              window_id=$(xdotool search --onlyvisible --name "Nightbound" 2>/dev/null | tail -n 1 || true)
+              window_id=$(xdotool search --onlyvisible --class Godot 2>/dev/null | tail -n 1 || true)
               if [ -n "$window_id" ]; then break; fi
               sleep 1
             done
@@ -54,7 +54,7 @@ jobs:
             xdotool windowmap "$window_id" || true
             xdotool windowactivate --sync "$window_id" || true
             sleep 3
-            import -window "$window_id" "$RUNNER_TEMP/Nightbound-gameplay.png"
+            import -window root -crop 1280x720+0+0 "$RUNNER_TEMP/Nightbound-gameplay.png"
             identify "$RUNNER_TEMP/Nightbound-gameplay.png"
             kill "$game_pid" 2>/dev/null || true
             wait "$game_pid" 2>/dev/null || true
