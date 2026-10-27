@@ -29,6 +29,9 @@ var portal_glow_light: OmniLight3D
 var portal_anim_time := 0.0
 var current_realm := "Moonlit Valley"
 var realm_transitioned := false
+var veilwood_seeds := 0
+var collected_veilwood_seeds: Array[String] = []
+var veilwood_seed_objects: Dictionary = {}
 
 func material(color: Color, roughness := 0.75) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -332,6 +335,17 @@ func build_veilwood() -> void:
 	for p in [Vector3(112, 2.5, -18), Vector3(151, 3.0, -8), Vector3(116, 2.8, 20), Vector3(153, 3.5, 14), Vector3(130, 1.0, 30)]:
 		add_crystal_shard(self, p, 1.7, Color("#7ceff5"), 0.3)
 		add_crystal_shard(self, p + Vector3(0.65, 0.35, 0), 1.1, Color("#bd7cff"), 0.24)
+	# Five persistent Moonseeds form the first optional objective in this realm.
+	var seed_positions: Array[Vector3] = [Vector3(111, 1.1, -4), Vector3(143, 1.4, -13), Vector3(155, 2.1, 23), Vector3(115, 1.1, 23), Vector3(130, 1.4, -24)]
+	for i in range(seed_positions.size()):
+		var seed_id := "moonseed_%02d" % i
+		var seed := add_crystal_shard(self, seed_positions[i], 0.85, Color("#f0a8ff"), 0.3)
+		seed.name = seed_id
+		seed.rotation.z = 0.12
+		var seed_mat := seed.material_override as StandardMaterial3D
+		if seed_mat:
+			seed_mat.emission_energy_multiplier = 1.35
+		veilwood_seed_objects[seed_id] = seed
 
 func make_crystal(pos: Vector3, id: String) -> void:
 	var c := add_crystal_shard(self, pos, 0.95, Color("#67f2ee"), 0.34)
@@ -470,6 +484,20 @@ func _physics_process(delta: float) -> void:
 			secrets.remove_at(i)
 			show_message("Ancient relic found! Echoes discovered: %d/5" % relics_found)
 			save_game()
+	for seed_id in veilwood_seed_objects.keys():
+		var seed_node: MeshInstance3D = veilwood_seed_objects[seed_id]
+		if is_instance_valid(seed_node):
+			seed_node.rotate_y(delta * 1.0)
+			seed_node.position.y += sin(Time.get_ticks_msec() / 420.0 + float(seed_id.hash() % 10)) * delta * 0.08
+			if seed_node.global_position.distance_to(player.global_position) < 1.25:
+				veilwood_seeds += 1
+				collected_veilwood_seeds.append(seed_id)
+				seed_node.queue_free()
+				veilwood_seed_objects.erase(seed_id)
+				show_message("Moonseed gathered! Veilwood seeds: %d/5" % veilwood_seeds)
+				if veilwood_seeds == 5:
+					show_message("VEILWOOD RESTORED — all five Moonseeds awaken the Heart-Tree!")
+				save_game()
 	for id in crystal_objects.keys():
 		var entry: Dictionary = crystal_objects[id]
 		var node: MeshInstance3D = entry["node"]
@@ -516,7 +544,7 @@ func _physics_process(delta: float) -> void:
 
 func refresh_hud() -> void:
 	if hud:
-		hud.text = "NIGHTBOUND  •  %s\nCrystals: %d/11  •  Echoes: %d/5%s\nWASD Move  |  SPACE Leap/Glide  |  F Burst  |  E Echosense\nSHIFT Shadow Dash (8 crystals)  |  P Save  |  O Load" % [current_realm, crystals, relics_found, "  •  GATE OPEN" if portal_open else ""]
+		hud.text = "NIGHTBOUND  •  %s\nCrystals: %d/11  •  Echoes: %d/5  •  Moonseeds: %d/5%s\nWASD Move  |  SPACE Leap/Glide  |  F Burst  |  E Echosense\nSHIFT Shadow Dash (8 crystals)  |  P Save  |  O Load" % [current_realm, crystals, relics_found, veilwood_seeds, "  •  GATE OPEN" if portal_open else ""]
 
 func show_message(text_value: String) -> void:
 	if message:
@@ -529,7 +557,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		load_game()
 
 func save_game() -> void:
-	var data := {"crystals": crystals, "current_realm": current_realm, "collected": collected, "collected_relics": collected_relics, "checkpoint_position": [checkpoint_position.x, checkpoint_position.y, checkpoint_position.z], "player_position": [player.position.x, player.position.y, player.position.z] if player else [0, 1.5, 3]}
+	var data := {"crystals": crystals, "current_realm": current_realm, "veilwood_seeds": veilwood_seeds, "collected_veilwood_seeds": collected_veilwood_seeds, "collected": collected, "collected_relics": collected_relics, "checkpoint_position": [checkpoint_position.x, checkpoint_position.y, checkpoint_position.z], "player_position": [player.position.x, player.position.y, player.position.z] if player else [0, 1.5, 3]}
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
 		file.store_string(JSON.stringify(data))
@@ -546,6 +574,8 @@ func load_game() -> void:
 		return
 	crystals = int(parsed.get("crystals", 0))
 	current_realm = str(parsed.get("current_realm", "Moonlit Valley"))
+	veilwood_seeds = int(parsed.get("veilwood_seeds", 0))
+	collected_veilwood_seeds = parsed.get("collected_veilwood_seeds", [])
 	realm_transitioned = current_realm == "The Veilwood"
 	portal_open = crystals >= 11
 	if portal_open:
@@ -563,6 +593,12 @@ func load_game() -> void:
 	var p = parsed.get("player_position", [0, 1.5, 3])
 	if player and p is Array and p.size() == 3:
 		player.position = Vector3(float(p[0]), float(p[1]), float(p[2]))
+	for seed_id in collected_veilwood_seeds:
+		if veilwood_seed_objects.has(seed_id):
+			var seed_node: MeshInstance3D = veilwood_seed_objects[seed_id]
+			if is_instance_valid(seed_node):
+				seed_node.queue_free()
+			veilwood_seed_objects.erase(seed_id)
 	for id in collected:
 		if crystal_objects.has(id):
 			var entry: Dictionary = crystal_objects[id]
