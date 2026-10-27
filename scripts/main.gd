@@ -91,11 +91,21 @@ func build_world() -> void:
 	fill_light.light_energy = 2.0
 	fill_light.omni_range = 12.0
 	add_child(fill_light)
-	add_solid_box(Vector3(0, -0.5, 0), Vector3(44, 1, 44), Color("#416b43"))
-	for p in [Vector3(-12, 0.4, -9), Vector3(11, 1.2, -14), Vector3(17, 0.4, 9), Vector3(-17, 3.2, 13)]:
+	# Broad valley floor: the prototype is deliberately scaled for roaming, not a tiny arena.
+	add_solid_box(Vector3(0, -0.5, 0), Vector3(100, 1, 100), Color("#416b43"))
+	# Raised exploration shelves around the valley, with multiple routes and glide-friendly gaps.
+	for p in [Vector3(-12, 0.4, -9), Vector3(11, 1.2, -14), Vector3(17, 0.4, 9), Vector3(-17, 3.2, 13), Vector3(-30, 1.0, -20), Vector3(-38, 2.4, -28), Vector3(-27, 3.8, -36), Vector3(28, 1.0, -22), Vector3(38, 2.5, -32), Vector3(31, 4.0, -40), Vector3(-31, 1.0, 24), Vector3(-39, 2.6, 34), Vector3(-27, 4.0, 40), Vector3(29, 1.0, 25), Vector3(39, 2.8, 35), Vector3(27, 4.2, 42)]:
 		add_solid_box(p, Vector3(8, 1.2, 8), Color("#668b58"))
+	# Four natural stepping-stone routes lead out to the raised shelves.
+	for p in [Vector3(-20, 0.1, -15), Vector3(-25, 0.5, -21), Vector3(-31, 1.5, -27), Vector3(20, 0.1, -16), Vector3(26, 0.5, -23), Vector3(32, 1.6, -29), Vector3(-20, 0.1, 17), Vector3(-26, 0.5, 24), Vector3(-32, 1.7, 30), Vector3(20, 0.1, 18), Vector3(26, 0.6, 25), Vector3(32, 1.8, 31)]:
+		add_solid_box(p, Vector3(5, 0.6, 5), Color("#78965f"))
+	# A shallow moonlit pool and a wooden crossing mark the central landmark.
 	add_solid_box(Vector3(0, -0.1, 15), Vector3(14, 0.15, 8), Color("#3e9bc2"))
 	add_solid_box(Vector3(0, 0.1, 7), Vector3(2.5, 0.4, 9), Color("#9b7047"))
+	# Distinct distant rock formations help orient the player while exploring.
+	for p in [Vector3(-44, 0.8, -5), Vector3(45, 0.8, 4), Vector3(-5, 0.8, 45), Vector3(5, 0.8, -45)]:
+		add_box(self, p, Vector3(5, 2.5, 4), Color("#777d7b"))
+		add_sphere(self, p + Vector3(0, 2.0, 0), 2.6, Color("#286b48"))
 	for p in [Vector3(-24, 0.5, -19), Vector3(24, 0.5, -18), Vector3(27, 0.5, 18), Vector3(-26, 0.5, 22)]:
 		add_box(self, p, Vector3(2, 1.2, 1.7), Color("#777d7b"))
 		add_box(self, p + Vector3(0, 2, 0), Vector3(0.45, 3, 0.45), Color("#76502e"))
