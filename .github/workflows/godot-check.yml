@@ -38,17 +38,19 @@ jobs:
           export GODOT_SILENCE_ROOT_WARNING=1
           xvfb-run -a -s "-screen 0 1280x720x24" sh -c '
             set -eu
-            Godot_v4.3-stable_linux.x86_64 --path . --rendering-method gl_compatibility --display-driver x11 --resolution 1280x720 --windowed >/tmp/nightbound-godot.log 2>&1 &
+            Godot_v4.3-stable_linux.x86_64 --verbose --path . --rendering-method gl_compatibility --display-driver x11 --resolution 1280x720 --windowed >/tmp/nightbound-godot.log 2>&1 &
             game_pid=$!
             # Give Godot time to create the scene; capture the virtual desktop even if
             # the window manager does not expose a reliable window class under Xvfb.
-            sleep 8
+            sleep 20
             if ! kill -0 "$game_pid" 2>/dev/null; then
               cat /tmp/nightbound-godot.log
               exit 1
             fi
             import -window root -crop 1280x720+0+0 "$RUNNER_TEMP/Nightbound-gameplay.png"
             identify "$RUNNER_TEMP/Nightbound-gameplay.png"
+            # Keep runtime logs as an artifact so startup errors are diagnosable.
+            cp /tmp/nightbound-godot.log "$RUNNER_TEMP/Nightbound-godot.log"
             kill "$game_pid" 2>/dev/null || true
             wait "$game_pid" 2>/dev/null || true
           '
@@ -59,7 +61,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Nightbound-gameplay-screenshot
-          path: ${{ runner.temp }}/Nightbound-gameplay.png
+          path: |
+            ${{ runner.temp }}/Nightbound-gameplay.png
+            ${{ runner.temp }}/Nightbound-godot.log
           if-no-files-found: error
           retention-days: 30
       - name: Package Nightbound source
