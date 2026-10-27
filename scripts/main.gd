@@ -13,6 +13,7 @@ var move_speed := 8.0
 var collected: Array[String] = []
 var crystal_objects: Dictionary = {}
 var secrets: Array[MeshInstance3D] = []
+var burst_pressed := false
 
 func material(color: Color, roughness := 0.75) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -146,8 +147,11 @@ func _physics_process(delta: float) -> void:
 			player.velocity.y = maxf(player.velocity.y, -2.0)
 	elif Input.is_action_just_pressed("jump"):
 		player.velocity.y = jump_speed
-	if Input.is_action_just_pressed("burst"):
+	if Input.is_key_pressed(KEY_F) and not burst_pressed:
 		player.velocity += -player.global_basis.z * 13.0
+		burst_pressed = true
+	elif not Input.is_key_pressed(KEY_F):
+		burst_pressed = false
 	player.move_and_slide()
 	pulse_time = maxf(0.0, pulse_time - delta)
 	if Input.is_action_just_pressed("echosense"):
