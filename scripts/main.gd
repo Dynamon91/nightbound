@@ -30,6 +30,17 @@ func add_box(parent: Node3D, pos: Vector3, size: Vector3, color: Color) -> MeshI
 	parent.add_child(item)
 	return item
 
+func add_solid_box(pos: Vector3, size: Vector3, color: Color) -> void:
+	var body := StaticBody3D.new()
+	body.position = pos
+	var collision := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = size
+	collision.shape = shape
+	body.add_child(collision)
+	add_child(body)
+	add_box(body, Vector3.ZERO, size, color)
+
 func add_sphere(parent: Node3D, pos: Vector3, radius: float, color: Color) -> MeshInstance3D:
 	var item := MeshInstance3D.new()
 	var mesh := SphereMesh.new()
@@ -50,11 +61,11 @@ func _ready() -> void:
 	show_message("Explore the valley. Press E to reveal hidden echoes.")
 
 func build_world() -> void:
-	add_box(self, Vector3(0, -0.6, 0), Vector3(44, 1, 44), Color("#416b43"))
+	add_solid_box(Vector3(0, -0.5, 0), Vector3(44, 1, 44), Color("#416b43"))
 	for p in [Vector3(-12, 0.4, -9), Vector3(11, 1.2, -14), Vector3(17, 0.4, 9), Vector3(-17, 3.2, 13)]:
-		add_box(self, p, Vector3(8, 1.2, 8), Color("#668b58"))
-	add_box(self, Vector3(0, -0.1, 15), Vector3(14, 0.15, 8), Color("#3e9bc2"))
-	add_box(self, Vector3(0, 0.1, 7), Vector3(2.5, 0.4, 9), Color("#9b7047"))
+		add_solid_box(p, Vector3(8, 1.2, 8), Color("#668b58"))
+	add_solid_box(Vector3(0, -0.1, 15), Vector3(14, 0.15, 8), Color("#3e9bc2"))
+	add_solid_box(Vector3(0, 0.1, 7), Vector3(2.5, 0.4, 9), Color("#9b7047"))
 	for p in [Vector3(-24, 0.5, -19), Vector3(24, 0.5, -18), Vector3(27, 0.5, 18), Vector3(-26, 0.5, 22)]:
 		add_box(self, p, Vector3(2, 1.2, 1.7), Color("#777d7b"))
 		add_box(self, p + Vector3(0, 2, 0), Vector3(0.45, 3, 0.45), Color("#76502e"))
@@ -131,8 +142,12 @@ func _physics_process(delta: float) -> void:
 		player.rotation.y = atan2(-dir.x, -dir.z)
 	if not player.is_on_floor():
 		player.velocity.y -= 24.0 * delta
+		if Input.is_action_pressed("jump"):
+			player.velocity.y = maxf(player.velocity.y, -2.0)
 	elif Input.is_action_just_pressed("jump"):
 		player.velocity.y = jump_speed
+	if Input.is_action_just_pressed("burst"):
+		player.velocity += -player.global_basis.z * 13.0
 	player.move_and_slide()
 	pulse_time = maxf(0.0, pulse_time - delta)
 	if Input.is_action_just_pressed("echosense"):
