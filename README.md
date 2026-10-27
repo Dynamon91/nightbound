@@ -16,6 +16,10 @@ Nightbound is an original **3D third-person exploration-platformer prototype** s
 
 This is an early prototype. Larger features such as a complete multi-level campaign, finished boss encounter, checkpoints, and quest chains are **not yet verified as implemented in the current main-branch source**.
 
+## Level design direction
+
+Nightbound's levels must be substantial, expansive 3D adventure spaces—not short, narrow stages. The target is the sense of scale and discovery found in classic Spyro the Dragon levels: broad areas to roam, branching routes, vertical platforms and gliding paths, hidden caves and alcoves, optional challenges, plentiful collectibles, and secrets that reward revisiting areas after unlocking abilities. Each realm should feel like a memorable place with multiple connected sub-areas and meaningful exploration time. Keep the protagonist an original fantasy bat; Spyro is a reference for level structure and gameplay feel, not for replacing Nightbound's character or copying its worlds.
+
 ## Controls
 
 - **WASD** — move
