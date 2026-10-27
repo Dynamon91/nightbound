@@ -529,7 +529,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		load_game()
 
 func save_game() -> void:
-	var data := {"crystals": crystals, "collected": collected, "collected_relics": collected_relics, "checkpoint_position": [checkpoint_position.x, checkpoint_position.y, checkpoint_position.z], "player_position": [player.position.x, player.position.y, player.position.z] if player else [0, 1.5, 3]}
+	var data := {"crystals": crystals, "current_realm": current_realm, "collected": collected, "collected_relics": collected_relics, "checkpoint_position": [checkpoint_position.x, checkpoint_position.y, checkpoint_position.z], "player_position": [player.position.x, player.position.y, player.position.z] if player else [0, 1.5, 3]}
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
 		file.store_string(JSON.stringify(data))
@@ -545,6 +545,11 @@ func load_game() -> void:
 	if typeof(parsed) != TYPE_DICTIONARY:
 		return
 	crystals = int(parsed.get("crystals", 0))
+	current_realm = str(parsed.get("current_realm", "Moonlit Valley"))
+	realm_transitioned = current_realm == "The Veilwood"
+	portal_open = crystals >= 11
+	if portal_open:
+		portal_anim_time = 1.8
 	collected = parsed.get("collected", [])
 	collected_relics = parsed.get("collected_relics", [])
 	var cp = parsed.get("checkpoint_position", [0, 1.5, 3])
