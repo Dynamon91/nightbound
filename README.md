@@ -2,16 +2,15 @@
 
 An original 3D exploration-platformer prototype starring a small bat adventurer. Explore a moonlit valley, leap between raised platforms, collect luminous crystals, and uncover secrets with Echosense.
 
-## Current prototype
+## Prototype features in this archive
 
 - Third-person bat character and follow camera
-- Moonlit valley with raised platforms, bridge, trees, and a glowing realm gate
-- Collision-backed floor and platform geometry
+- Moonlit valley with collision-backed floor/platforms, bridge, trees, and realm gate
 - Collectible crystals and HUD counter
 - Echosense pulse for revealing hidden relics
-- Hold-to-glide and burst-charge movement abilities
-- Checkpoints and local save/load for progress and player position
-- Prototype encounter with the Gloam Warden and a Shadow Dash unlock
+- Jump, hold-to-glide, and burst-charge movement
+- Checkpoints and local save/load
+- Gloam Warden encounter and Shadow Dash unlock
 - Lira's Star Shards quest and Memory Orbs
 
 ## Controls
@@ -20,16 +19,16 @@ An original 3D exploration-platformer prototype starring a small bat adventurer.
 - **Space** — jump; hold while airborne to glide
 - **F** — burst-charge
 - **E** — Echosense
-- **Shift** — Shadow Dash (after unlocking it)
+- **Shift** — Shadow Dash (after unlocking)
 - **P** — save
 - **O** — load
 
 ## Run
 
-1. Install Godot 4.x.
-2. Open this repository's folder using Godot Project Manager.
-3. Open the project and run the main scene.
+1. Install Godot 4.x from the [official download page](https://godotengine.org/download/linux/).
+2. Extract the project archive.
+3. Open the project folder in Godot Project Manager and run the main scene.
 
 ## Verification status
 
-This is an early prototype. A Godot runtime/build has **not yet been verified** in the development environment, so gameplay features and controls should be tested in Godot 4.x before treating them as confirmed. The concept preview is illustrative and is not a screenshot from a running build.
+This is an early prototype. It has **not yet been run or built with Godot in the current development environment**. The listed mechanics are implemented in source but require runtime testing. The accompanying preview is concept art, not a screenshot of a running build.
