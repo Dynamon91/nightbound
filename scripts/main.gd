@@ -152,6 +152,19 @@ func build_world() -> void:
 	# Warm lanterns trace the bridge and the four outer exploration routes.
 	for p in [Vector3(-4, 0, 5), Vector3(4, 0, 5), Vector3(-12, 0, -8), Vector3(-27, 1.0, -22), Vector3(12, 0, -12), Vector3(27, 1.0, -24), Vector3(-27, 1.0, 25), Vector3(27, 1.0, 26)]:
 		add_lantern(p)
+	# More natural tree silhouettes: tapered trunks, layered crowns, and moonlit leaf tips.
+	for p in [Vector3(-22, 0.0, -5), Vector3(22, 0.0, -6), Vector3(-40, 1.0, 4), Vector3(40, 1.0, 5), Vector3(-20, 0.0, 30), Vector3(20, 0.0, 31), Vector3(-8, 0.0, 39), Vector3(8, 0.0, 40)]:
+		var trunk := add_box(self, p + Vector3(0, 1.5, 0), Vector3(0.65, 3.0, 0.65), Color("#4d3b43"))
+		trunk.rotation.z = randf_range(-0.08, 0.08)
+		for crown in range(4):
+			var offset := Vector3(randf_range(-0.75, 0.75), 2.7 + float(crown) * 0.55, randf_range(-0.45, 0.45))
+			var foliage := add_sphere(self, p + offset, 1.15 - float(crown) * 0.12, Color("#244b48") if crown % 2 == 0 else Color("#315d53"))
+			foliage.scale = Vector3(1.0, 1.25, 0.9)
+	# Bridge rails and posts make the crossing read as a crafted wooden structure.
+	for side in [-1.0, 1.0]:
+		add_box(self, Vector3(side * 1.25, 0.65, 7), Vector3(0.14, 0.9, 9), Color("#68482f"))
+		for z in [3.5, 5.5, 7.5, 9.5, 11.0]:
+			add_box(self, Vector3(side * 1.25, 1.05, z), Vector3(0.22, 1.7, 0.22), Color("#815c3b"))
 	# Realm portal
 	add_box(self, Vector3(-2, 2.5, -18), Vector3(0.35, 5, 0.5), Color("#e4b85e"))
 	add_box(self, Vector3(2, 2.5, -18), Vector3(0.35, 5, 0.5), Color("#e4b85e"))
