@@ -215,6 +215,24 @@ func build_player() -> void:
 			var spar := add_box(player, Vector3(side * (0.78 + finger * 0.22), 0.18, 0.20 + finger * 0.08), Vector3(0.58, 0.045, 0.045), Color("#8a6da2"))
 			spar.rotation.y = side * (0.18 + finger * 0.12)
 	add_sphere(player, Vector3(0, 0.45, -0.79), 0.16, Color("#c6b5d9"))
+	# Chest tuft and feet give the silhouette a more character-like, finished read.
+	for tuft in range(3):
+		var fur := add_sphere(player, Vector3((float(tuft) - 1.0) * 0.13, 0.05 - float(tuft % 2) * 0.08, -0.48), 0.12, Color("#82739f"))
+		fur.scale = Vector3(0.7, 1.25, 0.65)
+	for side in [-1.0, 1.0]:
+		var foot := add_sphere(player, Vector3(side * 0.22, -0.43, -0.12), 0.14, Color("#b77a86"))
+		foot.scale = Vector3(1.0, 0.55, 1.35)
+		# Three tiny toe tips add a readable bat-like foot shape.
+		for toe in range(3):
+			var claw := add_sphere(player, Vector3(side * 0.22 + (float(toe) - 1.0) * 0.09, -0.47, -0.25), 0.045, Color("#e0c6d0"))
+			claw.scale = Vector3(0.75, 0.65, 1.2)
+	# Soft rim lighting separates the dark character from the night scene.
+	var rim := OmniLight3D.new()
+	rim.position = Vector3(0, 0.7, 0.3)
+	rim.light_color = Color("#8f83ff")
+	rim.light_energy = 0.65
+	rim.omni_range = 4.0
+	player.add_child(rim)
 
 func build_camera() -> void:
 	camera = Camera3D.new()
