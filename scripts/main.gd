@@ -210,11 +210,19 @@ func _physics_process(delta: float) -> void:
 	if dir.length() > 0.05:
 		player.rotation.y = atan2(-dir.x, -dir.z)
 	if not player.is_on_floor():
-		player.velocity.y -= 24.0 * delta
-		if Input.is_action_pressed("jump"):
-			player.velocity.y = maxf(player.velocity.y, -2.0)
-	elif Input.is_action_just_pressed("jump"):
-		player.velocity.y = jump_speed
+		glide_active = Input.is_action_pressed("jump") and player.velocity.y < 0.5 and glide_stamina < GLIDE_MAX_STAMINA
+		if glide_active:
+			glide_stamina += delta
+			player.velocity.y = maxf(player.velocity.y - 5.0 * delta, -3.0)
+			player.velocity.x *= 1.015
+			player.velocity.z *= 1.015
+		else:
+			player.velocity.y -= 24.0 * delta
+	else:
+		glide_active = false
+		glide_stamina = 0.0
+		if Input.is_action_just_pressed("jump"):
+			player.velocity.y = jump_speed
 	if Input.is_action_pressed("burst") and not burst_pressed:
 		player.velocity += -player.global_basis.z * 13.0
 		burst_pressed = true
@@ -287,7 +295,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		load_game()
 
 func save_game() -> void:
-	var data := {"crystals": crystals, "collected": collected, "collected_relics": collected_relics, "player_position": [player.position.x, player.position.y, player.position.z] if player else [0, 1.5, 3]}
+	var data := {"crystals": crystals, "collected": collected, "collected_relics": collected_relics, "checkpoint_position": [checkpoint_position.x, checkpoint_position.y, checkpoint_position.z], "player_position": [player.position.x, player.position.y, player.position.z] if player else [0, 1.5, 3]}
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
 		file.store_string(JSON.stringify(data))
@@ -305,6 +313,9 @@ func load_game() -> void:
 	crystals = int(parsed.get("crystals", 0))
 	collected = parsed.get("collected", [])
 	collected_relics = parsed.get("collected_relics", [])
+	var cp = parsed.get("checkpoint_position", [0, 1.5, 3])
+	if cp is Array and cp.size() == 3:
+		checkpoint_position = Vector3(float(cp[0]), float(cp[1]), float(cp[2]))
 	relics_found = collected_relics.size()
 	for i in range(secrets.size() - 1, -1, -1):
 		if collected_relics.has(secrets[i].name):
