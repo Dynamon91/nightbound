@@ -34,6 +34,7 @@ var collected_veilwood_seeds: Array[String] = []
 var veilwood_seed_objects: Dictionary = {}
 var heart_blooms: Array[MeshInstance3D] = []
 var heart_tree_light: OmniLight3D
+var veilwood_motes: Array[MeshInstance3D] = []
 
 func material(color: Color, roughness := 0.75) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -317,6 +318,13 @@ func build_veilwood() -> void:
 			var crown := add_sphere(self, p + Vector3(0, 5.0 + float(layer) * 1.15, 0), 2.0 - float(layer) * 0.25, Color("#4c3679") if layer % 2 == 0 else Color("#285b70"))
 			crown.scale = Vector3(1.0, 0.8, 1.0)
 		var mote := add_sphere(self, p + Vector3(side * 1.3, 2.0, 0.5), 0.18, Color("#7ff8ef"))
+		mote.name = "VeilwoodWisp_%02d" % i
+		var mote_mat := mote.material_override as StandardMaterial3D
+		if mote_mat:
+			mote_mat.emission_enabled = true
+			mote_mat.emission = Color("#65e9ff")
+			mote_mat.emission_energy_multiplier = 1.8
+		veilwood_motes.append(mote)
 		var glow := OmniLight3D.new()
 		glow.position = mote.position
 		glow.light_color = Color("#65e9ff")
@@ -470,6 +478,23 @@ func _physics_process(delta: float) -> void:
 		dash_pressed = false
 	player.move_and_slide()
 	pulse_time = maxf(0.0, pulse_time - delta)
+	# Slow, offset drift keeps the Veilwood alive without distracting from traversal.
+	var ambience_time := float(Time.get_ticks_msec()) / 1000.0
+	for i in range(veilwood_motes.size()):
+		var mote: MeshInstance3D = veilwood_motes[i]
+		if is_instance_valid(mote):
+			var phase := float(i) * 1.73
+			mote.position.y += sin(ambience_time * 1.1 + phase) * delta * 0.32
+			mote.position.x += cos(ambience_time * 0.55 + phase) * delta * 0.12
+	for i in range(heart_blooms.size()):
+		var bloom: MeshInstance3D = heart_blooms[i]
+		if is_instance_valid(bloom):
+			bloom.rotate_y(delta * (0.12 if veilwood_seeds < 5 else 0.32))
+			var bloom_mat := bloom.material_override as StandardMaterial3D
+			if bloom_mat:
+				bloom_mat.emission_energy_multiplier = (2.8 if veilwood_seeds >= 5 else 0.7) + sin(ambience_time * 1.8 + float(i)) * 0.18
+	if is_instance_valid(heart_tree_light):
+		heart_tree_light.light_energy = (4.5 if veilwood_seeds >= 5 else 1.0) + sin(ambience_time * 1.4) * (0.35 if veilwood_seeds >= 5 else 0.12)
 	if Input.is_action_just_pressed("echosense"):
 		revealed = true
 		pulse_time = 5.0
