@@ -243,6 +243,11 @@ func build_world() -> void:
 	for side in [-1.0, 1.0]:
 		for y in [1.0, 2.1, 3.2, 4.2]:
 			var rune := add_box(self, Vector3(side * 2.25, y, -17.42), Vector3(0.12, 0.42, 0.08), Color("#9b8cff"))
+			var rune_mat := material(Color("#bbaaff"), 0.3)
+			rune_mat.emission_enabled = true
+			rune_mat.emission = Color("#9b72ff")
+			rune_mat.emission_energy_multiplier = 0.9
+			rune.material_override = rune_mat
 		var cap := add_sphere(self, Vector3(side * 2.25, 5.2, -18), 0.45, Color("#7a6f9b"))
 		cap.scale = Vector3(1.0, 0.65, 0.85)
 	# Portal center uses a flattened glowing crystal-like orb with layered rings.
@@ -264,7 +269,11 @@ func build_world() -> void:
 		ring.mesh = ring_mesh
 		ring.position = Vector3(0, 2.6, -17.65)
 		ring.rotation_degrees.x = 90
-		ring.material_override = material(Color("#bba0ff") if ring_scale == 1.0 else Color("#68e9ff"), 0.25)
+		var ring_mat := material(Color("#bba0ff") if ring_scale == 1.0 else Color("#68e9ff"), 0.25)
+		ring_mat.emission_enabled = true
+		ring_mat.emission = Color("#9c75ff") if ring_scale == 1.0 else Color("#68e9ff")
+		ring_mat.emission_energy_multiplier = 0.75
+		ring.material_override = ring_mat
 		add_child(ring)
 	# Collectibles are distributed across the expanded valley and its outer routes.
 	var crystal_positions: Array[Vector3] = [
