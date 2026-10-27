@@ -203,11 +203,6 @@ func build_hud() -> void:
 func _physics_process(delta: float) -> void:
 	if player == null:
 		return
-	# Safety net: return the bat to the valley if it falls out of the playable area.
-	if player.global_position.y < -12.0:
-		player.velocity = Vector3.ZERO
-		player.position = Vector3(0, 1.5, 3)
-		show_message("The night wind carries you back to the valley.")
 	var input := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var dir := Vector3(input.x, 0, input.y)
 	player.velocity.x = dir.x * move_speed
