@@ -310,6 +310,33 @@ func build_veilwood() -> void:
 	add_solid_box(Vector3(130, -0.5, 0), Vector3(76, 1, 76), Color("#252d50"))
 	for p in [Vector3(118, 0.2, -8), Vector3(126, 0.7, -14), Vector3(137, 1.3, -20), Vector3(146, 2.0, -26), Vector3(138, 0.6, 10), Vector3(149, 1.4, 18), Vector3(158, 2.0, 25)]:
 		add_solid_box(p, Vector3(7, 0.8, 7), Color("#3c466f"))
+	# A carved moonstone trail guides the player from the realm arrival point to the Heart-Tree.
+	for i in range(9):
+		var trail_z := 25.0 - float(i) * 6.2
+		var trail_x := 130.0 + sin(float(i) * 0.72) * 2.0
+		var trail_stone := add_rock(self, Vector3(trail_x, 0.18, trail_z), Vector3(2.5, 0.35, 2.0), Color("#555b83"), 40 + i)
+		trail_stone.name = "VeilwoodTrailStone_%02d" % i
+		var trail_rune := add_box(self, Vector3(trail_x, 0.39, trail_z), Vector3(0.9, 0.035, 0.12), Color("#79f2ef"))
+		trail_rune.name = "VeilwoodTrailRune_%02d" % i
+		var trail_mat := material(Color("#79f2ef"), 0.28)
+		trail_mat.emission_enabled = true
+		trail_mat.emission = Color("#62eaff")
+		trail_mat.emission_energy_multiplier = 1.15
+		trail_rune.material_override = trail_mat
+	# The arrival arch makes the new realm feel like a deliberate threshold, not an empty side platform.
+	for side in [-1.0, 1.0]:
+		var arch_pillar := add_rock(self, Vector3(130.0 + side * 5.0, 2.2, 32.0), Vector3(1.0, 2.8, 0.9), Color("#4c456b"), int(side + 8))
+		arch_pillar.name = "VeilwoodArrivalPillar"
+		var arch_crystal := add_crystal_shard(self, Vector3(130.0 + side * 5.0, 4.5, 32.0), 1.3, Color("#8af5f0"), 0.28)
+		arch_crystal.rotation.z = side * -0.16
+	add_box(self, Vector3(130, 5.0, 32.0), Vector3(10.5, 0.55, 0.85), Color("#51466f"))
+	for side in [-1.0, 1.0]:
+		var arch_rune := add_box(self, Vector3(130.0 + side * 5.0, 2.3, 31.48), Vector3(0.13, 1.8, 0.08), Color("#8af5f0"))
+		var arch_mat := material(Color("#8af5f0"), 0.25)
+		arch_mat.emission_enabled = true
+		arch_mat.emission = Color("#68eaff")
+		arch_mat.emission_energy_multiplier = 1.4
+		arch_rune.material_override = arch_mat
 	for i in range(13):
 		var side := -1.0 if i % 2 == 0 else 1.0
 		var p := Vector3(130.0 + side * (12.0 + float(i % 4) * 5.0), 0.0, -30.0 + float(i) * 5.0)
