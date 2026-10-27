@@ -93,6 +93,10 @@ func build_world() -> void:
 	environment.ambient_light_color = Color("#8195cf")
 	environment.ambient_light_energy = 0.55
 	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	environment.fog_enabled = true
+	environment.fog_light_color = Color("#6577a6")
+	environment.fog_density = 0.008
+	environment.fog_sky_affect = 0.35
 	world_env.environment = environment
 	add_child(world_env)
 	var moonlight := DirectionalLight3D.new()
@@ -128,6 +132,18 @@ func build_world() -> void:
 		add_box(self, p, Vector3(2, 1.2, 1.7), Color("#777d7b"))
 		add_box(self, p + Vector3(0, 2, 0), Vector3(0.45, 3, 0.45), Color("#76502e"))
 		add_sphere(self, p + Vector3(0, 4, 0), 1.8, Color("#286b48"))
+	# Layered cliff silhouettes add depth and break up the blocky horizon.
+	for i in range(18):
+		var side := -1.0 if i % 2 == 0 else 1.0
+		var z := -42.0 + float(i) * 5.0
+		var x := side * (43.0 + float(i % 3) * 2.5)
+		var rock := add_sphere(self, Vector3(x, 2.0 + float(i % 4) * 0.7, z), 3.0 + float(i % 3) * 0.8, Color("#343d59") if i % 2 == 0 else Color("#414967"))
+		rock.scale = Vector3(1.25, 1.8 + float(i % 3) * 0.25, 1.0)
+	# Small crystal clusters around the valley edges create more layered fantasy landmarks.
+	for p in [Vector3(-18, 1.0, -30), Vector3(18, 1.0, -33), Vector3(-42, 3.0, 14), Vector3(42, 3.0, 15), Vector3(-12, 1.0, 38), Vector3(13, 1.0, 39)]:
+		for k in range(3):
+			var shard := add_sphere(self, p + Vector3((float(k) - 1.0) * 0.65, 0.55 + float(k % 2) * 0.25, 0), 0.32, Color("#6eeaf4") if k != 1 else Color("#a88aff"))
+			shard.scale = Vector3(0.55, 1.9 + float(k % 2) * 0.6, 0.55)
 	# Warm lanterns trace the bridge and the four outer exploration routes.
 	for p in [Vector3(-4, 0, 5), Vector3(4, 0, 5), Vector3(-12, 0, -8), Vector3(-27, 1.0, -22), Vector3(12, 0, -12), Vector3(27, 1.0, -24), Vector3(-27, 1.0, 25), Vector3(27, 1.0, 26)]:
 		add_lantern(p)
