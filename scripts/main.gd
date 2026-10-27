@@ -150,8 +150,6 @@ func build_world() -> void:
 			secrets.append(relic)
 		else:
 			relics_found += 1
-			if not collected_relics.has(relic.name):
-				collected_relics.append(relic.name)
 			relic.queue_free()
 
 func make_crystal(pos: Vector3, id: String) -> void:
@@ -248,6 +246,8 @@ func _physics_process(delta: float) -> void:
 		var relic: MeshInstance3D = secrets[i]
 		if is_instance_valid(relic) and relic.visible and relic.global_position.distance_to(player.global_position) < 1.25:
 			relics_found += 1
+			if not collected_relics.has(relic.name):
+				collected_relics.append(relic.name)
 			relic.queue_free()
 			secrets.remove_at(i)
 			show_message("Ancient relic found! Echoes discovered: %d/5" % relics_found)
@@ -311,6 +311,10 @@ func load_game() -> void:
 	collected = parsed.get("collected", [])
 	collected_relics = parsed.get("collected_relics", [])
 	relics_found = collected_relics.size()
+	for i in range(secrets.size() - 1, -1, -1):
+		if collected_relics.has(secrets[i].name):
+			secrets[i].queue_free()
+			secrets.remove_at(i)
 	var p = parsed.get("player_position", [0, 1.5, 3])
 	if player and p is Array and p.size() == 3:
 		player.position = Vector3(float(p[0]), float(p[1]), float(p[2]))
