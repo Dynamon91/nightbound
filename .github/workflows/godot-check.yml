@@ -10,15 +10,21 @@ on:
 jobs:
   headless-import:
     runs-on: ubuntu-latest
-    container:
-      image: barichello/godot-ci:4.3.0
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Install Godot 4.3
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip wget
+          wget -q https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip -O /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          chmod +x /tmp/godot/Godot_v4.3-stable_linux.x86_64
+          echo "/tmp/godot" >> "$GITHUB_PATH"
       - name: Check project files
         run: |
           test -f project.godot
           test -f scenes/main.tscn
           test -f scripts/main.gd
       - name: Import and parse project in headless mode
-        run: godot --headless --editor --path . --quit
+        run: Godot_v4.3-stable_linux.x86_64 --headless --editor --path . --quit
