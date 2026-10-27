@@ -13,6 +13,7 @@ var move_speed := 8.0
 var collected: Array[String] = []
 var crystal_objects: Dictionary = {}
 var secrets: Array[MeshInstance3D] = []
+var relics_found := 0
 var burst_pressed := false
 var dash_pressed := false
 var dash_unlocked := false
@@ -233,6 +234,14 @@ func _physics_process(delta: float) -> void:
 		for secret in secrets:
 			secret.visible = true
 		show_message("Echo pulse! Ancient relics revealed for a moment.")
+	# Revealed relics can be collected by approaching them before the pulse fades.
+	for i in range(secrets.size() - 1, -1, -1):
+		var relic: MeshInstance3D = secrets[i]
+		if is_instance_valid(relic) and relic.visible and relic.global_position.distance_to(player.global_position) < 1.25:
+			relics_found += 1
+			relic.queue_free()
+			secrets.remove_at(i)
+			show_message("Ancient relic found! Echoes discovered: %d/5" % relics_found)
 	for id in crystal_objects.keys():
 		var entry: Dictionary = crystal_objects[id]
 		var node: MeshInstance3D = entry["node"]
@@ -260,7 +269,7 @@ func _physics_process(delta: float) -> void:
 
 func refresh_hud() -> void:
 	if hud:
-		hud.text = "NIGHTBOUND   •   Crystals: %d/11%s\nWASD Move  |  SPACE Leap/Glide  |  F Burst  |  E Echosense\nSHIFT Shadow Dash (8 crystals)  |  P Save  |  O Load" % [crystals, "  •  GATE OPEN" if portal_open else ""]
+		hud.text = "NIGHTBOUND   •   Crystals: %d/11   •   Echoes: %d/5%s\nWASD Move  |  SPACE Leap/Glide  |  F Burst  |  E Echosense\nSHIFT Shadow Dash (8 crystals)  |  P Save  |  O Load" % [crystals, relics_found, "  •  GATE OPEN" if portal_open else ""]
 
 func show_message(text_value: String) -> void:
 	if message:
