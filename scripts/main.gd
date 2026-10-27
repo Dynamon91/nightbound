@@ -35,6 +35,7 @@ var veilwood_seed_objects: Dictionary = {}
 var heart_blooms: Array[MeshInstance3D] = []
 var heart_tree_light: OmniLight3D
 var veilwood_motes: Array[MeshInstance3D] = []
+var veilwood_mote_bases: Array[Vector3] = []
 
 func material(color: Color, roughness := 0.75) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -325,6 +326,7 @@ func build_veilwood() -> void:
 			mote_mat.emission = Color("#65e9ff")
 			mote_mat.emission_energy_multiplier = 1.8
 		veilwood_motes.append(mote)
+		veilwood_mote_bases.append(mote.position)
 		var glow := OmniLight3D.new()
 		glow.position = mote.position
 		glow.light_color = Color("#65e9ff")
@@ -484,8 +486,8 @@ func _physics_process(delta: float) -> void:
 		var mote: MeshInstance3D = veilwood_motes[i]
 		if is_instance_valid(mote):
 			var phase := float(i) * 1.73
-			mote.position.y += sin(ambience_time * 1.1 + phase) * delta * 0.32
-			mote.position.x += cos(ambience_time * 0.55 + phase) * delta * 0.12
+			mote.position.y = veilwood_mote_bases[i].y + sin(ambience_time * 1.1 + phase) * 0.32
+			mote.position.x = veilwood_mote_bases[i].x + cos(ambience_time * 0.55 + phase) * 0.12
 	for i in range(heart_blooms.size()):
 		var bloom: MeshInstance3D = heart_blooms[i]
 		if is_instance_valid(bloom):
