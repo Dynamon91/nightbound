@@ -78,6 +78,26 @@ func add_sphere(parent: Node3D, pos: Vector3, radius: float, color: Color) -> Me
 	parent.add_child(item)
 	return item
 
+func add_crystal_shard(parent: Node3D, pos: Vector3, height: float, color: Color, width := 0.32) -> MeshInstance3D:
+	# Low-sided tapered prism gives crystals a deliberate faceted silhouette.
+	var item := MeshInstance3D.new()
+	var mesh := CylinderMesh.new()
+	mesh.top_radius = width * 0.08
+	mesh.bottom_radius = width
+	mesh.height = height
+	mesh.radial_segments = 6
+	mesh.rings = 1
+	item.mesh = mesh
+	item.position = pos
+	var crystal_mat := material(color, 0.22)
+	crystal_mat.metallic = 0.12
+	crystal_mat.emission_enabled = true
+	crystal_mat.emission = color
+	crystal_mat.emission_energy_multiplier = 0.7
+	item.material_override = crystal_mat
+	parent.add_child(item)
+	return item
+
 func _ready() -> void:
 	build_world()
 	build_player()
@@ -145,8 +165,8 @@ func build_world() -> void:
 	# Small crystal clusters around the valley edges create more layered fantasy landmarks.
 	for p in [Vector3(-18, 1.0, -30), Vector3(18, 1.0, -33), Vector3(-42, 3.0, 14), Vector3(42, 3.0, 15), Vector3(-12, 1.0, 38), Vector3(13, 1.0, 39)]:
 		for k in range(3):
-			var shard := add_sphere(self, p + Vector3((float(k) - 1.0) * 0.65, 0.55 + float(k % 2) * 0.25, 0), 0.32, Color("#6eeaf4") if k != 1 else Color("#a88aff"))
-			shard.scale = Vector3(0.55, 1.9 + float(k % 2) * 0.6, 0.55)
+			var shard := add_crystal_shard(self, p + Vector3((float(k) - 1.0) * 0.65, 0.55 + float(k % 2) * 0.25, 0), 1.15 + float(k % 2) * 0.35, Color("#6eeaf4") if k != 1 else Color("#a88aff"), 0.28)
+			shard.rotation.z = (float(k) - 1.0) * 0.12
 	# Low shrubs and layered canopy clusters soften the block-built landscape.
 	for p in [Vector3(-8, 0.1, -17), Vector3(8, 0.1, -20), Vector3(-18, 0.2, 8), Vector3(18, 0.2, 7), Vector3(-35, 1.2, -12), Vector3(35, 1.2, -12), Vector3(-35, 1.3, 18), Vector3(35, 1.3, 18), Vector3(-15, 0.2, 32), Vector3(15, 0.2, 32)]:
 		for part in range(3):
@@ -219,8 +239,12 @@ func build_world() -> void:
 			relic.queue_free()
 
 func make_crystal(pos: Vector3, id: String) -> void:
-	var c := add_sphere(self, pos, 0.38, Color("#67f2ee"))
+	var c := add_crystal_shard(self, pos, 0.95, Color("#67f2ee"), 0.34)
 	c.name = id
+	var base_mat := c.material_override as StandardMaterial3D
+	if base_mat:
+		base_mat.emission_energy_multiplier = 1.15
+	c.rotation.z = 0.08
 	crystal_objects[id] = {"node": c, "base": pos, "phase": randf() * TAU}
 
 func build_player() -> void:
