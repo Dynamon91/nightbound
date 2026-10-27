@@ -23,3 +23,5 @@ jump={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":32)]}
 burst={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":70)]}
 echosense={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":69)]}
 shadow_dash={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":4194325)]}
+save_game={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":80)]}
+load_game={"deadzone":0.2,"events":[Object(InputEventKey,"physical_keycode":79)]}
