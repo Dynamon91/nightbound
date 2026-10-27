@@ -1,34 +1,39 @@
 # Nightbound 🦇
 
-An original 3D exploration-platformer prototype starring a small bat adventurer. Explore a moonlit valley, leap between raised platforms, collect luminous crystals, and uncover secrets with Echosense.
+Nightbound is an original **3D third-person exploration-platformer prototype** starring a small fantasy bat. The project is inspired by the exploration, jumping and collectible loop of classic 3D platformers; the protagonist remains a bat.
 
-## Prototype features in this archive
+## Implemented in the current repository
 
 - Third-person bat character and follow camera
-- Moonlit valley with collision-backed floor/platforms, bridge, trees, and realm gate
-- Collectible crystals and HUD counter
-- Echosense pulse for revealing hidden relics
-- Jump, hold-to-glide, and burst-charge movement
-- Checkpoints and local save/load
-- Gloam Warden encounter and Shadow Dash unlock
-- Lira's Star Shards quest and Memory Orbs
+- A small 3D valley with collision-backed ground and raised platforms
+- Bridge, trees and a realm-gate landmark
+- Collectible crystals and a HUD counter
+- Echosense pulse that temporarily reveals hidden relics
+- Jump and airborne glide control
+- Burst movement and a crystal-gated Shadow Dash
+- Local save/load of collected crystals and player position
+- Moonlit environment lighting and a purple glow near the realm gate
+
+This is an early prototype. Larger features such as a complete multi-level campaign, finished boss encounter, checkpoints, and quest chains are **not yet verified as implemented in the current main-branch source**.
 
 ## Controls
 
 - **WASD** — move
 - **Space** — jump; hold while airborne to glide
-- **F** — burst-charge
+- **F** — burst
 - **E** — Echosense
-- **Shift** — Shadow Dash (after unlocking)
+- **Shift** — Shadow Dash (unlocks after collecting 8 crystals)
 - **P** — save
 - **O** — load
 
 ## Run
 
-1. Install Godot 4.x from the [official download page](https://godotengine.org/download/linux/).
-2. Extract the project archive.
-3. Open the project folder in Godot Project Manager and run the main scene.
+1. Install Godot 4.x from the [official download page](https://godotengine.org/download/).
+2. Open this folder in Godot Project Manager.
+3. Run the main scene.
 
-## Verification status
+## Verification
 
-This is an early prototype. It has **not yet been run or built with Godot in the current development environment**. The listed mechanics are implemented in source but require runtime testing. The accompanying preview is concept art, not a screenshot of a running build.
+The GitHub Actions workflow imports/parses the project and launches the main scene headlessly for 120 frames. This confirms a basic automated startup check; it does **not** replace interactive visual testing or prove every mechanic works as intended.
+
+The preview image supplied separately is concept art, not a screenshot captured from a running build.
