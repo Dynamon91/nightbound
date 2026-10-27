@@ -14,6 +14,7 @@ var collected: Array[String] = []
 var crystal_objects: Dictionary = {}
 var secrets: Array[MeshInstance3D] = []
 var relics_found := 0
+var collected_relics: Array[String] = []
 var burst_pressed := false
 var dash_pressed := false
 var dash_unlocked := false
@@ -140,10 +141,18 @@ func build_world() -> void:
 	]
 	for i in range(crystal_positions.size()):
 		make_crystal(crystal_positions[i], "crystal_%02d" % i)
-	for p in [Vector3(-8, 1.2, 0), Vector3(5, 1, -7), Vector3(20, 1, 3), Vector3(-37, 4.7, -38), Vector3(37, 4.8, 40)]:
-		var relic := add_sphere(self, p, 0.5, Color("#a9efff"))
+	var relic_positions: Array[Vector3] = [Vector3(-8, 1.2, 0), Vector3(5, 1, -7), Vector3(20, 1, 3), Vector3(-37, 4.7, -38), Vector3(37, 4.8, 40)]
+	for i in range(relic_positions.size()):
+		var relic := add_sphere(self, relic_positions[i], 0.5, Color("#a9efff"))
+		relic.name = "relic_%d" % i
 		relic.visible = false
-		secrets.append(relic)
+		if not collected_relics.has(relic.name):
+			secrets.append(relic)
+		else:
+			relics_found += 1
+			if not collected_relics.has(relic.name):
+				collected_relics.append(relic.name)
+			relic.queue_free()
 
 func make_crystal(pos: Vector3, id: String) -> void:
 	var c := add_sphere(self, pos, 0.38, Color("#67f2ee"))
@@ -242,6 +251,7 @@ func _physics_process(delta: float) -> void:
 			relic.queue_free()
 			secrets.remove_at(i)
 			show_message("Ancient relic found! Echoes discovered: %d/5" % relics_found)
+			save_game()
 	for id in crystal_objects.keys():
 		var entry: Dictionary = crystal_objects[id]
 		var node: MeshInstance3D = entry["node"]
@@ -282,7 +292,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		load_game()
 
 func save_game() -> void:
-	var data := {"crystals": crystals, "collected": collected, "player_position": [player.position.x, player.position.y, player.position.z] if player else [0, 1.5, 3]}
+	var data := {"crystals": crystals, "collected": collected, "collected_relics": collected_relics, "player_position": [player.position.x, player.position.y, player.position.z] if player else [0, 1.5, 3]}
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
 		file.store_string(JSON.stringify(data))
@@ -299,6 +309,8 @@ func load_game() -> void:
 		return
 	crystals = int(parsed.get("crystals", 0))
 	collected = parsed.get("collected", [])
+	collected_relics = parsed.get("collected_relics", [])
+	relics_found = collected_relics.size()
 	var p = parsed.get("player_position", [0, 1.5, 3])
 	if player and p is Array and p.size() == 3:
 		player.position = Vector3(float(p[0]), float(p[1]), float(p[2]))
