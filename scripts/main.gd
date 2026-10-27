@@ -35,6 +35,18 @@ func add_box(parent: Node3D, pos: Vector3, size: Vector3, color: Color) -> MeshI
 	parent.add_child(item)
 	return item
 
+func add_lantern(pos: Vector3) -> void:
+	# Warm route lights make landmarks readable against the cool moonlight.
+	add_solid_box(pos + Vector3(0, 1.1, 0), Vector3(0.18, 2.2, 0.18), Color("#65452e"))
+	add_box(self, pos + Vector3(0, 2.15, 0), Vector3(0.65, 0.12, 0.65), Color("#b88445"))
+	add_sphere(self, pos + Vector3(0, 2.45, 0), 0.22, Color("#ffd58a"))
+	var glow := OmniLight3D.new()
+	glow.position = pos + Vector3(0, 2.5, 0)
+	glow.light_color = Color("#ffb85c")
+	glow.light_energy = 1.25
+	glow.omni_range = 7.0
+	add_child(glow)
+
 func add_solid_box(pos: Vector3, size: Vector3, color: Color) -> void:
 	var body := StaticBody3D.new()
 	body.position = pos
@@ -110,6 +122,9 @@ func build_world() -> void:
 		add_box(self, p, Vector3(2, 1.2, 1.7), Color("#777d7b"))
 		add_box(self, p + Vector3(0, 2, 0), Vector3(0.45, 3, 0.45), Color("#76502e"))
 		add_sphere(self, p + Vector3(0, 4, 0), 1.8, Color("#286b48"))
+	# Warm lanterns trace the bridge and the four outer exploration routes.
+	for p in [Vector3(-4, 0, 5), Vector3(4, 0, 5), Vector3(-12, 0, -8), Vector3(-27, 1.0, -22), Vector3(12, 0, -12), Vector3(27, 1.0, -24), Vector3(-27, 1.0, 25), Vector3(27, 1.0, 26)]:
+		add_lantern(p)
 	# Realm portal
 	add_box(self, Vector3(-2, 2.5, -18), Vector3(0.35, 5, 0.5), Color("#e4b85e"))
 	add_box(self, Vector3(2, 2.5, -18), Vector3(0.35, 5, 0.5), Color("#e4b85e"))
