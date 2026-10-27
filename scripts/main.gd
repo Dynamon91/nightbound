@@ -32,6 +32,8 @@ var realm_transitioned := false
 var veilwood_seeds := 0
 var collected_veilwood_seeds: Array[String] = []
 var veilwood_seed_objects: Dictionary = {}
+var heart_blooms: Array[MeshInstance3D] = []
+var heart_tree_light: OmniLight3D
 
 func material(color: Color, roughness := 0.75) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -326,12 +328,13 @@ func build_veilwood() -> void:
 		var a := float(angle) * TAU / 8.0
 		var bloom := add_crystal_shard(self, Vector3(130 + cos(a) * 4.0, 5.0 + sin(a * 2.0) * 1.2, -31 + sin(a) * 4.0), 2.4, Color("#d28aff") if angle % 2 == 0 else Color("#69f2ed"), 0.42)
 		bloom.rotation.z = cos(a) * 0.22
-	var heart_light := OmniLight3D.new()
-	heart_light.position = Vector3(130, 5.0, -31)
-	heart_light.light_color = Color("#b16bff")
-	heart_light.light_energy = 3.0
-	heart_light.omni_range = 17.0
-	add_child(heart_light)
+		heart_blooms.append(bloom)
+	heart_tree_light = OmniLight3D.new()
+	heart_tree_light.position = Vector3(130, 5.0, -31)
+	heart_tree_light.light_color = Color("#b16bff")
+	heart_tree_light.light_energy = 1.0 if veilwood_seeds < 5 else 4.5
+	heart_tree_light.omni_range = 17.0
+	add_child(heart_tree_light)
 	for p in [Vector3(112, 2.5, -18), Vector3(151, 3.0, -8), Vector3(116, 2.8, 20), Vector3(153, 3.5, 14), Vector3(130, 1.0, 30)]:
 		add_crystal_shard(self, p, 1.7, Color("#7ceff5"), 0.3)
 		add_crystal_shard(self, p + Vector3(0.65, 0.35, 0), 1.1, Color("#bd7cff"), 0.24)
@@ -495,6 +498,13 @@ func _physics_process(delta: float) -> void:
 				veilwood_seed_objects.erase(seed_id)
 				show_message("Moonseed gathered! Veilwood seeds: %d/5" % veilwood_seeds)
 				if veilwood_seeds == 5:
+					for bloom in heart_blooms:
+						var bloom_mat := bloom.material_override as StandardMaterial3D
+						if bloom_mat:
+							bloom_mat.emission_enabled = true
+							bloom_mat.emission_energy_multiplier = 2.8
+					if is_instance_valid(heart_tree_light):
+						heart_tree_light.light_energy = 4.5
 					show_message("VEILWOOD RESTORED — all five Moonseeds awaken the Heart-Tree!")
 				save_game()
 	for id in crystal_objects.keys():
@@ -592,6 +602,14 @@ func load_game() -> void:
 	var p = parsed.get("player_position", [0, 1.5, 3])
 	if player and p is Array and p.size() == 3:
 		player.position = Vector3(float(p[0]), float(p[1]), float(p[2]))
+	if veilwood_seeds >= 5:
+		for bloom in heart_blooms:
+			var bloom_mat := bloom.material_override as StandardMaterial3D
+			if bloom_mat:
+				bloom_mat.emission_enabled = true
+				bloom_mat.emission_energy_multiplier = 2.8
+		if is_instance_valid(heart_tree_light):
+			heart_tree_light.light_energy = 4.5
 	for seed_id in collected_veilwood_seeds:
 		if veilwood_seed_objects.has(seed_id):
 			var seed_node: MeshInstance3D = veilwood_seed_objects[seed_id]
