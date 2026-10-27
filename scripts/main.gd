@@ -16,6 +16,8 @@ var secrets: Array[MeshInstance3D] = []
 var burst_pressed := false
 var dash_pressed := false
 var dash_unlocked := false
+var portal_open := false
+var victory_shown := false
 
 func material(color: Color, roughness := 0.75) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -162,6 +164,11 @@ func build_hud() -> void:
 func _physics_process(delta: float) -> void:
 	if player == null:
 		return
+	# Safety net: return the bat to the valley if it falls out of the playable area.
+	if player.global_position.y < -12.0:
+		player.velocity = Vector3.ZERO
+		player.position = Vector3(0, 1.5, 3)
+		show_message("The night wind carries you back to the valley.")
 	var input := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var dir := Vector3(input.x, 0, input.y)
 	player.velocity.x = dir.x * move_speed
@@ -208,6 +215,12 @@ func _physics_process(delta: float) -> void:
 				crystal_objects.erase(id)
 				show_message("Crystal collected! Keep exploring.")
 				save_game()
+	if crystals >= 11 and not portal_open:
+		portal_open = true
+		show_message("All 11 crystals gathered! The Realm Gate awakens.")
+	if portal_open and not victory_shown and player.global_position.distance_to(Vector3(0, 2.5, -18)) < 3.0:
+		victory_shown = true
+		show_message("REALM GATE OPEN — You have awakened the ancient passage!")
 	if revealed and pulse_time <= 0.0:
 		revealed = false
 		for secret in secrets:
@@ -216,7 +229,7 @@ func _physics_process(delta: float) -> void:
 
 func refresh_hud() -> void:
 	if hud:
-		hud.text = "NIGHTBOUND   •   Crystals: %d\nWASD Move  |  SPACE Leap  |  E Echosense  |  P Save  |  O Load" % crystals
+		hud.text = "NIGHTBOUND   •   Crystals: %d/11%s\nWASD Move  |  SPACE Leap/Glide  |  F Burst  |  E Echosense\nSHIFT Shadow Dash (8 crystals)  |  P Save  |  O Load" % [crystals, "  •  GATE OPEN" if portal_open else ""]
 
 func show_message(text_value: String) -> void:
 	if message:
