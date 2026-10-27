@@ -24,6 +24,9 @@ var dash_pressed := false
 var dash_unlocked := false
 var portal_open := false
 var victory_shown := false
+var portal_core_node: MeshInstance3D
+var portal_glow_light: OmniLight3D
+var portal_anim_time := 0.0
 
 func material(color: Color, roughness := 0.75) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -175,14 +178,15 @@ func build_world() -> void:
 		var cap := add_sphere(self, Vector3(side * 2.25, 5.2, -18), 0.45, Color("#7a6f9b"))
 		cap.scale = Vector3(1.0, 0.65, 0.85)
 	# Portal center uses a flattened glowing crystal-like orb with layered rings.
-	var portal_core := add_sphere(self, Vector3(0, 2.7, -18.05), 1.35, Color("#8759db"))
-	portal_core.scale = Vector3(0.88, 1.2, 0.35)
-	var core_glow := OmniLight3D.new()
-	core_glow.position = Vector3(0, 2.8, -16.8)
-	core_glow.light_color = Color("#9c75ff")
-	core_glow.light_energy = 1.6
-	core_glow.omni_range = 7.0
-	add_child(core_glow)
+	portal_core_node = add_sphere(self, Vector3(0, 2.7, -18.05), 1.35, Color("#342c58"))
+	portal_core_node.scale = Vector3(0.88, 1.2, 0.18)
+	portal_glow_light = OmniLight3D.new()
+	portal_glow_light.name = "RealmGateCoreLight"
+	portal_glow_light.position = Vector3(0, 2.8, -16.8)
+	portal_glow_light.light_color = Color("#9c75ff")
+	portal_glow_light.light_energy = 0.25
+	portal_glow_light.omni_range = 7.0
+	add_child(portal_glow_light)
 	# Concentric luminous rings give the realm gate a stronger focal silhouette.
 	for ring_scale in [1.0, 0.78]:
 		var ring := MeshInstance3D.new()
@@ -361,10 +365,24 @@ func _physics_process(delta: float) -> void:
 				save_game()
 	if crystals >= 11 and not portal_open:
 		portal_open = true
+		portal_anim_time = 0.0
 		show_message("All 11 crystals gathered! The Realm Gate awakens.")
-	if portal_open and not victory_shown and player.global_position.distance_to(Vector3(0, 2.5, -18)) < 3.0:
-		victory_shown = true
-		show_message("REALM GATE OPEN — You have awakened the ancient passage!")
+	if portal_open:
+		portal_anim_time += delta
+		if is_instance_valid(portal_core_node):
+			var opening := minf(portal_anim_time / 1.8, 1.0)
+			portal_core_node.scale = Vector3(0.88, 1.2, 0.18 + opening * 0.22)
+			var core_material := portal_core_node.material_override as StandardMaterial3D
+			if core_material:
+				core_material.albedo_color = Color("#342c58").lerp(Color("#a86bff"), opening)
+				core_material.emission_enabled = true
+				core_material.emission = Color("#8e56ff")
+				core_material.emission_energy_multiplier = opening * 1.8
+		if is_instance_valid(portal_glow_light):
+			portal_glow_light.light_energy = minf(portal_anim_time / 1.8, 1.0) * 2.4
+		if not victory_shown and player.global_position.distance_to(Vector3(0, 2.5, -18)) < 3.0:
+			victory_shown = true
+			show_message("REALM GATE OPEN — You have awakened the ancient passage!")
 	if revealed and pulse_time <= 0.0:
 		revealed = false
 		for secret in secrets:
