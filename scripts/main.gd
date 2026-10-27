@@ -96,6 +96,34 @@ func add_rock(parent: Node3D, pos: Vector3, size: Vector3, color: Color, seed_va
 	parent.add_child(item)
 	return item
 
+func add_wing_membrane(parent: Node3D, side: float) -> void:
+	# A thin, scalloped triangular membrane gives the bat a readable wing silhouette.
+	var mesh_instance := MeshInstance3D.new()
+	var wing_mesh := ArrayMesh.new()
+	var vertices := PackedVector3Array([
+		Vector3(side * 0.28, 0.30, 0.02),
+		Vector3(side * 1.48, 0.18, 0.02),
+		Vector3(side * 1.18, -0.18, 0.02),
+		Vector3(side * 0.92, -0.02, 0.02),
+		Vector3(side * 0.66, -0.30, 0.02),
+		Vector3(side * 0.42, -0.04, 0.02)
+	])
+	var indices := PackedInt32Array([0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5])
+	var arrays: Array = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_INDEX] = indices
+	wing_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	mesh_instance.mesh = wing_mesh
+	var membrane := material(Color("#493258"), 0.8)
+	membrane.cull_mode = BaseMaterial3D.CULL_DISABLED
+	membrane.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
+	membrane.emission_enabled = true
+	membrane.emission = Color("#302344")
+	membrane.emission_energy_multiplier = 0.18
+	mesh_instance.material_override = membrane
+	parent.add_child(mesh_instance)
+
 func add_crystal_shard(parent: Node3D, pos: Vector3, height: float, color: Color, width := 0.32) -> MeshInstance3D:
 	# Low-sided tapered prism gives crystals a deliberate faceted silhouette.
 	var item := MeshInstance3D.new()
@@ -286,6 +314,7 @@ func build_player() -> void:
 		ear.scale = Vector3(0.65, 1.55, 0.55)
 		var eye := add_sphere(player, Vector3(side * 0.16, 0.66, -0.77), 0.065, Color("#f8df8b"))
 		eye.scale = Vector3(0.8, 1.0, 0.45)
+		add_wing_membrane(player, side)
 		var wing := add_box(player, Vector3(side * 0.88, 0.22, 0.03), Vector3(1.15, 0.10, 0.58), Color("#59416f"))
 		wing.rotation.z = side * -0.18
 		var tip := add_sphere(player, Vector3(side * 1.38, 0.12, -0.08), 0.22, Color("#302641"))
