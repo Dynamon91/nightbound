@@ -64,6 +64,31 @@ func _ready() -> void:
 	show_message("Explore the valley. Press E to reveal hidden echoes.")
 
 func build_world() -> void:
+	# Moonlit 3D presentation: cool ambient light and a warm key light.
+	var world_env := WorldEnvironment.new()
+	var environment := Environment.new()
+	environment.background_mode = Environment.BG_COLOR
+	environment.background_color = Color("#10182d")
+	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	environment.ambient_light_color = Color("#8195cf")
+	environment.ambient_light_energy = 0.55
+	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	world_env.environment = environment
+	add_child(world_env)
+	var moonlight := DirectionalLight3D.new()
+	moonlight.name = "Moonlight"
+	moonlight.rotation_degrees = Vector3(-48, -32, 0)
+	moonlight.light_color = Color("#b8ccff")
+	moonlight.light_energy = 1.15
+	moonlight.shadow_enabled = true
+	add_child(moonlight)
+	var fill_light := OmniLight3D.new()
+	fill_light.name = "PortalGlow"
+	fill_light.position = Vector3(0, 3, -15)
+	fill_light.light_color = Color("#9c75ff")
+	fill_light.light_energy = 2.0
+	fill_light.omni_range = 12.0
+	add_child(fill_light)
 	add_solid_box(Vector3(0, -0.5, 0), Vector3(44, 1, 44), Color("#416b43"))
 	for p in [Vector3(-12, 0.4, -9), Vector3(11, 1.2, -14), Vector3(17, 0.4, 9), Vector3(-17, 3.2, 13)]:
 		add_solid_box(p, Vector3(8, 1.2, 8), Color("#668b58"))
