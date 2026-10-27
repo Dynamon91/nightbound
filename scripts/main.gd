@@ -144,6 +144,11 @@ func build_world() -> void:
 		for k in range(3):
 			var shard := add_sphere(self, p + Vector3((float(k) - 1.0) * 0.65, 0.55 + float(k % 2) * 0.25, 0), 0.32, Color("#6eeaf4") if k != 1 else Color("#a88aff"))
 			shard.scale = Vector3(0.55, 1.9 + float(k % 2) * 0.6, 0.55)
+	# Low shrubs and layered canopy clusters soften the block-built landscape.
+	for p in [Vector3(-8, 0.1, -17), Vector3(8, 0.1, -20), Vector3(-18, 0.2, 8), Vector3(18, 0.2, 7), Vector3(-35, 1.2, -12), Vector3(35, 1.2, -12), Vector3(-35, 1.3, 18), Vector3(35, 1.3, 18), Vector3(-15, 0.2, 32), Vector3(15, 0.2, 32)]:
+		for part in range(3):
+			var bush := add_sphere(self, p + Vector3((float(part) - 1.0) * 0.7, 0.35 + float(part % 2) * 0.2, 0), 0.85, Color("#315b46") if part != 1 else Color("#467452"))
+			bush.scale = Vector3(1.25, 0.8, 1.0)
 	# Warm lanterns trace the bridge and the four outer exploration routes.
 	for p in [Vector3(-4, 0, 5), Vector3(4, 0, 5), Vector3(-12, 0, -8), Vector3(-27, 1.0, -22), Vector3(12, 0, -12), Vector3(27, 1.0, -24), Vector3(-27, 1.0, 25), Vector3(27, 1.0, 26)]:
 		add_lantern(p)
