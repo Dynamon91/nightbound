@@ -27,6 +27,8 @@ var victory_shown := false
 var portal_core_node: MeshInstance3D
 var portal_glow_light: OmniLight3D
 var portal_anim_time := 0.0
+var current_realm := "Moonlit Valley"
+var realm_transitioned := false
 
 func material(color: Color, roughness := 0.75) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -146,6 +148,7 @@ func add_crystal_shard(parent: Node3D, pos: Vector3, height: float, color: Color
 
 func _ready() -> void:
 	build_world()
+	build_veilwood()
 	build_player()
 	build_camera()
 	build_hud()
@@ -294,6 +297,41 @@ func build_world() -> void:
 		else:
 			relics_found += 1
 			relic.queue_free()
+
+func build_veilwood() -> void:
+	# A separate destination beyond the first gate: a bioluminescent forest.
+	add_solid_box(Vector3(130, -0.5, 0), Vector3(76, 1, 76), Color("#252d50"))
+	for p in [Vector3(118, 0.2, -8), Vector3(126, 0.7, -14), Vector3(137, 1.3, -20), Vector3(146, 2.0, -26), Vector3(138, 0.6, 10), Vector3(149, 1.4, 18), Vector3(158, 2.0, 25)]:
+		add_solid_box(p, Vector3(7, 0.8, 7), Color("#3c466f"))
+	for i in range(13):
+		var side := -1.0 if i % 2 == 0 else 1.0
+		var p := Vector3(130.0 + side * (12.0 + float(i % 4) * 5.0), 0.0, -30.0 + float(i) * 5.0)
+		var trunk := add_box(self, p + Vector3(0, 3.0, 0), Vector3(0.8, 6.0 + float(i % 3), 0.8), Color("#37304f"))
+		trunk.rotation.z = side * 0.08
+		for layer in range(3):
+			var crown := add_sphere(self, p + Vector3(0, 5.0 + float(layer) * 1.15, 0), 2.0 - float(layer) * 0.25, Color("#4c3679") if layer % 2 == 0 else Color("#285b70"))
+			crown.scale = Vector3(1.0, 0.8, 1.0)
+		var mote := add_sphere(self, p + Vector3(side * 1.3, 2.0, 0.5), 0.18, Color("#7ff8ef"))
+		var glow := OmniLight3D.new()
+		glow.position = mote.position
+		glow.light_color = Color("#65e9ff")
+		glow.light_energy = 1.4
+		glow.omni_range = 5.0
+		add_child(glow)
+	add_solid_box(Vector3(130, 4.0, -31), Vector3(2.2, 8.0, 2.2), Color("#55406c"))
+	for angle in range(8):
+		var a := float(angle) * TAU / 8.0
+		var bloom := add_crystal_shard(self, Vector3(130 + cos(a) * 4.0, 5.0 + sin(a * 2.0) * 1.2, -31 + sin(a) * 4.0), 2.4, Color("#d28aff") if angle % 2 == 0 else Color("#69f2ed"), 0.42)
+		bloom.rotation.z = cos(a) * 0.22
+	var heart_light := OmniLight3D.new()
+	heart_light.position = Vector3(130, 5.0, -31)
+	heart_light.light_color = Color("#b16bff")
+	heart_light.light_energy = 3.0
+	heart_light.omni_range = 17.0
+	add_child(heart_light)
+	for p in [Vector3(112, 2.5, -18), Vector3(151, 3.0, -8), Vector3(116, 2.8, 20), Vector3(153, 3.5, 14), Vector3(130, 1.0, 30)]:
+		add_crystal_shard(self, p, 1.7, Color("#7ceff5"), 0.3)
+		add_crystal_shard(self, p + Vector3(0.65, 0.35, 0), 1.1, Color("#bd7cff"), 0.24)
 
 func make_crystal(pos: Vector3, id: String) -> void:
 	var c := add_crystal_shard(self, pos, 0.95, Color("#67f2ee"), 0.34)
@@ -462,9 +500,14 @@ func _physics_process(delta: float) -> void:
 				core_material.emission_energy_multiplier = opening * 1.8
 		if is_instance_valid(portal_glow_light):
 			portal_glow_light.light_energy = minf(portal_anim_time / 1.8, 1.0) * 2.4
-		if not victory_shown and player.global_position.distance_to(Vector3(0, 2.5, -18)) < 3.0:
-			victory_shown = true
-			show_message("REALM GATE OPEN — You have awakened the ancient passage!")
+		if not realm_transitioned and portal_anim_time >= 1.8 and player.global_position.distance_to(Vector3(0, 2.5, -18)) < 3.0:
+			realm_transitioned = true
+			current_realm = "The Veilwood"
+			player.velocity = Vector3.ZERO
+			player.global_position = Vector3(130, 2.0, 4)
+			checkpoint_position = player.global_position
+			show_message("REALM SHIFT — Welcome to the Veilwood, a new realm beyond the gate!")
+			save_game()
 	if revealed and pulse_time <= 0.0:
 		revealed = false
 		for secret in secrets:
@@ -473,7 +516,7 @@ func _physics_process(delta: float) -> void:
 
 func refresh_hud() -> void:
 	if hud:
-		hud.text = "NIGHTBOUND   •   Crystals: %d/11   •   Echoes: %d/5%s\nWASD Move  |  SPACE Leap/Glide  |  F Burst  |  E Echosense\nSHIFT Shadow Dash (8 crystals)  |  P Save  |  O Load" % [crystals, relics_found, "  •  GATE OPEN" if portal_open else ""]
+		hud.text = "NIGHTBOUND  •  %s\nCrystals: %d/11  •  Echoes: %d/5%s\nWASD Move  |  SPACE Leap/Glide  |  F Burst  |  E Echosense\nSHIFT Shadow Dash (8 crystals)  |  P Save  |  O Load" % [current_realm, crystals, relics_found, "  •  GATE OPEN" if portal_open else ""]
 
 func show_message(text_value: String) -> void:
 	if message:
