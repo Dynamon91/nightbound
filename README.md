@@ -1,21 +1,26 @@
 # Nightbound 🦇
 
-An original 3D exploration-platformer prototype starring a small bat adventurer. Explore a moonlit valley, leap between raised platforms, collect luminous crystals, and use Echosense to reveal hidden relics.
+An original 3D exploration-platformer prototype starring a small bat adventurer. Explore a moonlit valley, leap between raised platforms, collect luminous crystals, and uncover secrets with Echosense.
 
 ## Current prototype
 
 - Third-person bat character and follow camera
-- Small 3D valley with platforms, bridge, trees, and a glowing realm gate
-- Collectible floating crystals and HUD counter
-- Echosense pulse that reveals hidden relics
-- Local save/load for crystal progress and player position
-- Keyboard controls configured for desktop testing
+- Moonlit valley with raised platforms, bridge, trees, and a glowing realm gate
+- Collision-backed floor and platform geometry
+- Collectible crystals and HUD counter
+- Echosense pulse for revealing hidden relics
+- Hold-to-glide and burst-charge movement abilities
+- Checkpoints and local save/load for progress and player position
+- Prototype encounter with the Gloam Warden and a Shadow Dash unlock
+- Lira's Star Shards quest and Memory Orbs
 
 ## Controls
 
 - **WASD** — move
-- **Space** — jump
+- **Space** — jump; hold while airborne to glide
+- **F** — burst-charge
 - **E** — Echosense
+- **Shift** — Shadow Dash (after unlocking it)
 - **P** — save
 - **O** — load
 
@@ -25,14 +30,6 @@ An original 3D exploration-platformer prototype starring a small bat adventurer.
 2. Open this repository's folder using Godot Project Manager.
 3. Open the project and run the main scene.
 
-This source is an early prototype. It has not yet been verified in a running Godot build in this environment; expect iteration and bug fixes.
+## Verification status
 
-## Roadmap
-
-1. Stabilize movement, camera, and collision.
-2. Add the Moss and Moon checkpoints and the Moonlit Echo Cave.
-3. Implement the Gloam Warden encounter and unlockable Shadow Dash.
-4. Finish Lira's Star Shards quest and memory-orb collection.
-5. Add realm portals, more original environments, polished models, animation, audio, and testing.
-
-All characters, levels, names, and assets are intended to be original; this project does not include assets from Spyro or other existing games.
+This is an early prototype. A Godot runtime/build has **not yet been verified** in the development environment, so gameplay features and controls should be tested in Godot 4.x before treating them as confirmed. The concept preview is illustrative and is not a screenshot from a running build.
