@@ -14,6 +14,8 @@ var collected: Array[String] = []
 var crystal_objects: Dictionary = {}
 var secrets: Array[MeshInstance3D] = []
 var burst_pressed := false
+var dash_pressed := false
+var dash_unlocked := false
 
 func material(color: Color, roughness := 0.75) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -152,6 +154,14 @@ func _physics_process(delta: float) -> void:
 		burst_pressed = true
 	elif not Input.is_key_pressed(KEY_F):
 		burst_pressed = false
+	if crystals >= 8:
+		dash_unlocked = true
+	if Input.is_key_pressed(KEY_SHIFT) and not dash_pressed and dash_unlocked:
+		player.velocity += -player.global_basis.z * 18.0
+		dash_pressed = true
+		show_message("Shadow Dash!")
+	elif not Input.is_key_pressed(KEY_SHIFT):
+		dash_pressed = false
 	player.move_and_slide()
 	pulse_time = maxf(0.0, pulse_time - delta)
 	if Input.is_action_just_pressed("echosense"):
