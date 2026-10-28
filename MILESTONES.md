@@ -27,7 +27,7 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 
 | Area | Progress | Target |
 |---|---:|---|
-| 3D movement / camera | 70% | Responsive third-person movement with polished camera behaviour |
+| 3D movement / camera | 71% | Responsive third-person movement with polished camera behaviour |
 | Jump + glide | 67% | Reliable aerial traversal, readable glide routes and a live on-screen stamina meter |
 | Ability-gated exploration | 55% | Abilities open shortcuts, secrets and revisited routes |
 | Collectible routes | 60% | Main path + risky detours + hidden optional paths |
@@ -95,6 +95,11 @@ For long levels, tracks may exceed the target duration or use additional section
 - Added a subtle torso pitch for glide/fall states, banking that responds to horizontal velocity, and a small body bob; the head counter-leans slightly to keep the face readable.
 - This layers onto the existing wing-beat animation rather than replacing it. It is a first-pass procedural animation and still needs screenshot review in a running build.
 - The implementation is committed; wait for the matching Godot CI run before treating it as verified.
+
+## Latest recovery pass — fall reset
+
+- Added a safety recovery when the player falls below the playable world: position resets to the current saved checkpoint, velocity is cleared, and glide stamina is reset.
+- This makes failed jumps less punishing, but does not replace proper in-level checkpoint placement and still requires the corresponding CI result.
 
 ## Latest visual pass — grass silhouettes and wind motion
 
