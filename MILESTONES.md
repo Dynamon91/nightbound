@@ -4,7 +4,7 @@ This is the project's working implementation roadmap. Percentages are **developm
 
 ## Primary milestone — Reach the generated mockup's visual quality
 
-**Current overall mockup-fidelity implementation: 57%**
+**Current overall mockup-fidelity implementation: 58%**
 
 The goal is an original, polished colourful 3D platforming world: a memorable bat protagonist, strong silhouettes, rich materials, layered environments, lighting, landmarks and substantial exploration spaces. The mockup is a visual quality target, not a claim that the game should copy Spyro.
 
@@ -14,8 +14,8 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 |---|---:|---|
 | Original bat protagonist model | 59% | Recognisable, expressive, polished 3D hero with clean silhouette, wings, face and animation-ready proportions |
 | Hero materials / eyes / wing detail | 53% | Cohesive stylized materials, readable eyes and membrane detail at gameplay distance |
-| Terrain and cliffs | 48% | Layered stylized ground, cliffs, ledges and natural shapes rather than placeholder boxes |
-| Rocks / props | 52% | Reusable stylized rock, crystal, ruin and environmental prop families |
+| Terrain and cliffs | 51% | Layered stylized ground, cliffs, ledges and natural shapes rather than placeholder boxes |
+| Rocks / props | 56% | Reusable stylized rock, crystal, ruin and environmental prop families |
 | Vegetation | 56% | Distinct tree, grass, shrub and magical-forest families with controlled repetition |
 | Crystals / collectibles | 65% | Consistent collectible language, glow, placement and feedback |
 | Lighting / atmosphere | 65% | Moonlight, fog/depth, warm-vs-cool contrast and readable magical accents |
@@ -37,7 +37,7 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 | Enemy / encounter variety | 15% | Distinct enemies and encounters integrated into exploration |
 | Boss / major set pieces | 0% | Not yet implemented/verified |
 
-## Latest art pass — layered forest silhouettes
+## Latest art pass — layered faceted cliff formations\n\n- Reworked cliff clusters from repeated round blobs into irregular low-poly boulders with varied scale, rotation and a controlled cool stone palette.\n- Added broken horizontal ledges to create a more layered cliff silhouette while retaining the existing broad cliff placements. These are visual mesh changes; collision/runtime appearance still need an in-game check.\n- Commit: `f7958982e279dcdaf355125559210765e6697d54`.\n\n## Previous art pass — layered forest silhouettes
 
 - Added a reusable stylized tree prop with a tapered trunk, faceted canopy and a small emissive magical-light accent.
 - Moonlit Valley now has a second layer of trees around its play spaces so the background no longer reads as an empty green plane surrounded only by cliffs.
