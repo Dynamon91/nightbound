@@ -170,6 +170,8 @@ func animate_collectibles(nodes:Array[MeshInstance3D])->void:
 		var phase:float=float(n.get_meta("float_phase",0.0))
 		n.position=origin+Vector3(0,sin(t*2.2+phase)*.13,0)
 		n.rotation.y=sin(t*1.1+phase)*.18
+		var material:=n.material_override as StandardMaterial3D
+		if material and material.emission_enabled: material.emission_energy_multiplier=.8+.35*(.5+.5*sin(t*2.0+phase))
 func collect_near(nodes:Array[MeshInstance3D],dist:float,label:String)->void:
 	for i in range(nodes.size()-1,-1,-1):
 		var n:=nodes[i]; if not is_instance_valid(n): nodes.remove_at(i); continue
