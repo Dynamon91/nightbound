@@ -171,6 +171,48 @@ func tree(p:Vector3,scale_value:=1.0,forest_color:=Color("#304a3b"))->void:
 	var trunk:=MeshInstance3D.new(); var tm:=CylinderMesh.new(); tm.top_radius=.18*scale_value; tm.bottom_radius=.32*scale_value; tm.height=2.8*scale_value; tm.radial_segments=7; trunk.mesh=tm; trunk.position=p+Vector3(0,1.4*scale_value,0); trunk.material_override=mat(Color("#44374a"),.95); add_child(trunk)
 	var crown:=MeshInstance3D.new(); var cm:=SphereMesh.new(); cm.radius=1.45*scale_value; cm.height=2.3*scale_value; cm.radial_segments=9; cm.rings=5; crown.mesh=cm; crown.position=p+Vector3(0,3.0*scale_value,0); crown.scale=Vector3(1,.9,.82); crown.material_override=mat(forest_color,.9); add_child(crown)
 	var glow:=orb(self,p+Vector3(0,3.55*scale_value,0),.12*scale_value,Color("#83e6bd")); var gm:=glow.material_override as StandardMaterial3D; gm.emission_enabled=true; gm.emission=Color("#67dcae"); gm.emission_energy_multiplier=.8
+func grass_cluster(p:Vector3,scale_value:float,add_bloom:bool)->void:
+	# Three individually angled low-poly blades make small readable vegetation clumps.
+	var blade_colors:Array[Color]=[Color("#47745f"),Color("#5f8d6e"),Color("#709678")]
+	for blade_index in range(3):
+		var blade:=MeshInstance3D.new()
+		var blade_mesh:=CylinderMesh.new()
+		blade_mesh.top_radius=.006
+		blade_mesh.bottom_radius=.045*scale_value
+		blade_mesh.height=.3*scale_value+float(blade_index%2)*.07*scale_value
+		blade_mesh.radial_segments=4
+		blade.mesh=blade_mesh
+		var angle:=float(blade_index)*TAU/3.0
+		blade.position=p+Vector3(cos(angle)*.09*scale_value,.16*scale_value,sin(angle)*.09*scale_value)
+		blade.rotation.z=cos(angle)*.28
+		blade.rotation.x=sin(angle)*.24
+		blade.material_override=mat(blade_colors[blade_index],.95)
+		add_child(blade)
+	if add_bloom:
+		var bloom:=orb(self,p+Vector3(0,.29*scale_value,0),.055*scale_value,Color("#a5e6ee"))
+		var bloom_material:=bloom.material_override as StandardMaterial3D
+		bloom_material.emission_enabled=true
+		bloom_material.emission=Color("#82d9e8")
+		bloom_material.emission_energy_multiplier=.65
+func build_valley_ground_detail()->void:
+	# Keep a clear central traversal corridor while adding foreground and side-plane texture.
+	var rock_colors:Array[Color]=[Color("#435968"),Color("#536979"),Color("#384d5e"),Color("#617582")]
+	for i in range(24):
+		var x_pos:=float(((i*29)%79)-39)
+		if absf(x_pos)<11.0:
+			x_pos=signf(x_pos)*12.0
+		var z_pos:=float(((i*37)%83)-41)
+		var size:=Vector3(.65+float(i%4)*.16,.22+float(i%3)*.09,.52+float((i*3)%4)*.13)
+		rock(Vector3(x_pos,.08,z_pos),size,rock_colors[i%rock_colors.size()],i+83)
+	for i in range(60):
+		var x_pos:=float(((i*23)%87)-43)
+		var z_pos:=float(((i*31)%87)-43)
+		# Preserve clear landing space around the entry bridge and the primary route.
+		if absf(x_pos)<9.0 and z_pos>-23.0 and z_pos<14.0:
+			continue
+		if absf(x_pos)<5.0 and absf(z_pos+18.0)<8.0:
+			continue
+		grass_cluster(Vector3(x_pos,.015,z_pos),.68+float(i%4)*.13,i%6==0)
 func build_motes(center_x:float,count:int,radius:float,glow_color:Color)->void:
 	for i in range(count):
 		var angle:=float(i)*2.399963
@@ -192,8 +234,7 @@ func build_valley()->void:
 	for p in [Vector3(-21,0,-4),Vector3(18,0,-7),Vector3(-33,0,8),Vector3(34,0,8),Vector3(-12,0,31),Vector3(15,0,34),Vector3(-40,0,-7),Vector3(41,0,-8)]: tree(p,1.15,Color("#31533f"))
 	for p in [Vector3(-8,0,10),Vector3(8,0,14),Vector3(-22,0,16),Vector3(22,0,18)]: tree(p,.72,Color("#3e6247"))
 	build_entry_bridge()
-	for i in range(72):
-		var p:=Vector3(float(((i*17)%83)-41),.03,float(((i*29)%87)-43)); var g:=box(p+Vector3(0,.3,0),Vector3(.06,.6,.18),Color("#6d9b62") if i%3==0 else Color("#47785a")); g.rotation.y=float(i%3)*2.09; g.rotation.z=.12
+	build_valley_ground_detail()
 	var ps=[Vector3(-5,1,-5),Vector3(7,1.5,-12),Vector3(-14,1.2,-10),Vector3(-25,1.5,-21),Vector3(-38,3.2,-29),Vector3(25,1.5,-23),Vector3(38,3.4,-33),Vector3(-25,1.5,24),Vector3(-38,3.5,35),Vector3(25,1.6,25),Vector3(38,3.7,36)]
 	for i in range(11):
 		var id:="crystal_%02d"%i; if not collected_crystals.has(id): var n:=gem(ps[i],Color("#68e9ff")); n.name=id; crystal_nodes.append(n)
