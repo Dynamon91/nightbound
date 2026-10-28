@@ -77,13 +77,13 @@ func set_gate_state(awake:bool)->void:
 			rune_material.emission_energy_multiplier=1.65 if awake else .55
 func build_distant_citadel()->void:
 	# A stacked low-poly skyline gives the gate a destination to frame, rather than an empty horizon.
-	box(Vector3(0,1.55,-45.5),Vector3(14.0,3.1,2.4),Color("#273858"))
-	box(Vector3(0,3.3,-45.0),Vector3(5.4,3.8,3.2),Color("#35466f"))
-	box(Vector3(0,5.3,-45.1),Vector3(2.5,4.2,2.3),Color("#46578b"))
+	box(Vector3(0,1.55,-41.0),Vector3(15.5,3.35,2.7),Color("#273858"))
+	box(Vector3(0,3.3,-40.5),Vector3(6.0,4.2,3.5),Color("#35466f"))
+	box(Vector3(0,5.3,-40.6),Vector3(2.9,4.6,2.5),Color("#46578b"))
 	var tower_data:Array[Vector4]=[
-		Vector4(-5.0,3.0,-46.0,4.8),Vector4(5.0,3.0,-46.0,4.8),
-		Vector4(-8.0,1.8,-44.0,3.3),Vector4(8.0,1.8,-44.0,3.3),
-		Vector4(-2.8,3.4,-43.6,6.0),Vector4(2.8,3.4,-43.6,6.0)
+		Vector4(-5.5,3.0,-42.0,5.1),Vector4(5.5,3.0,-42.0,5.1),
+		Vector4(-8.5,1.8,-40.0,3.6),Vector4(8.5,1.8,-40.0,3.6),
+		Vector4(-3.1,3.4,-39.7,6.5),Vector4(3.1,3.4,-39.7,6.5)
 	]
 	for tower_index in range(tower_data.size()):
 		var tower:Vector4=tower_data[tower_index]
@@ -104,24 +104,24 @@ func build_distant_citadel()->void:
 		for window_index in range(2):
 			glowing_box(Vector3(tower.x-.23+float(window_index)*.46,tower.y+tower.w*.48,tower.z+width*.505),Vector3(.09,.55,.035),Color("#61cfe9"))
 	for side in [-1.0,1.0]:
-		box(Vector3(side*6.2,1.4,-43.5),Vector3(1.25,2.8,4.0),Color("#293b5e"))
+		box(Vector3(side*6.7,1.4,-39.8),Vector3(1.4,3.0,4.2),Color("#293b5e"))
 	# The moon is a flattened sphere with a dark rim and understated surface marks.
-	var moon_rim:=orb(self,Vector3(13.0,10.8,-55.5),3.65,Color("#536ba2"))
+	var moon_rim:=orb(self,Vector3(14.0,11.2,-50.9),4.8,Color("#536ba2"))
 	moon_rim.scale=Vector3(1.0,1.0,.055)
-	var moon:=orb(self,Vector3(13.0,10.8,-55.0),3.35,Color("#d3def6"))
+	var moon:=orb(self,Vector3(14.0,11.2,-50.5),4.3,Color("#d3def6"))
 	moon.scale=Vector3(1.0,1.0,.055)
 	var moon_material:=moon.material_override as StandardMaterial3D
 	moon_material.emission_enabled=true
 	moon_material.emission=Color("#b4ccff")
 	moon_material.emission_energy_multiplier=.34
 	for mark_index in range(5):
-		var mark:=orb(self,Vector3(11.8+float((mark_index*7)%5)*.55,10.0+float((mark_index*3)%4)*.5,-54.88),.28+float(mark_index%2)*.12,Color("#aebde1"))
+		var mark:=orb(self,Vector3(12.5+float((mark_index*7)%5)*.6,10.4+float((mark_index*3)%4)*.52,-50.38),.28+float(mark_index%2)*.12,Color("#aebde1"))
 		mark.scale=Vector3(1.0,1.0,.035)
 	# Use normal mesh instances here: this stays compatible with Godot's dummy renderer in headless validation.
 	for star_index in range(28):
 		var sx:=float(((star_index*37)%93)-46)
 		var sy:=8.0+float((star_index*17)%12)
-		var sz:=-52.0-float((star_index*11)%8)
+		var sz:=-48.0-float((star_index*11)%8)
 		var star:=orb(self,Vector3(sx,sy,sz),.025+float(star_index%3)*.012,Color("#b9d5ff"))
 		var star_material:=star.material_override as StandardMaterial3D
 		star_material.emission_enabled=true
@@ -349,6 +349,71 @@ func build_entry_bridge()->void:
 				stud_material.emission_enabled=true
 				stud_material.emission=Color("#71dcd6")
 				stud_material.emission_energy_multiplier=1.05
+func build_river_crossing()->void:
+	# A visible east-west magical stream creates a genuine landscape break between spawn and the gate.
+	var water:=MeshInstance3D.new()
+	var water_mesh:=BoxMesh.new()
+	water_mesh.size=Vector3(48.0,.025,6.4)
+	water.mesh=water_mesh
+	water.position=Vector3(0,.035,-11.8)
+	var water_material:=StandardMaterial3D.new()
+	water_material.albedo_color=Color(.045,.29,.48,.88)
+	water_material.transparency=BaseMaterial3D.TRANSPARENCY_ALPHA
+	water_material.shading_mode=BaseMaterial3D.SHADING_MODE_UNSHADED
+	water_material.roughness=.2
+	water_material.emission_enabled=true
+	water_material.emission=Color("#0d477c")
+	water_material.emission_energy_multiplier=.42
+	water.material_override=water_material
+	add_child(water)
+	# Bright, broken stream streaks add direction without relying on custom mesh surfaces.
+	for streak_index in range(11):
+		var x_pos:float=-21.0+float(streak_index)*4.2
+		if absf(x_pos)<3.4:
+			continue
+		var streak:=MeshInstance3D.new()
+		var streak_mesh:=BoxMesh.new()
+		streak_mesh.size=Vector3(1.5+float(streak_index%3)*.65,.016,.045)
+		streak.mesh=streak_mesh
+		streak.position=Vector3(x_pos,.06,-11.8+float((streak_index*3)%5)-2.0)
+		streak.rotation.y=float(streak_index%3)*.08
+		var streak_material:=mat(Color("#3ba8d4"),.22)
+		streak_material.emission_enabled=true
+		streak_material.emission=Color("#2082c2")
+		streak_material.emission_energy_multiplier=.46
+		streak.material_override=streak_material
+		add_child(streak)
+	# Broken, faceted banks frame the water and keep the traversal route open.
+	for bank_side in [-1.0,1.0]:
+		for bank_index in range(10):
+			var x_pos:float=-22.0+float(bank_index)*4.8
+			if absf(x_pos)<3.6:
+				continue
+			var z_pos:float=-11.8+bank_side*3.45
+			var rock_size:=Vector3(1.2+float(bank_index%3)*.22,.42+float((bank_index+1)%3)*.16,.72+float(bank_index%2)*.24)
+			rock(Vector3(x_pos,.12,z_pos),rock_size,Color("#354c63") if bank_index%2==0 else Color("#4c6477"),bank_index+int(bank_side*19))
+			if bank_index%3==0:
+				bush_cluster(Vector3(x_pos,.05,z_pos+bank_side*.25),.72,Color("#2e564b"))
+	# Six solid deck boards form the bridge in the player's route across the stream.
+	var deck_colors:Array[Color]=[Color("#745b55"),Color("#957667"),Color("#80635a")]
+	for board_index in range(7):
+		var z_pos:float=-8.85-float(board_index)*.86
+		box(Vector3(0,.22,z_pos),Vector3(2.85,.34,.79),deck_colors[board_index%deck_colors.size()],true)
+		for side in [-1.0,1.0]:
+			box(Vector3(side*1.27,.405,z_pos),Vector3(.045,.035,.68),Color("#7adce1"))
+	# Short, low rails and endpoint lantern-studs define the bridge silhouette but stay below wing height.
+	for side in [-1.0,1.0]:
+		for end_index in range(3):
+			var z_pos:float=-8.72-float(end_index)*2.58
+			box(Vector3(side*1.34,.58,z_pos),Vector3(.12,.78,.12),Color("#4b3d58"),true)
+		box(Vector3(side*1.34,.79,-11.25),Vector3(.07,.08,5.05),Color("#654f65"))
+		for end_z in [-8.72,-14.3]:
+			var lamp:=orb(self,Vector3(side*1.1,.49,end_z),.075,Color("#86e8eb"))
+			var lamp_material:=lamp.material_override as StandardMaterial3D
+			lamp_material.emission_enabled=true
+			lamp_material.emission=Color("#65dce7")
+			lamp_material.emission_energy_multiplier=.9
+
 func cliff(p:Vector3,s:float)->void:
 	var shades:Array[Color]=[Color("#424d68"),Color("#53617d"),Color("#68758d"),Color("#3a455e"),Color("#778198")]
 	for i in range(5):
@@ -476,6 +541,7 @@ func build_valley()->void:
 	for p in [Vector3(-21,0,-4),Vector3(18,0,-7),Vector3(-33,0,8),Vector3(34,0,8),Vector3(-12,0,31),Vector3(15,0,34),Vector3(-40,0,-7),Vector3(41,0,-8)]: tree(p,1.15,Color("#31533f"))
 	for p in [Vector3(-8,0,10),Vector3(8,0,14),Vector3(-22,0,16),Vector3(22,0,18)]: tree(p,.72,Color("#3e6247"))
 	build_entry_bridge()
+	build_river_crossing()
 	build_valley_ground_detail()
 	var bush_positions:Array[Vector3]=[
 		Vector3(-13,0.02,8),Vector3(13,0.02,8),Vector3(-19,0.02,5),Vector3(19,0.02,5),
