@@ -17,7 +17,7 @@ var relics := 0
 var echo_timer := 0.0
 var collected_relics: Array[String] = []
 var glide := 0.0
-var checkpoint := Vector3(0,1.5,3)
+var checkpoint_position := Vector3(0,1.5,3)
 var points: Array[Vector3] = []
 var crystal_nodes: Array[MeshInstance3D] = []
 var shard_nodes: Array[MeshInstance3D] = []
@@ -142,7 +142,7 @@ func build_veilwood()->void:
 		var id:="moonseed_%02d"%i; if not collected_seeds.has(id): var n:=gem(seed_positions[i],Color("#f0a8ff")); n.name=id; seed_nodes.append(n)
 	checkpoint(Vector3(130,1.5,4)); checkpoint(Vector3(130,1.5,-24))
 func build_player()->void:
-	player=CharacterBody3D.new(); player.name="NightboundBat"; player.position=checkpoint; add_child(player); var cs:=CollisionShape3D.new(); var cap:=CapsuleShape3D.new(); cap.radius=.42; cap.height=1.45; cs.shape=cap; player.add_child(cs)
+	player=CharacterBody3D.new(); player.name="NightboundBat"; player.position=checkpoint_position; add_child(player); var cs:=CollisionShape3D.new(); var cap:=CapsuleShape3D.new(); cap.radius=.42; cap.height=1.45; cs.shape=cap; player.add_child(cs)
 	body_visual=orb(player,Vector3(0,.25,0),.55,Color("#2e243b")); body_visual.scale=Vector3(.78,1.15,.75); head_visual=orb(player,Vector3(0,.95,-.02),.48,Color("#3b2b47")); head_visual.scale=Vector3(.9,.95,.9)
 	# A short muzzle, nose and chest bib make the face/body read more clearly from behind the camera.
 	var muzzle:=orb(player,Vector3(0,.83,-.405),.19,Color("#71527d")); muzzle.scale=Vector3(.82,.58,.62)
@@ -200,8 +200,8 @@ func _physics_process(d:float)->void:
 	if Input.is_action_just_pressed("shadow_dash") and crystals>=8: player.velocity += -player.global_basis.z*18
 	player.move_and_slide()
 	for p in points:
-		if player.global_position.distance_to(p)<2.1 and checkpoint.distance_to(p)>.2: checkpoint=p+Vector3(0,.8,0); save_game(); show_message("Checkpoint attuned — progress secured.")
-	if player.global_position.y < -12: player.global_position=checkpoint; player.velocity=Vector3.ZERO; show_message("Back to the last safe checkpoint.")
+		if player.global_position.distance_to(p)<2.1 and checkpoint_position.distance_to(p)>.2: checkpoint_position=p+Vector3(0,.8,0); save_game(); show_message("Checkpoint attuned — progress secured.")
+	if player.global_position.y < -12: player.global_position=checkpoint_position; player.velocity=Vector3.ZERO; show_message("Back to the last safe checkpoint.")
 	collect_near(crystal_nodes,1.25,"Crystal"); collect_near(shard_nodes,1.3,"Moonshard"); collect_near(seed_nodes,1.25,"Moonseed"); collect_near(relic_nodes,1.25,"Relic")
 	if echo_timer > 0.0:
 		echo_timer = maxf(0.0, echo_timer-d)
@@ -212,7 +212,7 @@ func _physics_process(d:float)->void:
 					var relic_material := relic.material_override as StandardMaterial3D
 					if relic_material: relic_material.emission_enabled = false
 	if crystals>=11: portal_open=true
-	if portal_open and realm=="Moonlit Valley" and player.global_position.distance_to(Vector3(0,2.5,-18))<3: realm="The Veilwood"; player.position=Vector3(130,2,4); checkpoint=Vector3(130,2,4); audio_director.call("play_track","veilwood_level_2"); save_game(); show_message("REALM SHIFT — Welcome to the Veilwood!")
+	if portal_open and realm=="Moonlit Valley" and player.global_position.distance_to(Vector3(0,2.5,-18))<3: realm="The Veilwood"; player.position=Vector3(130,2,4); checkpoint_position=Vector3(130,2,4); audio_director.call("play_track","veilwood_level_2"); save_game(); show_message("REALM SHIFT — Welcome to the Veilwood!")
 	t+=d; body_visual.rotation.z=lerpf(body_visual.rotation.z,clampf(-player.velocity.x*.018,-.16,.16),d*4); body_visual.position.y=.25+sin(t*5.0)*.025; head_visual.rotation.z=lerpf(head_visual.rotation.z,clampf(player.velocity.x*.008,-.07,.07),d*5); head_visual.rotation.x=sin(t*3.2)*.025; tail_visual.rotation.z=sin(t*4.5)*.18; for i in wings.size(): wings[i].rotation.z=sin(t*8.5)*.3*(-1 if i==0 else 1); for i in mote_nodes.size(): mote_nodes[i].position=mote_origins[i]+Vector3(0,sin(t*1.3+float(i)*.7)*.22,0); mote_nodes[i].rotation.y=t*.25+float(i); animate_collectibles(crystal_nodes); animate_collectibles(shard_nodes); animate_collectibles(seed_nodes); animate_collectibles(relic_nodes); refresh_hud()
 func animate_collectibles(nodes:Array[MeshInstance3D])->void:
 	for n in nodes:
@@ -240,11 +240,11 @@ func refresh_hud()->void:
 func show_message(s:String)->void:
 	if message: message.text=s
 func save_game()->void:
-	var f:=FileAccess.open(SAVE_PATH,FileAccess.WRITE); if f:f.store_string(JSON.stringify({"crystals":crystals,"moonseeds":moonseeds,"moonshards":moonshards,"relics":relics,"collected_relics":collected_relics,"collected_crystals":collected_crystals,"collected_shards":collected_shards,"collected_seeds":collected_seeds,"realm":realm,"checkpoint":[checkpoint.x,checkpoint.y,checkpoint.z]}))
+	var f:=FileAccess.open(SAVE_PATH,FileAccess.WRITE); if f:f.store_string(JSON.stringify({"crystals":crystals,"moonseeds":moonseeds,"moonshards":moonshards,"relics":relics,"collected_relics":collected_relics,"collected_crystals":collected_crystals,"collected_shards":collected_shards,"collected_seeds":collected_seeds,"realm":realm,"checkpoint":[checkpoint_position.x,checkpoint_position.y,checkpoint_position.z]}))
 func load_game()->void:
 	if not FileAccess.file_exists(SAVE_PATH):return
 	var f:=FileAccess.open(SAVE_PATH,FileAccess.READ); if not f:return
 	var d=JSON.parse_string(f.get_as_text()); if typeof(d)!=TYPE_DICTIONARY:return
 	crystals=int(d.get("crystals",0)); moonseeds=int(d.get("moonseeds",0)); moonshards=int(d.get("moonshards",0)); relics=int(d.get("relics",0)); collected_relics=d.get("collected_relics",[]); collected_crystals=d.get("collected_crystals",[]); collected_shards=d.get("collected_shards",[]); collected_seeds=d.get("collected_seeds",[]); realm=str(d.get("realm","Moonlit Valley")); portal_open=crystals>=11
-	var cp=d.get("checkpoint",[0,1.5,3]); if cp is Array and cp.size()==3:checkpoint=Vector3(float(cp[0]),float(cp[1]),float(cp[2])); if player:player.position=checkpoint
+	var cp=d.get("checkpoint",[0,1.5,3]); if cp is Array and cp.size()==3:checkpoint_position=Vector3(float(cp[0]),float(cp[1]),float(cp[2])); if player:player.position=checkpoint_position
 	if audio_director:audio_director.call("play_track","veilwood_level_2" if realm=="The Veilwood" else "moonlit_valley_level_1"); refresh_hud()
