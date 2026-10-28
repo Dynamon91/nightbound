@@ -1,3 +1,9 @@
+## Latest animation pass — subtle life in the bat silhouette
+
+- Added a restrained body bob, slight head counter-motion and a gentle tail sway, layered on top of the existing wing flap and body banking.
+- This is code-level animation work; in-game feel and clipping still need runtime inspection.
+- Commit: `f3307f5bc5149bb5bdeea53beddcb314e1312552`.
+
 ## Latest character-art pass — face and chest readability
 
 - Added a compact muzzle, contrasting nose and chest bib to break up the single dark head/body silhouette.
@@ -10,7 +16,7 @@ This is the project's working implementation roadmap. Percentages are **developm
 
 ## Primary milestone — Reach the generated mockup's visual quality
 
-**Current overall mockup-fidelity implementation: 60%**
+**Current overall mockup-fidelity implementation: 61%**
 
 The goal is an original, polished colourful 3D platforming world: a memorable bat protagonist, strong silhouettes, rich materials, layered environments, lighting, landmarks and substantial exploration spaces. The mockup is a visual quality target, not a claim that the game should copy Spyro.
 
