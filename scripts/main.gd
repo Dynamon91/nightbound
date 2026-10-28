@@ -381,6 +381,15 @@ func build_player() -> void:
 		ear.scale = Vector3(0.7, 1.45, 0.55)
 	var eye_left := add_sphere(player, Vector3(-0.17, 1.04, -0.39), 0.085, Color("#d5a6ff"))
 	var eye_right := add_sphere(player, Vector3(0.17, 1.04, -0.39), 0.085, Color("#d5a6ff"))
+	# Emissive eyes remain readable against the dark fur without washing out the face.
+	for eye in [eye_left, eye_right]:
+		var eye_mat := eye.material_override as StandardMaterial3D
+		if eye_mat:
+			eye_mat.emission_enabled = true
+			eye_mat.emission = Color("#b878ff")
+			eye_mat.emission_energy_multiplier = 0.85
+		var glint := add_sphere(player, eye.position + Vector3(-0.018, 0.025, -0.065), 0.022, Color("#fff0ff"))
+		glint.name = "EyeGlint"
 	var muzzle := add_sphere(player, Vector3(0, 0.82, -0.39), 0.22, Color("#624258"))
 	muzzle.scale = Vector3(1.2, 0.7, 0.8)
 	for side in [-1.0, 1.0]:
@@ -391,6 +400,13 @@ func build_player() -> void:
 		add_wing_membrane(wing_pivot, side)
 		var wing_arm := add_box(wing_pivot, Vector3(side * 0.75, 0.35, 0.02), Vector3(0.12, 0.12, 1.55), Color("#241c2f"))
 		wing_arm.rotation.z = side * 0.55
+		# Fine muted-violet ribs make the membrane read as a designed bat wing.
+		var main_rib := add_box(wing_pivot, Vector3(side * 0.82, 0.19, -0.015), Vector3(1.05, 0.035, 0.035), Color("#76518c"))
+		main_rib.rotation.z = side * -0.10
+		var rib_a := add_box(wing_pivot, Vector3(side * 0.68, 0.025, -0.018), Vector3(0.62, 0.025, 0.025), Color("#654477"))
+		rib_a.rotation.z = side * -0.23
+		var rib_b := add_box(wing_pivot, Vector3(side * 0.62, -0.105, -0.018), Vector3(0.42, 0.025, 0.025), Color("#654477"))
+		rib_b.rotation.z = side * -0.34
 		hero_wing_pivots.append(wing_pivot)
 	for side in [-1.0, 1.0]:
 		var foot := add_sphere(player, Vector3(side * 0.22, -0.43, -0.12), 0.14, Color("#b77a86"))
