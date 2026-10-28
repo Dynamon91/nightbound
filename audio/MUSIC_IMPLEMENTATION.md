@@ -76,6 +76,10 @@ The following is a required production matrix, not a claim that the tracks alrea
 
 As the level roster grows, this table must grow with it. **“Per level + per boss” is a permanent soundtrack rule for the project.**
 
+## Current composition work
+
+`COMPOSITION_SKETCHES.md` now contains four original score blueprints: Moonlit Valley exploration, Veilwood exploration, Moonlit Valley boss, and Veilwood boss. Each specifies a distinct meter/rhythm, tempo, tonal palette, original motif, instrumentation, arrangement timeline and loop-return design. These are composition plans, **not rendered audio**; audio content remains 0% until recordings or synthesized audio assets are integrated and listened to in-game.
+
 ## Next production step
 
-Create original long-form stems for Moonlit Valley and its first boss theme, integrate them into the Godot music bus, and use those as the production template for every subsequent level and boss before marking the composition milestone above 20%.
+Render the first original Moonlit Valley theme into an Ogg Vorbis asset, import it into Godot, then verify playback, long-form development, loop seam and crossfade in a running build. Continue with each level and boss as a separate track.
