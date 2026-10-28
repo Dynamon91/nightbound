@@ -454,7 +454,7 @@ func tree(p:Vector3,scale_value:=1.0,forest_color:=Color("#304a3b"))->void:
 		glow_material.emission_energy_multiplier=.85
 func grass_cluster(p:Vector3,scale_value:float,add_bloom:bool)->void:
 	# Three individually angled low-poly blades make small readable vegetation clumps.
-	var blade_colors:Array[Color]=[Color("#47745f"),Color("#5f8d6e"),Color("#709678")]
+	var blade_colors:Array[Color]=[Color("#56866b"),Color("#76a77d"),Color("#8bb58c")]
 	for blade_index in range(3):
 		var blade:=MeshInstance3D.new()
 		var blade_mesh:=CylinderMesh.new()
@@ -504,14 +504,14 @@ func apply_moonlit_ground_material(ground:MeshInstance3D)->void:
 		float broad = value_noise(p * 0.075);
 		float mid = value_noise(p * 0.24 + vec2(13.0, 7.0));
 		float fine = value_noise(p * 0.82 + vec2(4.0, 19.0));
-		float moss_mask = smoothstep(0.28, 0.74, broad * 0.72 + mid * 0.28);
+		float moss_mask = smoothstep(0.40, 0.60, broad * 0.68 + mid * 0.32);
 		float stone_speckle = smoothstep(0.59, 0.86, fine);
-		vec3 deep_stone = vec3(0.035, 0.080, 0.125);
-		vec3 blue_stone = vec3(0.075, 0.145, 0.195);
-		vec3 moss = vec3(0.065, 0.145, 0.125);
-		vec3 color = mix(deep_stone, blue_stone, moss_mask * 0.72);
-		color = mix(color, moss, smoothstep(0.38, 0.76, broad) * 0.58);
-		color = mix(color, color * vec3(0.68, 0.76, 0.80), stone_speckle * 0.19);
+		vec3 deep_stone = vec3(0.028, 0.060, 0.095);
+		vec3 blue_stone = vec3(0.095, 0.175, 0.235);
+		vec3 moss = vec3(0.075, 0.205, 0.125);
+		vec3 color = mix(deep_stone, blue_stone, 0.18 + mid * 0.64);
+		color = mix(color, moss, moss_mask * 0.82);
+		color = mix(color, color * vec3(0.58, 0.68, 0.74), stone_speckle * 0.26);
 		ALBEDO = color;
 		ROUGHNESS = 0.94;
 		METALLIC = 0.0;
@@ -524,14 +524,14 @@ func apply_moonlit_ground_material(ground:MeshInstance3D)->void:
 func build_valley_ground_detail()->void:
 	# Keep a clear central traversal corridor while adding foreground and side-plane texture.
 	var rock_colors:Array[Color]=[Color("#435968"),Color("#536979"),Color("#384d5e"),Color("#617582")]
-	for i in range(24):
+	for i in range(34):
 		var x_pos:=float(((i*29)%79)-39)
 		if absf(x_pos)<11.0:
 			x_pos=signf(x_pos)*12.0
 		var z_pos:=float(((i*37)%83)-41)
-		var size:=Vector3(.65+float(i%4)*.16,.22+float(i%3)*.09,.52+float((i*3)%4)*.13)
+		var size:=Vector3(.78+float(i%4)*.18,.27+float(i%3)*.1,.62+float((i*3)%4)*.15)
 		rock(Vector3(x_pos,.08,z_pos),size,rock_colors[i%rock_colors.size()],i+83)
-	for i in range(60):
+	for i in range(100):
 		var x_pos:=float(((i*23)%87)-43)
 		var z_pos:=float(((i*31)%87)-43)
 		# Preserve clear landing space around the entry bridge and the primary route.
@@ -539,7 +539,7 @@ func build_valley_ground_detail()->void:
 			continue
 		if absf(x_pos)<5.0 and absf(z_pos+18.0)<8.0:
 			continue
-		grass_cluster(Vector3(x_pos,.015,z_pos),.68+float(i%4)*.13,i%6==0)
+		grass_cluster(Vector3(x_pos,.015,z_pos),1.0+float(i%4)*.2,i%7==0)
 func build_motes(center_x:float,count:int,radius:float,glow_color:Color)->void:
 	for i in range(count):
 		var angle:=float(i)*2.399963
