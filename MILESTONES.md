@@ -4,7 +4,7 @@ This is the project's working implementation roadmap. Percentages are **developm
 
 ## Primary milestone — Reach the generated mockup's visual quality
 
-**Current overall mockup-fidelity implementation: 55%**
+**Current overall mockup-fidelity implementation: 56%**
 
 The goal is an original, polished colourful 3D platforming world: a memorable bat protagonist, strong silhouettes, rich materials, layered environments, lighting, landmarks and substantial exploration spaces. The mockup is a visual quality target, not a claim that the game should copy Spyro.
 
@@ -30,18 +30,24 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 | 3D movement / camera | 71% | Responsive third-person movement with polished camera behaviour |
 | Jump + glide | 67% | Reliable aerial traversal, readable glide routes and a live on-screen stamina meter |
 | Ability-gated exploration | 55% | Abilities open shortcuts, secrets and revisited routes |
-| Collectible routes | 62% | Main path + risky detours + hidden optional paths, including optional elevated Moonshard caches |
+| Collectible routes | 64% | Main path + risky detours + hidden optional paths, including optional elevated Moonshard caches |
 | Realm transition | 65% | Seamless-feeling gate/realm progression |
 | Large level structure | 44% | Broad interconnected areas with vertical layers, caves, alcoves and multiple routes |
-| Secrets / optional challenges | 39% | Exploration rewards and revisitation loops, with three persistent optional Moonshards on raised Valley routes |
+| Secrets / optional challenges | 42% | Exploration rewards and revisitation loops, with three persistent optional Moonshards on raised Valley routes |
 | Enemy / encounter variety | 15% | Distinct enemies and encounters integrated into exploration |
 | Boss / major set pieces | 0% | Not yet implemented/verified |
 
-## Latest gameplay pass — optional aerial treasures\n\n- Added three optional glowing Moonshards along raised Moonlit Valley platforms. They float and rotate, are collected separately from the 11 gate crystals, and do not change the gate requirement.\n- Moonshard totals and collected IDs are included in the save file; previously collected shards are removed when progress loads. The HUD displays a separate 0/3 counter.\n- Gameplay commit: `b97e0dca42565f317976567810a0d7c7c9b4a3f2`; HUD formatting correction: `cca98df31fba7a9c5671d33e2121435522d9c37e`. CI and runtime validation for these newest commits are pending.\n\n## Audio / music milestone
+## Latest gameplay pass — optional aerial treasures
 
-Implemented in code: `scripts/audio_director.gd` provides two-player crossfades, track IDs for the first two level themes and boss themes, safe missing-asset handling, and loop flags for Ogg Vorbis/WAV. `scripts/main.gd` requests the Moonlit Valley theme at startup and switches to the Veilwood theme on realm transition. Because the actual audio assets do not exist yet, this is integration scaffolding—not finished or audible soundtrack content. The latest code also resynchronizes the requested realm theme after loading a save. The first runtime verification must check Godot parsing, warnings, playback, transitions and loop seams; CI success alone does not establish that audio was heard in-game.
+- Added three optional glowing Moonshards along raised Moonlit Valley platforms. They float and rotate, are collected separately from the 11 gate crystals, and do not change the gate requirement.
+- Moonshard totals and collected IDs are included in the save file; previously collected shards are removed when progress loads. The HUD displays a separate 0/3 counter.
+- Gameplay commit: `b97e0dca42565f317976567810a0d7c7c9b4a3f2`; HUD formatting correction: `cca98df31fba7a9c5671d33e2121435522d9c37e`.
 
-**Music system + procedural synthesis: 35%** — realm-aware routing, crossfades and a first-pass original procedural synthesizer are present in code; continuous oscillator phases have been added to reduce loop-boundary discontinuities. **Composition design: 25%** — four original score blueprints define the first two level and boss themes. **Final authored/rendered soundtrack assets: 0%** — no polished final Ogg/WAV tracks have been added. Recent GitHub Actions checks passed for the initial generator/routing changes; the latest phase-continuity and documentation commits are awaiting their own CI results. Godot runtime playback and listening tests remain unverified.
+## Audio / music milestone
+
+Implemented in code: `scripts/audio_director.gd` provides two-player crossfades, track IDs for the first two level themes and boss themes, safe missing-asset handling, and loop flags for Ogg Vorbis/WAV. `scripts/main.gd` requests the Moonlit Valley theme at startup and switches to the Veilwood theme on realm transition. Because the actual audio assets do not exist yet, this is integration scaffolding—not finished or audible soundtrack content.
+
+**Music system + procedural synthesis: 42%** — realm-aware routing, crossfades, automatic 16-bar section progression and a first-pass original procedural synthesizer are present in code; continuous oscillator phases have been added to reduce loop-boundary discontinuities. **Composition design: 25%** — four original score blueprints define the first two level and boss themes. **Final authored/rendered soundtrack assets: 0%** — no polished final Ogg/WAV tracks have been added. CI and Godot runtime playback/listening tests remain required before calling the music system verified.
 
 Nightbound's soundtrack must use **long-form original compositions built for excellent seamless looping**. The intended musical character takes high-level inspiration from the energetic, syncopated, rhythmically intricate and highly percussive spirit associated with **Stewart Copeland**, while remaining distinctly original: no copied melodies, riffs, arrangements, recordings or other protected elements.
 
@@ -78,6 +84,13 @@ For long levels, tracks may exceed the target duration or use additional section
 - Realm themes should have identifiable motifs while supporting exploration and discovery.
 - Heart-Tree and major discoveries should preferably add or intensify layers instead of hard-cutting to unrelated music.
 - Final audio must use original or properly licensed material; no copyrighted recordings should be bundled as game assets.
+
+## Latest audio pass — automatic long-loop sections
+
+- The audio director now advances the procedural score every 16 bars using each track's own BPM and meter rather than leaving the section selector dormant.
+- The eight-section cycle is reset when a new level/boss theme starts and remains compatible with the existing two-player crossfade system.
+- This is intended to make the 4–7 minute target loops feel like evolving compositions instead of short phrases repeated unchanged.
+- Commit: `b9b2b0c92a4567aa30bf5324c5ec0dde0af71119`. The latest Godot check is still required before marking this runtime-verified.
 
 ## Latest gameplay UI pass — glide energy meter
 
