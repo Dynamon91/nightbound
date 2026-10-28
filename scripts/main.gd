@@ -801,8 +801,11 @@ func build_hud()->void:
 	var layer:=CanvasLayer.new()
 	layer.layer=10
 	add_child(layer)
+	var root:=Control.new()
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(root)
 	# Compact translucent status plate with separate color-coded counters.
-	var status_panel:=make_hud_panel(layer,Vector2(18,16),Vector2(490,142),Color(.025,.045,.105,.91),Color("#6654a9"),13)
+	var status_panel:=make_hud_panel(root,Vector2(18,16),Vector2(490,142),Color(.025,.045,.105,.91),Color("#6654a9"),13)
 	hud=make_hud_label(status_panel,Vector2(14,5),Vector2(230,29),"NIGHTBOUND",21,Color("#f3edff"))
 	realm_label=make_hud_label(status_panel,Vector2(15,29),Vector2(425,20),"MOONLIT VALLEY • EXPLORATION",11,Color("#a8c9ed"))
 	crystal_label=make_hud_label(status_panel,Vector2(15,51),Vector2(205,22),"◆ CRYSTALS 0/11",14,Color("#74e8ff"))
@@ -825,20 +828,20 @@ func build_hud()->void:
 	bar.add_theme_stylebox_override("fill",bar_fill)
 	status_panel.add_child(bar)
 	# Round compass badge echoes the mockup's navigation dial without requiring image assets.
-	var compass:=make_hud_panel(layer,Vector2(1159,17),Vector2(101,101),Color(.025,.05,.12,.88),Color("#44cfe6"),50)
+	var compass:=make_hud_panel(root,Vector2(1159,17),Vector2(101,101),Color(.025,.05,.12,.88),Color("#44cfe6"),50)
 	make_hud_label(compass,Vector2(37,1),Vector2(27,20),"N",12,Color("#b8f5ff"),HORIZONTAL_ALIGNMENT_CENTER)
 	make_hud_label(compass,Vector2(5,38),Vector2(20,22),"W",11,Color("#c2d4f5"),HORIZONTAL_ALIGNMENT_CENTER)
 	make_hud_label(compass,Vector2(76,38),Vector2(20,22),"E",11,Color("#c2d4f5"),HORIZONTAL_ALIGNMENT_CENTER)
 	make_hud_label(compass,Vector2(38,76),Vector2(25,20),"S",11,Color("#c2d4f5"),HORIZONTAL_ALIGNMENT_CENTER)
 	make_hud_label(compass,Vector2(29,29),Vector2(42,42),"✦",26,Color("#78f0ef"),HORIZONTAL_ALIGNMENT_CENTER)
-	gate_status_label=make_hud_label(layer,Vector2(530,18),Vector2(220,32),"REALM GATE • LOCKED",12,Color("#d5c3ff"),HORIZONTAL_ALIGNMENT_CENTER)
+	gate_status_label=make_hud_label(root,Vector2(530,18),Vector2(220,32),"REALM GATE • LOCKED",12,Color("#d5c3ff"),HORIZONTAL_ALIGNMENT_CENTER)
 	# Key legends are split into small groups so they remain readable at gameplay resolution.
-	var ability_panel:=make_hud_panel(layer,Vector2(900,611),Vector2(360,91),Color(.025,.045,.105,.88),Color("#554b92"),11)
+	var ability_panel:=make_hud_panel(root,Vector2(900,611),Vector2(360,91),Color(.025,.045,.105,.88),Color("#554b92"),11)
 	make_hud_label(ability_panel,Vector2(12,7),Vector2(158,29),"SPACE  GLIDE",12,Color("#b9f5ee"))
 	make_hud_label(ability_panel,Vector2(183,7),Vector2(160,29),"E  ECHOSENSE",12,Color("#e2c1ff"))
 	make_hud_label(ability_panel,Vector2(12,42),Vector2(158,29),"F  BURST",12,Color("#ffd9a1"))
 	make_hud_label(ability_panel,Vector2(183,42),Vector2(165,29),"SHIFT  DASH",12,Color("#d1c4ff"))
-	message=make_hud_label(layer,Vector2(365,144),Vector2(550,35),"",15,Color("#ffe8b0"),HORIZONTAL_ALIGNMENT_CENTER)
+	message=make_hud_label(root,Vector2(365,144),Vector2(550,35),"",15,Color("#ffe8b0"),HORIZONTAL_ALIGNMENT_CENTER)
 	refresh_hud()
 func refresh_hud()->void:
 	if realm_label: realm_label.text=realm.to_upper()+" • EXPLORATION"
