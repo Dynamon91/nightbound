@@ -60,7 +60,9 @@ func _render_sample(real_time: float) -> float:
 	var bar := int(floor(beat / float(beats_per_bar)))
 	var beat_in_bar := fposmod(beat, float(beats_per_bar))
 	var step := int(floor(beat * 2.0))
-	var section := (int(floor(float(bar) / 16.0)) + _section_offset) % 8
+	# The audio director owns section changes; don't add the generator's bar count
+	# again, or section energy advances twice as fast as the director's timeline.
+	var section := _section_offset % 8
 	var root: float = data["root"]
 	var mode: Array = data["mode"]
 	var motif: Array = data["motif"]
@@ -136,7 +138,14 @@ func _render_sample(real_time: float) -> float:
 	var click_phase := fposmod(beat * 2.0, 1.0)
 	var click_step := int(floor(beat * 2.0)) % (beats_per_bar * 2)
 	var click_pattern := click_step % 4 == 1
-	if beats_per_bar == 6:
+	# Boss themes get their documented accent grids instead of the generic level pulse.
+	if _track_id == "veilwood_boss_2":
+		# 3+3+2 grouping across eight eighth-note subdivisions.
+		click_pattern = click_step % 8 == 0 or click_step % 8 == 3 or click_step % 8 == 6
+	elif _track_id == "moonlit_valley_boss_1":
+		# A repeating three-quarter-note accent cycle (six eighth-note steps).
+		click_pattern = click_step % 6 == 0 or click_step % 6 == 3
+	elif beats_per_bar == 6:
 		click_pattern = click_step % 6 == 2 or click_step % 6 == 5
 	elif beats_per_bar == 7:
 		click_pattern = click_step % 7 == 3 or click_step % 7 == 6
