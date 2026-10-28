@@ -632,15 +632,14 @@ func apply_moonlit_ground_material(ground:MeshInstance3D)->void:
 func build_moonflowers()->void:
 	# Bright, faceted flowers populate the near-ground edges while keeping the jumping lane clear.
 	var flower_positions:Array[Vector3]=[
-		Vector3(-20.0,0.02,8.0),Vector3(-30.0,0.02,14.0),Vector3(-39.0,0.02,21.0),
-		Vector3(-25.0,0.02,27.0),Vector3(-42.0,0.02,32.0),
-		Vector3(20.0,0.02,9.0),Vector3(30.0,0.02,15.0),Vector3(39.0,0.02,22.0),
-		Vector3(25.0,0.02,28.0),Vector3(42.0,0.02,33.0),Vector3(-14.0,0.02,23.0),Vector3(14.0,0.02,22.0)
+		Vector3(-6.5,0.02,4.8),Vector3(-9.0,0.02,0.0),Vector3(-12.0,0.02,-3.8),Vector3(-15.0,0.02,-6.0),
+		Vector3(6.5,0.02,4.8),Vector3(9.0,0.02,0.0),Vector3(12.0,0.02,-3.8),Vector3(15.0,0.02,-6.0),
+		Vector3(-10.0,0.02,8.5),Vector3(10.0,0.02,8.5),Vector3(-18.0,0.02,8.0),Vector3(18.0,0.02,8.0)
 	]
 	var petal_colors:Array[Color]=[Color("#d28aff"),Color("#ff9dce"),Color("#78dff4"),Color("#ffd58b")]
 	for flower_index in range(flower_positions.size()):
 		var p:Vector3=flower_positions[flower_index]
-		var size_value:=.78+float(flower_index%4)*.12
+		var size_value:=1.02+float(flower_index%4)*.15
 		var stem:=MeshInstance3D.new()
 		var stem_mesh:=CylinderMesh.new()
 		stem_mesh.top_radius=.025
@@ -668,7 +667,7 @@ func build_moonflowers()->void:
 		var petal_material:=mat(petal_colors[flower_index%petal_colors.size()],.55)
 		petal_material.emission_enabled=true
 		petal_material.emission=petal_colors[flower_index%petal_colors.size()]
-		petal_material.emission_energy_multiplier=.42
+		petal_material.emission_energy_multiplier=.72
 		for petal_index in range(5):
 			var angle:=float(petal_index)*TAU/5.0
 			var petal:=MeshInstance3D.new()
@@ -687,7 +686,7 @@ func build_moonflowers()->void:
 		var core_material:=core.material_override as StandardMaterial3D
 		core_material.emission_enabled=true
 		core_material.emission=Color("#ffe69a")
-		core_material.emission_energy_multiplier=1.1
+		core_material.emission_energy_multiplier=1.45
 
 func build_valley_ground_detail()->void:
 	# Keep a clear central traversal corridor while adding foreground and side-plane texture.
