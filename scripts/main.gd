@@ -50,6 +50,7 @@ func _ready() -> void:
 	build_hud()
 	audio_director.call("play_track", "veilwood_level_2" if realm == "The Veilwood" else "moonlit_valley_level_1")
 	refresh_hud()
+	print("NIGHTBOUND_SCENE_READY")
 
 func mat(c:Color, r:=0.8)->StandardMaterial3D:
 	var m:=StandardMaterial3D.new(); m.albedo_color=c; m.roughness=r; return m
@@ -509,7 +510,7 @@ func build_player()->void:
 		ear.mesh=ear_mesh; ear.position=Vector3(side*.27,1.48,-.015); ear.rotation.z=-side*.16; ear.material_override=mat(Color("#392642"),.7); player.add_child(ear)
 		var ear_inner:=orb(player,Vector3(side*.27,1.49,-.12),.075,Color("#a65bba")); ear_inner.scale=Vector3(.65,1.6,.3)
 		var w:=Node3D.new(); w.position=Vector3(side*.2,.42,.03); player.add_child(w); wings.append(w)
-		var membrane:=box(Vector3(side*.76,.18,0),Vector3(1.5,.78,.055),Color("#493258")); membrane.rotation.z=side*.31; w.add_child(membrane)
+		var membrane:=MeshInstance3D.new(); var membrane_mesh:=BoxMesh.new(); membrane_mesh.size=Vector3(1.5,.78,.055); membrane.mesh=membrane_mesh; membrane.position=Vector3(side*.76,.18,0); membrane.rotation.z=side*.31; membrane.material_override=mat(Color("#493258"),.78); w.add_child(membrane)
 		var rib_mat:=mat(Color("#82629a"),.65)
 		for rib_i in range(3):
 			var rib:=MeshInstance3D.new(); var rib_mesh:=BoxMesh.new(); rib_mesh.size=Vector3(.035,.67,.075); rib.mesh=rib_mesh
