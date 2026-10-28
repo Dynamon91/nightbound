@@ -217,6 +217,35 @@ func build_waterfall(p:Vector3,width:float,height:float)->void:
 		ribbon_material.emission_energy_multiplier=.3
 		ribbon.material_override=ribbon_material
 		add_child(ribbon)
+func build_moonlit_clouds()->void:
+	# Low-poly cloud ribbons frame the moon/citadel without obscuring the main landmark.
+	var cloud_centers:Array[Vector3]=[
+		Vector3(-43,8.0,-53),Vector3(-34,6.5,-50),Vector3(-27,9.0,-56),
+		Vector3(31,7.0,-54),Vector3(40,8.8,-51),Vector3(47,6.2,-55),
+		Vector3(-47,12.0,-58),Vector3(43,11.2,-60)
+	]
+	for cloud_index in range(cloud_centers.size()):
+		var center:Vector3=cloud_centers[cloud_index]
+		var cloud_color:=Color("#273b64") if cloud_index%2==0 else Color("#344976")
+		for lobe_index in range(3):
+			var side_offset:float=(float(lobe_index)-1.0)*1.65
+			var lift:float=float((cloud_index+lobe_index)%3)*.42
+			var cloud:=orb(self,center+Vector3(side_offset,lift,0),1.35+float((cloud_index+lobe_index)%2)*.35,cloud_color.lightened(.04*float(lobe_index)))
+			cloud.scale=Vector3(1.5,.52,.12)
+			var cloud_material:=cloud.material_override as StandardMaterial3D
+			cloud_material.roughness=.98
+func build_crystal_cluster(p:Vector3,main_color:Color,size_value:float)->void:
+	# Decorative crystal clusters brighten optional side routes without incrementing the pickup counter.
+	for shard_index in range(5):
+		var angle:=float(shard_index)*TAU/5.0
+		var radius:=.38*size_value if shard_index>0 else 0.0
+		var shard_scale:=Vector3(.78,.98,.78)*size_value if shard_index==0 else Vector3(.48,.68,.48)*size_value
+		var shard_pos:=p+Vector3(cos(angle)*radius,-.12*float(shard_index%2),sin(angle)*radius)
+		var shard:=gem(shard_pos,main_color if shard_index%2==0 else main_color.lightened(.18))
+		shard.scale=shard_scale
+		shard.rotation.y=angle
+		var shard_material:=shard.material_override as StandardMaterial3D
+		shard_material.emission_energy_multiplier=1.65 if shard_index==0 else 1.25
 func build_gate_detail()->void:
 	# Layered stone footing, thin carved trim and emissive runes make the gate a real landmark.
 	for side in [-1.0,1.0]:
@@ -573,6 +602,10 @@ func build_valley()->void:
 	build_entry_bridge()
 	build_river_crossing()
 	build_valley_ground_detail()
+	build_crystal_cluster(Vector3(-23,.85,-4),Color("#62dcff"),1.15)
+	build_crystal_cluster(Vector3(24,.85,-5),Color("#d492ff"),1.12)
+	build_crystal_cluster(Vector3(-36,1.2,9),Color("#78e8ff"),1.4)
+	build_crystal_cluster(Vector3(36,1.2,10),Color("#cf9aff"),1.35)
 	var bush_positions:Array[Vector3]=[
 		Vector3(-13,0.02,8),Vector3(13,0.02,8),Vector3(-19,0.02,5),Vector3(19,0.02,5),
 		Vector3(-15,0.02,11),Vector3(15,0.02,11),Vector3(-24,0.02,1),Vector3(24,0.02,1),
@@ -597,6 +630,7 @@ func build_valley()->void:
 	box(Vector3(-2.25,2.4,-18),Vector3(.75,4.8,1),Color("#45445f"),true); box(Vector3(2.25,2.4,-18),Vector3(.75,4.8,1),Color("#45445f"),true); box(Vector3(0,4.85,-18),Vector3(5.1,.75,1),Color("#56516e"),true)
 	build_gate_detail()
 	build_distant_citadel()
+	build_moonlit_clouds()
 	build_lantern(Vector3(-3.35,0,-16.6),.9,Color("#ffbf70"))
 	build_lantern(Vector3(3.35,0,-16.6),.9,Color("#ffbf70"))
 	build_lantern(Vector3(-1.75,0,8.0),.72,Color("#ffd18b"))
