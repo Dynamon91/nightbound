@@ -1,6 +1,6 @@
 extends Node
 ## Original procedural soundtrack generator for early Nightbound builds.
-## Produces deterministic, loopable music from synthesized tones; no samples or
+## Produces original, loop-oriented music from synthesized tones with syncopated bass and counter-plucks; no samples or
 ## third-party recordings. Each theme uses its own tempo, mode and motif.
 
 const SAMPLE_RATE := 22050.0
@@ -67,10 +67,17 @@ func _render_sample(real_time: float) -> float:
 	var bass_degree := [0, 0, 3, 4, 0, 5, 3, 4][int(bar % 8)]
 	var bass_freq := root * 0.5 * pow(2.0, float(mode[bass_degree % mode.size()]) / 12.0)
 	var bass_phase := TWO_PI * bass_freq * real_time
-	output += (sin(bass_phase) * 0.105 + sin(bass_phase * 2.0) * 0.025) * (0.72 + energy * 0.35)
+	# A breathing, syncopated bass groove: the pulse ducks between attacks instead
+	# of behaving like a constant drone. The accent pattern differs by meter.
+	var bass_subdivision := fposmod(beat * 2.0, 1.0)
+	var bass_attack := 0.58 if bass_subdivision > 0.42 else 1.0
+	var bass_bar_beat := int(floor(beat)) % beats_per_bar
+	if bass_bar_beat == 1 and bass_subdivision < 0.18:
+		bass_attack *= 0.68
+	output += (sin(bass_phase) * 0.105 + sin(bass_phase * 2.0) * 0.025) * bass_attack * (0.72 + energy * 0.35)
 
 	# A melody with intentional rests; each 16-bar section changes register and density.
-	var motif_index := int(floor(beat * 0.5)) % motif.size()
+	var motif_index := int(floor(beat * 0.5 + (1.0 if section % 4 == 2 else 0.0))) % motif.size()
 	var melody_step := int(motif[motif_index])
 	var melody_gate := fposmod(beat * 2.0, 2.0)
 	var phrase_gate := fposmod(beat, 8.0)
@@ -84,6 +91,17 @@ func _render_sample(real_time: float) -> float:
 		bell += sin(TWO_PI * melody_freq * 2.01 * real_time) * 0.013
 		bell += sin(TWO_PI * melody_freq * 3.97 * real_time) * 0.004
 		output += bell * envelope * energy
+
+	# Offbeat counter-plucks create a second rhythmic voice against the bass.
+	# Keep them sparse in quiet sections; denser passages get a little more bounce.
+	var counter_step := int(floor(beat * 2.0))
+	var counter_phase := fposmod(beat * 2.0, 1.0)
+	var counter_gate := counter_phase < (0.16 if section % 4 == 0 else 0.23)
+	if counter_gate and counter_step % 4 == (1 if beats_per_bar != 7 else 3):
+		var counter_degree := int(motif[(counter_step + bar) % motif.size()])
+		var counter_freq := root * 2.0 * pow(2.0, float(counter_degree) / 12.0)
+		var counter_env := exp(-counter_phase * 28.0)
+		output += (sin(TWO_PI * counter_freq * real_time) * 0.018 + sin(TWO_PI * counter_freq * 2.0 * real_time) * 0.006) * counter_env * energy
 
 	# Slow harmonic bed shifts on eight-bar boundaries; low amplitude to leave space.
 	var chord_degree := [0, 3, 5, 4][int(floor(float(bar) / 8.0)) % 4]
