@@ -31,6 +31,21 @@ var wings: Array[Node3D] = []
 var mote_nodes: Array[MeshInstance3D] = []
 var mote_origins: Array[Vector3] = []
 
+func _ready() -> void:
+	# Build the playable scene explicitly; the main scene only provides this root script.
+	audio_director = AudioDirectorScript.new()
+	audio_director.name = "AudioDirector"
+	add_child(audio_director)
+	# Restore IDs/checkpoint before constructing collectibles so saved pickups stay absent.
+	load_game()
+	build_valley()
+	build_veilwood()
+	build_player()
+	build_camera()
+	build_hud()
+	audio_director.call("play_track", "veilwood_level_2" if realm == "The Veilwood" else "moonlit_valley_level_1")
+	refresh_hud()
+
 func mat(c:Color, r:=0.8)->StandardMaterial3D:
 	var m:=StandardMaterial3D.new(); m.albedo_color=c; m.roughness=r; return m
 func box(pos:Vector3,size:Vector3,c:Color,solid:=false)->MeshInstance3D:
@@ -147,6 +162,11 @@ func build_hud()->void:
 	var layer:=CanvasLayer.new(); add_child(layer); hud=Label.new(); hud.position=Vector2(22,18); hud.add_theme_font_size_override("font_size",20); layer.add_child(hud); message=Label.new(); message.position=Vector2(22,100); message.size=Vector2(1000,48); layer.add_child(message); bar=ProgressBar.new(); bar.position=Vector2(22,145); bar.size=Vector2(220,16); bar.max_value=GLIDE_MAX; layer.add_child(bar); refresh_hud()
 func _physics_process(d:float)->void:
 	if not player:return
+	if Input.is_action_just_pressed("save_game"):
+		save_game(); show_message("Game saved — progress secured.")
+	if Input.is_action_just_pressed("load_game"):
+		if FileAccess.file_exists(SAVE_PATH): load_game(); show_message("Save loaded.")
+		else: show_message("No save file yet — press P to create one.")
 	var v:=Input.get_vector("move_left","move_right","move_forward","move_back"); var dir:=Vector3(v.x,0,v.y); if dir.length()>.05: player.rotation.y=atan2(-dir.x,-dir.z)
 	if not player.is_on_floor():
 		if Input.is_action_pressed("jump") and player.velocity.y<.5 and glide<GLIDE_MAX: glide=minf(glide+d,GLIDE_MAX); player.velocity.y=maxf(player.velocity.y-4*d,-2.4); player.velocity.x=move_toward(player.velocity.x,dir.x*9.4,18*d); player.velocity.z=move_toward(player.velocity.z,dir.z*9.4,18*d)
