@@ -103,6 +103,10 @@ func build_veilwood()->void:
 func build_player()->void:
 	player=CharacterBody3D.new(); player.name="NightboundBat"; player.position=checkpoint; add_child(player); var cs:=CollisionShape3D.new(); var cap:=CapsuleShape3D.new(); cap.radius=.42; cap.height=1.45; cs.shape=cap; player.add_child(cs)
 	body_visual=orb(player,Vector3(0,.25,0),.55,Color("#2e243b")); body_visual.scale=Vector3(.78,1.15,.75); head_visual=orb(player,Vector3(0,.95,-.02),.48,Color("#3b2b47")); head_visual.scale=Vector3(.9,.95,.9)
+	# A short muzzle, nose and chest bib make the face/body read more clearly from behind the camera.
+	var muzzle:=orb(player,Vector3(0,.83,-.405),.19,Color("#71527d")); muzzle.scale=Vector3(.82,.58,.62)
+	var nose:=orb(player,Vector3(0,.91,-.52),.055,Color("#f08bbf")); nose.scale=Vector3(1.15,.72,.65)
+	var chest:=orb(player,Vector3(0,.28,-.365),.3,Color("#766184")); chest.scale=Vector3(.68,1.0,.22)
 	# Ears give the bat a sharper silhouette at gameplay distance.
 	for side in [-1.0,1.0]:
 		var ear:=MeshInstance3D.new()
