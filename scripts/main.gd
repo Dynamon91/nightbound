@@ -345,7 +345,7 @@ func build_world() -> void:
 		make_crystal(crystal_positions[i], "crystal_%02d" % i)
 	# Safe perches along the valley route; proximity activates and saves them.
 	for i in range(3):
-		var cp: Vector3 = [Vector3(0, 1.5, 3), Vector3(-25, 2.4, -21), Vector3(25, 2.4, -23)][i]
+		var cp: Vector3 = [Vector3(0, 1.5, 3), Vector3(-25, 1.5, -21), Vector3(25, 1.5, -23)][i]
 		add_checkpoint_marker(cp, "Valley Perch %d" % (i + 1))
 	var relic_positions: Array[Vector3] = [Vector3(-8, 1.2, 0), Vector3(5, 1, -7), Vector3(20, 1, 3), Vector3(-37, 4.7, -38), Vector3(37, 4.8, 40)]
 	for i in range(relic_positions.size()):
@@ -766,7 +766,7 @@ func _physics_process(delta: float) -> void:
 				audio_director.call("play_track", "veilwood_level_2")
 			player.velocity = Vector3.ZERO
 			player.global_position = Vector3(130, 2.0, 4)
-			checkpoint_position = Vector3(130, 2.3, 4)
+			checkpoint_position = Vector3(130, 1.8, 4)
 			active_checkpoint_index = 3
 			checkpoint_position = player.global_position
 			show_message("REALM SHIFT — Welcome to the Veilwood, a new realm beyond the gate!")
