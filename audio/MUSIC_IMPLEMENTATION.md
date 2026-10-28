@@ -4,7 +4,7 @@
 
 **Audio system foundation: 35%**
 
-This is deliberately separate from the final music-composition percentage. The repository now has an original procedural synthesis fallback that generates music live in Godot when a final Ogg/WAV track is absent. It creates a continuous stereo stream with per-track tempo, mode, motif, synthesized bass, bell-like lead, harmonic bed and percussion. This is real in-game audio generation, but it is a first-pass synthesized score rather than a polished recorded final soundtrack.
+This is deliberately separate from the final music-composition percentage. The repository now has an original procedural synthesis fallback that generates music live in Godot when a final Ogg/WAV track is absent. It creates a continuous stereo stream with per-track tempo, mode, motif, synthesized bass, bell-like lead, harmonic bed and percussion. Oscillator phases now advance on an uninterrupted timeline instead of resetting with the musical loop clock, reducing phase jumps at the loop boundary. This is still a first-pass synthesized score rather than a polished recorded final soundtrack; runtime playback and listening checks remain pending.
 
 ## In-game architecture target
 
@@ -78,8 +78,8 @@ As the level roster grows, this table must grow with it. **“Per level + per bo
 
 ## Current composition and synthesis work
 
-`COMPOSITION_SKETCHES.md` contains four original score blueprints. `scripts/procedural_music.gd` now synthesizes playable themes for all four registered tracks when no final audio file exists. This means the project has an audible procedural music implementation in code; the final authored/recorded soundtrack files and in-game listening verification are still pending.
+`COMPOSITION_SKETCHES.md` contains four original score blueprints. `scripts/procedural_music.gd` now synthesizes playable themes for all four registered tracks when no final audio file exists. This means the project has a procedural music implementation in code; repository CI checks have passed for the recent generator and routing changes, but that does not prove successful playback or musical quality in a running game. Final authored/recorded soundtrack files and in-game listening verification are still pending.
 
 ## Next production step
 
-Run the headless Godot checks and listen to the procedural output in an actual game build. Refine the synthesizer for musical variation and smoother phrase transitions, then export a polished Ogg Vorbis version of the Moonlit Valley theme and test the loop seam and crossfade. Continue with each level and boss as a separate track.
+Run the headless Godot checks and listen to the procedural output in an actual game build. Verify Godot parsing and playback in a running build, listen for balance/clipping and phrase transitions, then refine the synthesizer and export a polished Ogg Vorbis version of the Moonlit Valley theme and test the loop seam and crossfade. Continue with each level and boss as a separate track.
