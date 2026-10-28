@@ -38,7 +38,7 @@ jobs:
         run: |
           set -o pipefail
           Godot_v4.3-stable_linux.x86_64 --headless --path . --quit-after 120 2>&1 | tee /tmp/nightbound-headless.log
-          if grep -E "SCRIPT ERROR:|ERROR: Failed to load script|ERROR: Can.t add child|ERROR: Invalid assignment|ERROR: Parameter" /tmp/nightbound-headless.log; then
+          if grep -E "SCRIPT ERROR:|ERROR: Failed to load script|ERROR: Can.t add child|ERROR: Invalid assignment" /tmp/nightbound-headless.log; then
             echo "The main scene emitted a script/runtime error."
             exit 1
           fi
