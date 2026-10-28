@@ -1,14 +1,14 @@
 # Nightbound — Original Composition Sketches
 
-These are original score blueprints for the first playable regions. They define new rhythmic and melodic material for later recording/programming; they are **not audio files** and do not count as completed in-game music.
+These are original score blueprints for the first playable regions. They define new rhythmic and melodic material for later recording/programming; they are **not audio files** and do not count as completed in-game music. The shared north star is the playful, syncopated, percussive, bass-aware adventure character of Stewart Copeland's original *Spyro the Dragon* score: apply those broad traits through new motifs, new arrangements and Nightbound-specific timbres, never by copying a Spyro cue.
 
 ## 01 — Moonlit Valley: “Lanterns Over the Hollow”
 
 - **Target:** 4:45–5:30, 4/4 with occasional 3+3+2 percussion phrasing; 108 BPM.
 - **Harmony:** D Dorian centre. Main colour tones: D, E, F, G, A, B, C. Avoid a triumphant major-key cadence; keep the night-mystery feeling.
 - **Original motif:** A–D–F–E | A–C–D (short, airy, with a deliberate rest after the opening pickup). Answer it with a lower D–A–C–G shape.
-- **Rhythm:** bass pulse on beat 1, muted low drum on 1-and / 3, dry high percussion accents in a 3+3+2 cycle; shift accents every 8 bars so it feels nimble rather than mechanically repetitive.
-- **Palette:** warm wooden mallet/pluck, round electric-style bass, dry hand percussion, brushed kit, glassy bell harmonics and soft night-air pad. Use original recordings or synth patches only.
+- **Rhythm:** bass pulse on beat 1, muted low drum on 1-and / 3, dry high percussion accents in a 3+3+2 cycle; shift accents every 8 bars so it feels nimble rather than mechanically repetitive. Let bass, low drums and high percussion interlock with a playful, slightly cheeky push-and-pull rather than a straight four-square groove.
+- **Palette:** warm wooden mallet/pluck, round electric-style bass, dry hand percussion, crisp kit, glassy bell harmonics and soft night-air pad. Keep the groove up front and the timbres characterful, with a lively exploratory bounce inspired only at a high level by Copeland's original Spyro scoring. Use original recordings or synth patches only.
 - **Arrangement map:**
   - 0:00–0:24: night-air pad, two-note bell calls, filtered percussion pickup.
   - 0:24–1:12: bass ostinato and main motif; leave space between phrases.
@@ -25,7 +25,7 @@ These are original score blueprints for the first playable regions. They define 
 - **Harmony:** A Aeolian with occasional F Lydian colour (B natural over F) for luminous unease.
 - **Original motif:** E–A–C–B | E–G–A, played as a sparse bell/pluck call; a lower A–E–G–D response moves in contrary rhythm.
 - **Rhythm:** low frame-drum pulse, seed-shaker subdivisions, alternating woodblock accents and soft syncopated toms. Let the pattern thin out near the Heart-Tree, then add one layer at a time.
-- **Palette:** woody tuned percussion, soft hand drums, breathy synth/processed flute-like tone, granular crystal shimmer, bowed low drone and a warm sub pulse.
+- **Palette:** woody tuned percussion, nimble hand drums, breathy synth/processed flute-like tone, granular crystal shimmer, bowed low drone and a warm sub pulse. Preserve rhythmic interplay and playful discovery, while making this forest's groove more fluid and organic than the Valley.
 - **Arrangement map:** 0:00–0:32 distant shimmer; 0:32–1:28 first motif and pulse; 1:28–2:20 interlocking percussion; 2:20–3:10 sparse canopy passage; 3:10–4:08 full forest groove; 4:08–4:56 Heart-Tree bloom variation; 4:56–end reprise with reduced percussion and a loop-matched final drone.
 - **Heart-Tree layer:** optional 45–90 second upper-bell and soft choir-like synth stem, synchronized to the same tempo and harmonic cycle; fade it in rather than replacing the level theme.
 
