@@ -4,7 +4,7 @@ This is the project's working implementation roadmap. Percentages are **developm
 
 ## Primary milestone — Reach the generated mockup's visual quality
 
-**Current overall mockup-fidelity implementation: 48%**
+**Current overall mockup-fidelity implementation: 52%**
 
 The goal is an original, polished colourful 3D platforming world: a memorable bat protagonist, strong silhouettes, rich materials, layered environments, lighting, landmarks and substantial exploration spaces. The mockup is a visual quality target, not a claim that the game should copy Spyro.
 
@@ -12,16 +12,16 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 
 | Area | Progress | Target |
 |---|---:|---|
-| Original bat protagonist model | 48% | Recognisable, expressive, polished 3D hero with clean silhouette, wings, face and animation-ready proportions |
-| Hero materials / eyes / wing detail | 40% | Cohesive stylized materials, readable eyes and membrane detail at gameplay distance |
-| Terrain and cliffs | 44% | Layered stylized ground, cliffs, ledges and natural shapes rather than placeholder boxes |
-| Rocks / props | 48% | Reusable stylized rock, crystal, ruin and environmental prop families |
-| Vegetation | 40% | Distinct tree, grass, shrub and magical-forest families with controlled repetition |
-| Crystals / collectibles | 62% | Consistent collectible language, glow, placement and feedback |
-| Lighting / atmosphere | 62% | Moonlight, fog/depth, warm-vs-cool contrast and readable magical accents |
-| Landmark quality | 58% | Large silhouettes visible across the level to support navigation |
-| Veilwood environment | 55% | Distinct bioluminescent forest identity with layered traversal spaces |
-| Moonlit Valley environment | 47% | Stronger authored scenery replacing generic prototype geometry |
+| Original bat protagonist model | 52% | Recognisable, expressive, polished 3D hero with clean silhouette, wings, face and animation-ready proportions |
+| Hero materials / eyes / wing detail | 45% | Cohesive stylized materials, readable eyes and membrane detail at gameplay distance |
+| Terrain and cliffs | 48% | Layered stylized ground, cliffs, ledges and natural shapes rather than placeholder boxes |
+| Rocks / props | 52% | Reusable stylized rock, crystal, ruin and environmental prop families |
+| Vegetation | 44% | Distinct tree, grass, shrub and magical-forest families with controlled repetition |
+| Crystals / collectibles | 65% | Consistent collectible language, glow, placement and feedback |
+| Lighting / atmosphere | 65% | Moonlight, fog/depth, warm-vs-cool contrast and readable magical accents |
+| Landmark quality | 62% | Large silhouettes visible across the level to support navigation |
+| Veilwood environment | 60% | Distinct bioluminescent forest identity with layered traversal spaces |
+| Moonlit Valley environment | 50% | Stronger authored scenery replacing generic prototype geometry |
 
 ### Platforming / level implementation
 
@@ -32,8 +32,8 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 | Ability-gated exploration | 55% | Abilities open shortcuts, secrets and revisited routes |
 | Collectible routes | 60% | Main path + risky detours + hidden optional paths |
 | Realm transition | 65% | Seamless-feeling gate/realm progression |
-| Large level structure | 40% | Broad interconnected areas with vertical layers, caves, alcoves and multiple routes |
-| Secrets / optional challenges | 32% | Exploration rewards and revisitation loops |
+| Large level structure | 44% | Broad interconnected areas with vertical layers, caves, alcoves and multiple routes |
+| Secrets / optional challenges | 36% | Exploration rewards and revisitation loops |
 | Enemy / encounter variety | 15% | Distinct enemies and encounters integrated into exploration |
 | Boss / major set pieces | 0% | Not yet implemented/verified |
 
@@ -43,14 +43,29 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 
 Nightbound's soundtrack must use **long-form original compositions built for excellent seamless looping**. The intended musical character takes high-level inspiration from the energetic, syncopated, rhythmically intricate and highly percussive spirit associated with **Stewart Copeland**, while remaining distinctly original: no copied melodies, riffs, arrangements, recordings or other protected elements.
 
-| Area | Progress | Target |
+### Per-level soundtrack rule
+
+The soundtrack is organized by the **actual playable level structure**, not merely by broad realms. Every substantial playable level receives its own original theme. Every boss receives a separate original boss theme, even when the boss is inside an existing level. No level may reuse another level's main theme just for convenience.
+
+| Track class | Target duration | Required identity |
 |---|---:|---|
-| Music system / realm track routing | 15% | Stable music bus, realm-aware tracks and smooth transitions |
-| Moonlit Valley theme | 0% | Original 4–6 minute evolving exploration composition with seamless loop |
-| Veilwood theme | 0% | Original 5–7 minute evolving exploration composition with seamless loop |
-| Realm Gate transition theme | 0% | Original 2–3 minute loopable transition/arrival piece |
-| Dynamic intensity layers | 0% | Exploration/discovery/Heart-Tree layers that blend without abrupt resets |
-| Loop verification | 0% | Boundary tested in the running game with no audible click or restart feeling |
+| Each standard level | 4–7 min target | Unique motif, instrumentation, rhythm and evolving sections; seamless loop |
+| Each boss | 4–6 min target | Dedicated combat identity, escalation, variation and climax; seamless loop |
+| Realm Gate / transition | 2–3 min | Arrival motif and transition development |
+| Major landmark / discovery layer | 45–90 sec | Optional layer that can overlay/crossfade without breaking the level theme |
+
+For long levels, tracks may exceed the target duration or use additional sections/stems. The goal is to keep exploration fresh rather than force short repetition.
+
+### Current planned soundtrack map
+
+| Gameplay area | Music status | Composition target |
+|---|---|---|
+| Moonlit Valley — Level 1 | Planned | 4–6 min original exploration theme |
+| Moonlit Valley — Boss 1 | Planned | 4–6 min original boss theme |
+| Veilwood — Level 2 | Planned | 5–7 min original exploration theme |
+| Veilwood — Boss 2 | Planned | 4–6 min original boss theme |
+| Future Level N | Required | Unique theme before level is marked audio-complete |
+| Future Boss N | Required | Unique boss theme before boss is marked audio-complete |
 
 ### Music quality rules
 
@@ -102,7 +117,7 @@ The milestone is considered visually reached only when the running game—not me
 3. Build reusable vegetation and prop variants.
 4. Add stronger material variation to ground, stone and magical objects.
 5. Implement the long-form music system and realm-aware looping.
-6. Create original long-form realm themes with excellent seamless loops.
+6. Create original long-form themes for **every playable level and every boss**, not just each realm.
 7. Re-capture real gameplay screenshots and compare them against the mockup.
 8. Iterate until the screenshot—not the design document—shows the intended quality.
 
