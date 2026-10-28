@@ -429,8 +429,29 @@ func checkpoint(p:Vector3)->void:
 	points.append(p); var r:=MeshInstance3D.new(); var tm:=TorusMesh.new(); tm.inner_radius=.5; tm.outer_radius=.68; r.mesh=tm; r.position=p+Vector3(0,.08,0); r.rotation.x=PI*.5; var m:=mat(Color("#83f4df"),.2); m.emission_enabled=true; m.emission=Color("#50e7dd"); m.emission_energy_multiplier=1.5; r.material_override=m; add_child(r)
 func tree(p:Vector3,scale_value:=1.0,forest_color:=Color("#304a3b"))->void:
 	var trunk:=MeshInstance3D.new(); var tm:=CylinderMesh.new(); tm.top_radius=.18*scale_value; tm.bottom_radius=.32*scale_value; tm.height=2.8*scale_value; tm.radial_segments=7; trunk.mesh=tm; trunk.position=p+Vector3(0,1.4*scale_value,0); trunk.material_override=mat(Color("#44374a"),.95); add_child(trunk)
-	var crown:=MeshInstance3D.new(); var cm:=SphereMesh.new(); cm.radius=1.45*scale_value; cm.height=2.3*scale_value; cm.radial_segments=9; cm.rings=5; crown.mesh=cm; crown.position=p+Vector3(0,3.0*scale_value,0); crown.scale=Vector3(1,.9,.82); crown.material_override=mat(forest_color,.9); add_child(crown)
-	var glow:=orb(self,p+Vector3(0,3.55*scale_value,0),.12*scale_value,Color("#83e6bd")); var gm:=glow.material_override as StandardMaterial3D; gm.emission_enabled=true; gm.emission=Color("#67dcae"); gm.emission_energy_multiplier=.8
+	# Three offset canopy lobes give the tree a layered silhouette instead of a single round ball.
+	var lobe_positions:Array[Vector3]=[Vector3(-.62,3.0,.03),Vector3(.62,3.08,-.04),Vector3(0,3.58,.08)]
+	var lobe_scales:Array[Vector3]=[Vector3(.78,.82,.76),Vector3(.82,.78,.8),Vector3(.76,.72,.75)]
+	var lobe_colors:Array[Color]=[forest_color,forest_color.lightened(.11),forest_color.darkened(.09)]
+	for lobe_index in range(3):
+		var lobe:=MeshInstance3D.new()
+		var lobe_mesh:=SphereMesh.new()
+		lobe_mesh.radius=1.0
+		lobe_mesh.height=2.0
+		lobe_mesh.radial_segments=8
+		lobe_mesh.rings=4
+		lobe.mesh=lobe_mesh
+		lobe.position=p+lobe_positions[lobe_index]*scale_value
+		lobe.scale=lobe_scales[lobe_index]*scale_value
+		lobe.material_override=mat(lobe_colors[lobe_index],.94)
+		add_child(lobe)
+	# Small glowing fruit/lights across the canopy add readable magical accents.
+	for glow_index in range(3):
+		var glow:=orb(self,p+Vector3((float(glow_index)-1.0)*.56*scale_value,3.15*scale_value+float(glow_index%2)*.47*scale_value,.72*scale_value),.07*scale_value,Color("#83e6bd"))
+		var glow_material:=glow.material_override as StandardMaterial3D
+		glow_material.emission_enabled=true
+		glow_material.emission=Color("#67dcae")
+		glow_material.emission_energy_multiplier=.85
 func grass_cluster(p:Vector3,scale_value:float,add_bloom:bool)->void:
 	# Three individually angled low-poly blades make small readable vegetation clumps.
 	var blade_colors:Array[Color]=[Color("#47745f"),Color("#5f8d6e"),Color("#709678")]
@@ -538,8 +559,17 @@ func build_valley()->void:
 	for platform_index in range(platform_positions.size()):
 		plateau(platform_positions[platform_index],Vector3(8,1.2,8),platform_index)
 	for p in [Vector3(-43,1.4,-17),Vector3(43,1.6,-20),Vector3(-41,2.4,28),Vector3(41,2.7,29),Vector3(-15,2,-39),Vector3(16,2.2,-41)]: cliff(p,3.3)
+	for p in [Vector3(-46,2.7,-34),Vector3(46,3.0,-36),Vector3(-45,1.8,2),Vector3(45,2.0,-3)]: cliff(p,4.0)
 	for p in [Vector3(-21,0,-4),Vector3(18,0,-7),Vector3(-33,0,8),Vector3(34,0,8),Vector3(-12,0,31),Vector3(15,0,34),Vector3(-40,0,-7),Vector3(41,0,-8)]: tree(p,1.15,Color("#31533f"))
 	for p in [Vector3(-8,0,10),Vector3(8,0,14),Vector3(-22,0,16),Vector3(22,0,18)]: tree(p,.72,Color("#3e6247"))
+	# Side woodland layers frame the traversal corridor while leaving the stream and bridge visible.
+	for side_tree_index in range(12):
+		var side:float=-1.0 if side_tree_index%2==0 else 1.0
+		var row_index:=side_tree_index/2
+		var tree_z:=22.0-float(row_index)*5.0
+		var tree_x:=side*(27.0+float(side_tree_index%3)*4.6)
+		var tree_color:=Color("#294f42") if side_tree_index%2==0 else Color("#365b4b")
+		tree(Vector3(tree_x,0,tree_z),1.05+float(side_tree_index%3)*.18,tree_color)
 	build_entry_bridge()
 	build_river_crossing()
 	build_valley_ground_detail()
