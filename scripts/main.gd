@@ -40,6 +40,8 @@ var veilwood_motes: Array[MeshInstance3D] = []
 var veilwood_mote_bases: Array[Vector3] = []
 var hero_wing_pivots: Array[Node3D] = []
 var animated_grass: Array[MeshInstance3D] = []
+var glide_bar: ProgressBar
+var glide_bar_label: Label
 
 func material(color: Color, roughness := 0.75) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -522,6 +524,34 @@ func build_hud() -> void:
 	message.add_theme_font_size_override("font_size", 16)
 	message.add_theme_color_override("font_color", Color("#b7f8f3"))
 	layer.add_child(message)
+	glide_bar_label = Label.new()
+	glide_bar_label.position = Vector2(22, 151)
+	glide_bar_label.text = "GLIDE ENERGY"
+	glide_bar_label.add_theme_font_size_override("font_size", 12)
+	glide_bar_label.add_theme_color_override("font_color", Color("#c9c4ff"))
+	layer.add_child(glide_bar_label)
+	glide_bar = ProgressBar.new()
+	glide_bar.position = Vector2(22, 172)
+	glide_bar.size = Vector2(220, 16)
+	glide_bar.min_value = 0.0
+	glide_bar.max_value = GLIDE_MAX_STAMINA
+	glide_bar.value = GLIDE_MAX_STAMINA
+	glide_bar.show_percentage = false
+	var bar_background := StyleBoxFlat.new()
+	bar_background.bg_color = Color("#25263e")
+	bar_background.corner_radius_top_left = 4
+	bar_background.corner_radius_top_right = 4
+	bar_background.corner_radius_bottom_left = 4
+	bar_background.corner_radius_bottom_right = 4
+	glide_bar.add_theme_stylebox_override("background", bar_background)
+	var bar_fill := StyleBoxFlat.new()
+	bar_fill.bg_color = Color("#9b8cff")
+	bar_fill.corner_radius_top_left = 4
+	bar_fill.corner_radius_top_right = 4
+	bar_fill.corner_radius_bottom_left = 4
+	bar_fill.corner_radius_bottom_right = 4
+	glide_bar.add_theme_stylebox_override("fill", bar_fill)
+	layer.add_child(glide_bar)
 	refresh_hud()
 
 func _physics_process(delta: float) -> void:
@@ -562,6 +592,11 @@ func _physics_process(delta: float) -> void:
 		dash_pressed = false
 	player.move_and_slide()
 	pulse_time = maxf(0.0, pulse_time - delta)
+	if is_instance_valid(glide_bar):
+		glide_bar.value = GLIDE_MAX_STAMINA - glide_stamina
+		glide_bar.modulate = Color("#8df2d2") if glide_stamina < GLIDE_MAX_STAMINA * 0.65 else Color("#e6c8ff")
+	if is_instance_valid(glide_bar_label):
+		glide_bar_label.text = "GLIDE ENERGY  •  %d%%" % int(round((1.0 - glide_stamina / GLIDE_MAX_STAMINA) * 100.0))
 	var ambience_time := float(Time.get_ticks_msec()) / 1000.0
 	# Broad wing beats while gliding, faster flaps while falling, subtle idle flutter.
 	var wing_rate := 8.5 if glide_active else (6.0 if not player.is_on_floor() else 2.2)
