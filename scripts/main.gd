@@ -155,7 +155,7 @@ func build_lantern(p:Vector3,size_value:float,light_color:Color)->void:
 	light.shadow_enabled=false
 	add_child(light)
 func build_shallow_pool(p:Vector3,radius_x:float,radius_z:float)->void:
-	# A low, translucent magical pool adds a cool reflective break to the flat ground plane.
+	# Use standard primitive meshes for consistent renderer support in Godot Compatibility.
 	var water:=MeshInstance3D.new()
 	var water_mesh:=CylinderMesh.new()
 	water_mesh.top_radius=1.0
@@ -176,18 +176,13 @@ func build_shallow_pool(p:Vector3,radius_x:float,radius_z:float)->void:
 	water_material.emission_energy_multiplier=.35
 	water.material_override=water_material
 	add_child(water)
+	# Staggered luminous bars suggest ripples without relying on custom TorusMesh surfaces.
 	for ripple_index in range(3):
 		var ripple:=MeshInstance3D.new()
-		var ripple_mesh:=TorusMesh.new()
-		ripple_mesh.inner_radius=.92
-		ripple_mesh.outer_radius=1.0
-		ripple_mesh.ring_segments=24
-		ripple_mesh.rings=6
+		var ripple_mesh:=BoxMesh.new()
+		ripple_mesh.size=Vector3(radius_x*(.55+float(ripple_index)*.22),.018,.045)
 		ripple.mesh=ripple_mesh
-		ripple.rotation.x=PI*.5
-		var ripple_scale:=.55+float(ripple_index)*.31
-		ripple.scale=Vector3(radius_x*ripple_scale,1.0,radius_z*ripple_scale)
-		ripple.position=p+Vector3(0,.035+float(ripple_index)*.002,0)
+		ripple.position=p+Vector3(0,.035+float(ripple_index)*.003,(float(ripple_index)-1.0)*radius_z*.22)
 		var ripple_material:=mat(Color("#4ec8dd"),.3)
 		ripple_material.emission_enabled=true
 		ripple_material.emission=Color("#248bbf")
@@ -195,10 +190,10 @@ func build_shallow_pool(p:Vector3,radius_x:float,radius_z:float)->void:
 		ripple.material_override=ripple_material
 		add_child(ripple)
 func build_waterfall(p:Vector3,width:float,height:float)->void:
-	# Narrow vertical ribbons make the elevated platforms feel connected to the valley below.
+	# Thin translucent box ribbons are more reliable than custom QuadMesh surfaces across renderers.
 	var fall:=MeshInstance3D.new()
-	var fall_mesh:=QuadMesh.new()
-	fall_mesh.size=Vector2(width,height)
+	var fall_mesh:=BoxMesh.new()
+	fall_mesh.size=Vector3(width,height,.025)
 	fall.mesh=fall_mesh
 	fall.position=p+Vector3(0,height*.5,0)
 	var fall_material:=StandardMaterial3D.new()
@@ -212,10 +207,10 @@ func build_waterfall(p:Vector3,width:float,height:float)->void:
 	add_child(fall)
 	for ribbon_index in range(2):
 		var ribbon:=MeshInstance3D.new()
-		var ribbon_mesh:=QuadMesh.new()
-		ribbon_mesh.size=Vector2(width*(.11 if ribbon_index==0 else .07),height*.9)
+		var ribbon_mesh:=BoxMesh.new()
+		ribbon_mesh.size=Vector3(width*(.11 if ribbon_index==0 else .07),height*.9,.04)
 		ribbon.mesh=ribbon_mesh
-		ribbon.position=p+Vector3((-.22 if ribbon_index==0 else .24)*width,height*.5,.015)
+		ribbon.position=p+Vector3((-.22 if ribbon_index==0 else .24)*width,height*.5,.02)
 		var ribbon_material:=mat(Color("#8ee8f0"),.3)
 		ribbon_material.emission_enabled=true
 		ribbon_material.emission=Color("#63d8ed")
