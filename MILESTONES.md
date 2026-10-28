@@ -1,3 +1,10 @@
+## Latest atmosphere pass — cooler moonlit palette and distance fog
+
+- Reduced ambient fill and shifted the Valley ground/platform palette toward darker blue-green so the scene reads as nocturnal instead of uniformly mint-lit.
+- Added a restrained blue-violet distance fog tint to reinforce depth without relying on glow effects unavailable in the current Compatibility renderer.
+- Verified through a fresh Godot 4.3 CI run: import, 120-frame headless launch and visible-window screenshot all pass; inspected preview at 1280×720. Geometry remains prototype-level and needs further authored art.
+- Commit: 07af80a7d1d3aac231dc4ca573413fdd772f6c0d; workflow: https://github.com/Dynamon91/nightbound/actions/runs/40726667231.
+
 ## Latest runtime verification — first nonblank gameplay capture
 
 - Godot 4.3 strict CI passed on source commit 73a17c810feda23693bdd07506f59f1408bb8b74: editor import, 120-frame headless launch, window launch, screenshot capture and source packaging.
