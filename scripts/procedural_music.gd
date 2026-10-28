@@ -67,7 +67,7 @@ func _render_sample(real_time: float) -> float:
 	var energy := 0.62 if section % 4 == 1 else (0.78 if section % 4 == 2 else 0.48)
 	var output := 0.0
 
-	var bass_degree := [0, 0, 3, 4, 0, 5, 3, 4][int(bar % 8)]
+	var bass_degree: int = [0, 0, 3, 4, 0, 5, 3, 4][int(bar % 8)]
 	var bass_freq := root * 0.5 * pow(2.0, float(mode[bass_degree % mode.size()]) / 12.0)
 	var bass_phase := TWO_PI * bass_freq * real_time
 	var bass_subdivision := fposmod(beat * 2.0, 1.0)
@@ -108,7 +108,7 @@ func _render_sample(real_time: float) -> float:
 		var counter_env := exp(-counter_phase * 28.0)
 		output += (sin(TWO_PI * counter_freq * real_time) * 0.018 + sin(TWO_PI * counter_freq * 2.0 * real_time) * 0.006) * counter_env * energy
 
-	var chord_degree := [0, 3, 5, 4][int(floor(float(bar) / 8.0)) % 4]
+	var chord_degree: int = [0, 3, 5, 4][int(floor(float(bar) / 8.0)) % 4]
 	var pad_freq := root * pow(2.0, float(mode[chord_degree % mode.size()]) / 12.0)
 	output += sin(TWO_PI * pad_freq * 0.5 * real_time) * 0.035
 	output += sin(TWO_PI * pad_freq * 0.75 * real_time + 0.7) * 0.018
