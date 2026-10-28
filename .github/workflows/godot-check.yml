@@ -27,9 +27,21 @@ jobs:
           test -f scenes/main.tscn
           test -f scripts/main.gd
       - name: Import and parse project in headless mode
-        run: Godot_v4.3-stable_linux.x86_64 --headless --editor --path . --quit
+        run: |
+          set -o pipefail
+          Godot_v4.3-stable_linux.x86_64 --headless --editor --path . --quit 2>&1 | tee /tmp/nightbound-import.log
+          if grep -E "SCRIPT ERROR:|ERROR: Failed to load script" /tmp/nightbound-import.log; then
+            echo "Godot import emitted a script parse/load error."
+            exit 1
+          fi
       - name: Launch main scene for 120 frames
-        run: Godot_v4.3-stable_linux.x86_64 --headless --path . --quit-after 120
+        run: |
+          set -o pipefail
+          Godot_v4.3-stable_linux.x86_64 --headless --path . --quit-after 120 2>&1 | tee /tmp/nightbound-headless.log
+          if grep -E "SCRIPT ERROR:|ERROR: Failed to load script" /tmp/nightbound-headless.log; then
+            echo "The main scene emitted a script parse/load error."
+            exit 1
+          fi
       - name: Capture actual game window screenshot
         if: github.event_name != 'pull_request'
         run: |
@@ -44,6 +56,10 @@ jobs:
             # the window manager does not expose a reliable window class under Xvfb.
             sleep 20
             if ! kill -0 "$game_pid" 2>/dev/null; then
+              cat /tmp/nightbound-godot.log
+              exit 1
+            fi
+            if grep -E "SCRIPT ERROR:|ERROR: Failed to load script" /tmp/nightbound-godot.log; then
               cat /tmp/nightbound-godot.log
               exit 1
             fi
