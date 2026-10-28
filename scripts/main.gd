@@ -44,6 +44,8 @@ var hero_head_visual: MeshInstance3D
 var animated_grass: Array[MeshInstance3D] = []
 var glide_bar: ProgressBar
 var glide_bar_label: Label
+var checkpoint_positions: Array[Vector3] = []
+var active_checkpoint_index := -1
 
 func material(color: Color, roughness := 0.75) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -110,6 +112,24 @@ func add_rock(parent: Node3D, pos: Vector3, size: Vector3, color: Color, seed_va
 	item.rotation = Vector3(float(seed_value % 5) * 0.09, float(seed_value % 7) * 0.31, float(seed_value % 3) * 0.07)
 	parent.add_child(item)
 	return item
+
+func add_checkpoint_marker(pos: Vector3, marker_name: String) -> void:
+	checkpoint_positions.append(pos)
+	var ring := MeshInstance3D.new()
+	ring.name = marker_name.replace(" ", "")
+	var mesh := TorusMesh.new()
+	mesh.inner_radius = 0.52
+	mesh.outer_radius = 0.68
+	ring.mesh = mesh
+	ring.position = pos + Vector3(0, 0.06, 0)
+	ring.rotation.x = PI * 0.5
+	var glow_mat := material(Color("#83f4df"), 0.25)
+	glow_mat.emission_enabled = true
+	glow_mat.emission = Color("#50e7dd")
+	glow_mat.emission_energy_multiplier = 1.25
+	ring.material_override = glow_mat
+	add_child(ring)
+	add_crystal_shard(self, pos + Vector3(0, 0.55, 0), 0.7, Color("#83f4df"), 0.13)
 
 func add_grass_tuft(parent: Node3D, pos: Vector3, scale_value: float, color: Color, seed_value: int) -> MeshInstance3D:
 	# Three crossed, tapered blades give the ground a readable silhouette without
@@ -323,6 +343,10 @@ func build_world() -> void:
 	var crystal_positions: Array[Vector3] = [Vector3(-5, 1.0, -5), Vector3(7, 1.5, -12), Vector3(-14, 1.2, -10), Vector3(-25, 1.5, -21), Vector3(-38, 3.2, -29), Vector3(25, 1.5, -23), Vector3(38, 3.4, -33), Vector3(-25, 1.5, 24), Vector3(-38, 3.5, 35), Vector3(25, 1.6, 25), Vector3(38, 3.7, 36)]
 	for i in range(crystal_positions.size()):
 		make_crystal(crystal_positions[i], "crystal_%02d" % i)
+	# Safe perches along the valley route; proximity activates and saves them.
+	for i in range(3):
+		var cp: Vector3 = [Vector3(0, 1.5, 3), Vector3(-25, 2.4, -21), Vector3(25, 2.4, -23)][i]
+		add_checkpoint_marker(cp, "Valley Perch %d" % (i + 1))
 	var relic_positions: Array[Vector3] = [Vector3(-8, 1.2, 0), Vector3(5, 1, -7), Vector3(20, 1, 3), Vector3(-37, 4.7, -38), Vector3(37, 4.8, 40)]
 	for i in range(relic_positions.size()):
 		var relic := add_sphere(self, relic_positions[i], 0.5, Color("#a9efff"))
@@ -385,6 +409,9 @@ func build_veilwood() -> void:
 	for p in [Vector3(112, 2.5, -18), Vector3(151, 3.0, -8), Vector3(116, 2.8, 20), Vector3(153, 3.5, 14), Vector3(130, 1.0, 30)]:
 		add_crystal_shard(self, p, 1.7, Color("#7ceff5"), 0.3)
 		add_crystal_shard(self, p + Vector3(0.65, 0.35, 0), 1.1, Color("#bd7cff"), 0.24)
+	# Veilwood checkpoints mark the arrival and the route to the Heart-Tree.
+	add_checkpoint_marker(Vector3(130, 1.5, 4), "Veilwood Arrival")
+	add_checkpoint_marker(Vector3(130, 1.5, -24), "Heart-Tree Approach")
 	# Five persistent Moonseeds form the first optional objective in this realm.
 	var seed_positions: Array[Vector3] = [Vector3(111, 1.1, -4), Vector3(143, 1.4, -13), Vector3(155, 2.1, 23), Vector3(115, 1.1, 23), Vector3(130, 1.4, -24)]
 	for i in range(seed_positions.size()):
@@ -601,6 +628,17 @@ func _physics_process(delta: float) -> void:
 	elif not Input.is_action_pressed("shadow_dash"):
 		dash_pressed = false
 	player.move_and_slide()
+	# Step onto a luminous ring to bind the next safe perch as the respawn point.
+	for i in range(checkpoint_positions.size()):
+		var cp: Vector3 = checkpoint_positions[i]
+		var belongs_to_veilwood := cp.x > 90.0
+		if belongs_to_veilwood != (current_realm == "The Veilwood"):
+			continue
+		if player.global_position.distance_to(cp) < 2.1 and active_checkpoint_index != i:
+			active_checkpoint_index = i
+			checkpoint_position = cp + Vector3(0, 0.8, 0)
+			show_message("Checkpoint attuned — progress secured.")
+			save_game()
 	# Recover safely if a missed glide or platform jump sends the hero below
 	# the playable space; keep the current realm checkpoint and clear momentum.
 	if player.global_position.y < -12.0:
@@ -728,6 +766,8 @@ func _physics_process(delta: float) -> void:
 				audio_director.call("play_track", "veilwood_level_2")
 			player.velocity = Vector3.ZERO
 			player.global_position = Vector3(130, 2.0, 4)
+			checkpoint_position = Vector3(130, 2.3, 4)
+			active_checkpoint_index = 3
 			checkpoint_position = player.global_position
 			show_message("REALM SHIFT — Welcome to the Veilwood, a new realm beyond the gate!")
 			save_game()
@@ -782,6 +822,11 @@ func load_game() -> void:
 	var cp = parsed.get("checkpoint_position", [0, 1.5, 3])
 	if cp is Array and cp.size() == 3:
 		checkpoint_position = Vector3(float(cp[0]), float(cp[1]), float(cp[2]))
+	active_checkpoint_index = -1
+	for i in range(checkpoint_positions.size()):
+		if checkpoint_positions[i].distance_to(checkpoint_position - Vector3(0, 0.8, 0)) < 0.2:
+			active_checkpoint_index = i
+			break
 	relics_found = collected_relics.size()
 	for i in range(secrets.size() - 1, -1, -1):
 		if collected_relics.has(secrets[i].name):
