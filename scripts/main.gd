@@ -602,6 +602,66 @@ func apply_moonlit_ground_material(ground:MeshInstance3D)->void:
 	ground_material.shader=ground_shader
 	ground.material_override=ground_material
 
+func build_moonflowers()->void:
+	# Bright, faceted flowers populate the near-ground edges while keeping the jumping lane clear.
+	var flower_positions:Array[Vector3]=[
+		Vector3(-20.0,0.02,8.0),Vector3(-30.0,0.02,14.0),Vector3(-39.0,0.02,21.0),
+		Vector3(-25.0,0.02,27.0),Vector3(-42.0,0.02,32.0),
+		Vector3(20.0,0.02,9.0),Vector3(30.0,0.02,15.0),Vector3(39.0,0.02,22.0),
+		Vector3(25.0,0.02,28.0),Vector3(42.0,0.02,33.0),Vector3(-14.0,0.02,23.0),Vector3(14.0,0.02,22.0)
+	]
+	var petal_colors:Array[Color]=[Color("#d28aff"),Color("#ff9dce"),Color("#78dff4"),Color("#ffd58b")]
+	for flower_index in range(flower_positions.size()):
+		var p:Vector3=flower_positions[flower_index]
+		var size_value:=.78+float(flower_index%4)*.12
+		var stem:=MeshInstance3D.new()
+		var stem_mesh:=CylinderMesh.new()
+		stem_mesh.top_radius=.025
+		stem_mesh.bottom_radius=.06
+		stem_mesh.height=.72*size_value
+		stem_mesh.radial_segments=5
+		stem.mesh=stem_mesh
+		stem.position=p+Vector3(0,.36*size_value,0)
+		stem.material_override=mat(Color("#3d795b"),.94)
+		add_child(stem)
+		for leaf_index in range(2):
+			var leaf:=MeshInstance3D.new()
+			var leaf_mesh:=SphereMesh.new()
+			leaf_mesh.radius=1.0
+			leaf_mesh.height=2.0
+			leaf_mesh.radial_segments=6
+			leaf_mesh.rings=3
+			leaf.mesh=leaf_mesh
+			var leaf_side:float=-1.0 if leaf_index==0 else 1.0
+			leaf.position=p+Vector3(leaf_side*.18*size_value,.31*size_value,.035)
+			leaf.scale=Vector3(.23*size_value,.075*size_value,.13*size_value)
+			leaf.rotation.z=-leaf_side*.32
+			leaf.material_override=mat(Color("#4e986b") if leaf_index==0 else Color("#70a875"),.94)
+			add_child(leaf)
+		var petal_material:=mat(petal_colors[flower_index%petal_colors.size()],.55)
+		petal_material.emission_enabled=true
+		petal_material.emission=petal_colors[flower_index%petal_colors.size()]
+		petal_material.emission_energy_multiplier=.42
+		for petal_index in range(5):
+			var angle:=float(petal_index)*TAU/5.0
+			var petal:=MeshInstance3D.new()
+			var petal_mesh:=SphereMesh.new()
+			petal_mesh.radius=1.0
+			petal_mesh.height=2.0
+			petal_mesh.radial_segments=6
+			petal_mesh.rings=3
+			petal.mesh=petal_mesh
+			petal.position=p+Vector3(cos(angle)*.22*size_value,.72*size_value,sin(angle)*.22*size_value)
+			petal.scale=Vector3(.2*size_value,.11*size_value,.145*size_value)
+			petal.rotation.y=-angle
+			petal.material_override=petal_material
+			add_child(petal)
+		var core:=orb(self,p+Vector3(0,.75*size_value,0),.105*size_value,Color("#fff0ad"))
+		var core_material:=core.material_override as StandardMaterial3D
+		core_material.emission_enabled=true
+		core_material.emission=Color("#ffe69a")
+		core_material.emission_energy_multiplier=1.1
+
 func build_valley_ground_detail()->void:
 	# Keep a clear central traversal corridor while adding foreground and side-plane texture.
 	var rock_colors:Array[Color]=[Color("#435968"),Color("#536979"),Color("#384d5e"),Color("#617582")]
@@ -654,6 +714,7 @@ func build_valley()->void:
 	build_entry_bridge()
 	build_river_crossing()
 	build_valley_ground_detail()
+	build_moonflowers()
 	build_crystal_cluster(Vector3(-23,.85,-4),Color("#62dcff"),1.15)
 	build_crystal_cluster(Vector3(24,.85,-5),Color("#d492ff"),1.12)
 	build_crystal_cluster(Vector3(-36,1.2,9),Color("#78e8ff"),1.4)
