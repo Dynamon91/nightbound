@@ -754,7 +754,7 @@ func build_valley()->void:
 	var ps=[Vector3(-5,1,-5),Vector3(7,1.5,-12),Vector3(-14,1.2,-10),Vector3(-25,1.5,-21),Vector3(-38,3.2,-29),Vector3(25,1.5,-23),Vector3(38,3.4,-33),Vector3(-25,1.5,24),Vector3(-38,3.5,35),Vector3(25,1.6,25),Vector3(38,3.7,36)]
 	for i in range(11):
 		var id:="crystal_%02d"%i; if not collected_crystals.has(id): var n:=gem(ps[i],Color("#68e9ff")); n.name=id; crystal_nodes.append(n)
-	var relic_positions: Array[Vector3]=[Vector3(-17,1.7,13),Vector3(17,2.0,17),Vector3(-39,4.0,35),Vector3(38,4.2,36),Vector3(-28,4.8,-36)]
+	var relic_positions: Array[Vector3]=[Vector3(-17,1.7,13),Vector3(17,2.0,17),Vector3(-18.0,1.55,-6.45),Vector3(38,4.2,36),Vector3(-28,4.8,-36)]
 	for i in range(relic_positions.size()):
 		var relic_id:="relic_%02d"%i
 		if not collected_relics.has(relic_id):
