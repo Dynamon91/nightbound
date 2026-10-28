@@ -46,8 +46,9 @@ func play_track(track_id: String, fade_seconds := DEFAULT_FADE_SECONDS) -> bool:
 		(stream as AudioStreamOggVorbis).loop = true
 	elif stream is AudioStreamWAV:
 		(stream as AudioStreamWAV).loop_mode = AudioStreamWAV.LOOP_FORWARD
-	var next_index := 1 - _active_index
-	var outgoing := _players[_active_index]
+	var outgoing_index := _active_index
+	var next_index := 1 - outgoing_index
+	var outgoing := _players[outgoing_index]
 	var incoming := _players[next_index]
 	incoming.stop()
 	_generators[next_index].stop_generation()
@@ -63,7 +64,7 @@ func play_track(track_id: String, fade_seconds := DEFAULT_FADE_SECONDS) -> bool:
 	if outgoing.playing:
 		tween.tween_property(outgoing, "volume_db", -60.0, duration)
 	tween.chain().tween_callback(outgoing.stop)
-	tween.chain().tween_callback(_generators[_active_index].stop_generation)
+	tween.chain().tween_callback(_generators[outgoing_index].stop_generation)
 	_active_index = next_index
 	_current_track_id = track_id
 	return true
