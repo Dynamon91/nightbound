@@ -1,3 +1,9 @@
+## Latest collectible polish — hovering crystals and Moonseeds
+
+- Crystals, Moonshards and Moonseeds now gently bob and sway in place, with deterministic per-item phase offsets so nearby pickups do not move in lockstep.
+- The effect uses each collectible mesh’s stored spawn position, so motion does not accumulate drift. Visual feel and runtime performance still need in-game verification.
+- Commit: `6b5a9e04dc0250bfbd7deb89bf59bafaf9eea08c`.
+
 ## Latest environment pass — drifting luminous motes
 
 - Added 24 soft teal motes to the Moonlit Valley and 28 violet motes to the Veilwood. They float gently and rotate, with separate palettes to help distinguish the two realms.
@@ -22,7 +28,7 @@ This is the project's working implementation roadmap. Percentages are **developm
 
 ## Primary milestone — Reach the generated mockup's visual quality
 
-**Current overall mockup-fidelity implementation: 62%**
+**Current overall mockup-fidelity implementation: 63%**
 
 The goal is an original, polished colourful 3D platforming world: a memorable bat protagonist, strong silhouettes, rich materials, layered environments, lighting, landmarks and substantial exploration spaces. The mockup is a visual quality target, not a claim that the game should copy Spyro.
 
@@ -35,7 +41,7 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 | Terrain and cliffs | 51% | Layered stylized ground, cliffs, ledges and natural shapes rather than placeholder boxes |
 | Rocks / props | 56% | Reusable stylized rock, crystal, ruin and environmental prop families |
 | Vegetation | 56% | Distinct tree, grass, shrub and magical-forest families with controlled repetition |
-| Crystals / collectibles | 65% | Consistent collectible language, glow, placement and feedback |
+| Crystals / collectibles | 68% | Consistent collectible language, glow, placement and feedback |
 | Lighting / atmosphere | 65% | Moonlight, fog/depth, warm-vs-cool contrast and readable magical accents |
 | Landmark quality | 62% | Large silhouettes visible across the level to support navigation |
 | Veilwood environment | 62% | Distinct bioluminescent forest identity with layered traversal spaces |
