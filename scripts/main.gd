@@ -559,22 +559,30 @@ func _physics_process(delta: float) -> void:
 		return
 	var input := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var dir := Vector3(input.x, 0, input.y)
-	player.velocity.x = dir.x * move_speed
-	player.velocity.z = dir.z * move_speed
 	if dir.length() > 0.05:
 		player.rotation.y = atan2(-dir.x, -dir.z)
 	if not player.is_on_floor():
 		glide_active = Input.is_action_pressed("jump") and player.velocity.y < 0.5 and glide_stamina < GLIDE_MAX_STAMINA
 		if glide_active:
-			glide_stamina += delta
-			player.velocity.y = maxf(player.velocity.y - 5.0 * delta, -3.0)
-			player.velocity.x *= 1.015
-			player.velocity.z *= 1.015
+			glide_stamina = minf(glide_stamina + delta, GLIDE_MAX_STAMINA)
+			# A controlled, slower descent and stronger air steering make the glide
+			# feel deliberate without granting unlimited flight.
+			player.velocity.y = maxf(player.velocity.y - 4.0 * delta, -2.4)
+			if dir.length() > 0.05:
+				player.velocity.x = move_toward(player.velocity.x, dir.x * move_speed * 1.18, 18.0 * delta)
+				player.velocity.z = move_toward(player.velocity.z, dir.z * move_speed * 1.18, 18.0 * delta)
+			else:
+				player.velocity.x = move_toward(player.velocity.x, 0.0, 2.0 * delta)
+				player.velocity.z = move_toward(player.velocity.z, 0.0, 2.0 * delta)
 		else:
+			player.velocity.x = dir.x * move_speed
+			player.velocity.z = dir.z * move_speed
 			player.velocity.y -= 24.0 * delta
 	else:
 		glide_active = false
 		glide_stamina = 0.0
+		player.velocity.x = dir.x * move_speed
+		player.velocity.z = dir.z * move_speed
 		if Input.is_action_just_pressed("jump"):
 			player.velocity.y = jump_speed
 	if Input.is_action_pressed("burst") and not burst_pressed:
