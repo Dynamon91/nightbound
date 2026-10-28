@@ -10,6 +10,15 @@ const TRACKS := {
 	"veilwood_level_2": "res://audio/music/veilwood_level_2.ogg",
 	"veilwood_boss_2": "res://audio/music/veilwood_boss_2.ogg",
 }
+
+# Musical identity targets for the eventual authored tracks. These are deliberately
+# descriptive rather than copies of any existing composition.
+const TRACK_PROFILES := {
+	"moonlit_valley_level_1": {"bpm": 108, "meter": "4/4", "character": "playful nocturnal syncopation", "palette": "wood clicks, rounded bass, bright mallet-like synth", "loop_bars": 128},
+	"moonlit_valley_boss_1": {"bpm": 132, "meter": "7/8", "character": "restless asymmetric combat drive", "palette": "tight kick, dry percussion, sharp synth stabs", "loop_bars": 112},
+	"veilwood_level_2": {"bpm": 76, "meter": "6/8", "character": "mysterious floating forest pulse", "palette": "breathy pads, hand percussion, glassy tones", "loop_bars": 128},
+	"veilwood_boss_2": {"bpm": 116, "meter": "5/4", "character": "dark escalating ritual groove", "palette": "metallic accents, low toms, tense ostinato", "loop_bars": 112},
+}
 const DEFAULT_FADE_SECONDS := 2.5
 
 var _players: Array[AudioStreamPlayer] = []
@@ -29,6 +38,9 @@ func _ready() -> void:
 		generator.name = "ProceduralMusic%d" % index
 		add_child(generator)
 		_generators.append(generator)
+
+func get_track_profile(track_id: String) -> Dictionary:
+	return TRACK_PROFILES.get(track_id, {})
 
 ## Returns false only for an unknown track. Missing final audio assets use original procedural music.
 func play_track(track_id: String, fade_seconds := DEFAULT_FADE_SECONDS) -> bool:
