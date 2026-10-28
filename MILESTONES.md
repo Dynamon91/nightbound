@@ -41,7 +41,7 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 
 Implemented in code: `scripts/audio_director.gd` provides two-player crossfades, track IDs for the first two level themes and boss themes, safe missing-asset handling, and loop flags for Ogg Vorbis/WAV. `scripts/main.gd` requests the Moonlit Valley theme at startup and switches to the Veilwood theme on realm transition. Because the actual audio assets do not exist yet, this is integration scaffolding—not finished or audible soundtrack content. The latest code also resynchronizes the requested realm theme after loading a save. The first runtime verification must check Godot parsing, warnings, playback, transitions and loop seams after tracks are added.
 
-**Music system integration: 20%** — an initial realm-aware routing/crossfade script is wired into gameplay. **Original music content: 0%** — final tracks have not yet been composed or added.
+**Music system integration: 20%** — an initial realm-aware routing/crossfade script is wired into gameplay. **Composition design: 25%** — four original score blueprints now define the opening level and boss themes. **Original rendered music content: 0%** — no final audio tracks have been rendered or added.
 
 Nightbound's soundtrack must use **long-form original compositions built for excellent seamless looping**. The intended musical character takes high-level inspiration from the energetic, syncopated, rhythmically intricate and highly percussive spirit associated with **Stewart Copeland**, while remaining distinctly original: no copied melodies, riffs, arrangements, recordings or other protected elements.
 
