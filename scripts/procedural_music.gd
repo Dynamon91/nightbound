@@ -2,7 +2,6 @@ extends Node
 ## Original procedural soundtrack generator for early Nightbound builds.
 ## Produces original, loop-oriented music from synthesized tones with syncopated bass and counter-plucks; no samples or
 ## third-party recordings. Each theme uses its own tempo, mode and motif.
-
 const SAMPLE_RATE := 22050.0
 const TWO_PI := TAU
 const TRACK_DATA := {
@@ -18,11 +17,13 @@ var _track_id := "moonlit_valley_level_1"
 var _sample_cursor := 0
 var _active := false
 var _last_kick_bar := -1
+var _section_offset := 0
 
 func setup(player: AudioStreamPlayer, track_id: String) -> void:
 	_player = player
 	_track_id = track_id
 	_sample_cursor = 0
+	_section_offset = 0
 	var stream := AudioStreamGenerator.new()
 	stream.mix_rate = SAMPLE_RATE
 	stream.buffer_length = 0.6
@@ -35,6 +36,9 @@ func setup(player: AudioStreamPlayer, track_id: String) -> void:
 func stop_generation() -> void:
 	_active = false
 	set_process(false)
+
+func set_section(section_index: int) -> void:
+	_section_offset = maxi(section_index, 0)
 
 func _process(_delta: float) -> void:
 	if not _active or not is_instance_valid(_player) or _playback == null:
@@ -56,19 +60,16 @@ func _render_sample(real_time: float) -> float:
 	var bar := int(floor(beat / float(beats_per_bar)))
 	var beat_in_bar := fposmod(beat, float(beats_per_bar))
 	var step := int(floor(beat * 2.0))
-	var section := int(floor(float(bar) / 16.0))
+	var section := (int(floor(float(bar) / 16.0)) + _section_offset) % 8
 	var root: float = data["root"]
 	var mode: Array = data["mode"]
 	var motif: Array = data["motif"]
 	var energy := 0.62 if section % 4 == 1 else (0.78 if section % 4 == 2 else 0.48)
 	var output := 0.0
 
-	# Warm, softly saturated bass ostinato with phrase changes every 8 bars.
 	var bass_degree := [0, 0, 3, 4, 0, 5, 3, 4][int(bar % 8)]
 	var bass_freq := root * 0.5 * pow(2.0, float(mode[bass_degree % mode.size()]) / 12.0)
 	var bass_phase := TWO_PI * bass_freq * real_time
-	# A breathing, syncopated bass groove: the pulse ducks between attacks instead
-	# of behaving like a constant drone. The accent pattern differs by meter.
 	var bass_subdivision := fposmod(beat * 2.0, 1.0)
 	var bass_attack := 0.58 if bass_subdivision > 0.42 else 1.0
 	var bass_bar_beat := int(floor(beat)) % beats_per_bar
@@ -76,7 +77,6 @@ func _render_sample(real_time: float) -> float:
 		bass_attack *= 0.68
 	output += (sin(bass_phase) * 0.105 + sin(bass_phase * 2.0) * 0.025) * bass_attack * (0.72 + energy * 0.35)
 
-	# A melody with intentional rests; each 16-bar section changes register and density.
 	var motif_index := int(floor(beat * 0.5 + (1.0 if section % 4 == 2 else 0.0))) % motif.size()
 	var melody_step := int(motif[motif_index])
 	var melody_gate := fposmod(beat * 2.0, 2.0)
@@ -88,8 +88,6 @@ func _render_sample(real_time: float) -> float:
 		var local_beat := fposmod(beat * 2.0, 1.0)
 		var envelope := exp(-local_beat * 4.2)
 		var bell := sin(TWO_PI * melody_freq * real_time) * 0.045
-		# Give each location a distinct synthesized colour without borrowing samples:
-		# Veilwood is rounder and breathier; boss themes are sharper and more metallic.
 		if _track_id == "veilwood_level_2":
 			bell += sin(TWO_PI * melody_freq * 1.5 * real_time + 0.35) * 0.010
 			bell += sin(TWO_PI * melody_freq * 2.98 * real_time) * 0.006
@@ -101,8 +99,6 @@ func _render_sample(real_time: float) -> float:
 			bell += sin(TWO_PI * melody_freq * 3.97 * real_time) * 0.004
 		output += bell * envelope * energy
 
-	# Offbeat counter-plucks create a second rhythmic voice against the bass.
-	# Keep them sparse in quiet sections; denser passages get a little more bounce.
 	var counter_step := int(floor(beat * 2.0))
 	var counter_phase := fposmod(beat * 2.0, 1.0)
 	var counter_gate := counter_phase < (0.16 if section % 4 == 0 else 0.23)
@@ -112,7 +108,6 @@ func _render_sample(real_time: float) -> float:
 		var counter_env := exp(-counter_phase * 28.0)
 		output += (sin(TWO_PI * counter_freq * real_time) * 0.018 + sin(TWO_PI * counter_freq * 2.0 * real_time) * 0.006) * counter_env * energy
 
-	# Slow harmonic bed shifts on eight-bar boundaries; low amplitude to leave space.
 	var chord_degree := [0, 3, 5, 4][int(floor(float(bar) / 8.0)) % 4]
 	var pad_freq := root * pow(2.0, float(mode[chord_degree % mode.size()]) / 12.0)
 	output += sin(TWO_PI * pad_freq * 0.5 * real_time) * 0.035
@@ -123,23 +118,21 @@ func _render_sample(real_time: float) -> float:
 	elif _track_id.find("boss") >= 0:
 		output += sin(TWO_PI * pad_freq * 1.414 * real_time) * 0.012
 
-	# Original synthesized percussion: kick, offbeat wooden click and a short noise-like hat.
 	var beat_fraction := fposmod(beat, 1.0)
 	var beat_in_bar_index := int(floor(beat)) % beats_per_bar
 	var bar_in_phrase := bar % 8
 	var downbeat := beat_in_bar_index == 0
 	var backbeat := beat_in_bar_index == (3 if beats_per_bar == 4 else (3 if beats_per_bar == 6 else beats_per_bar - 1))
-	# Change the kick pattern by meter and phrase, not just by volume.
 	var kick_pattern := downbeat or (section > 0 and backbeat and bar_in_phrase % 2 == 0)
 	if beats_per_bar == 7:
 		kick_pattern = downbeat or (beat_in_bar_index == 4 and bar_in_phrase % 2 == 1)
 	elif beats_per_bar == 5:
 		kick_pattern = downbeat or (beat_in_bar_index == 3 and bar_in_phrase % 2 == 0)
-	var kick_hit := beat_fraction < 0.14 and kick_pattern
-	if kick_hit:
+	if beat_fraction < 0.14 and kick_pattern:
 		var kick_env := exp(-beat_fraction * 38.0)
 		var kick_freq := 72.0 - 34.0 * minf(beat_fraction * 5.0, 1.0)
 		output += sin(TWO_PI * kick_freq * real_time) * kick_env * (0.15 if bar_in_phrase == 7 else 0.17)
+
 	var click_phase := fposmod(beat * 2.0, 1.0)
 	var click_step := int(floor(beat * 2.0)) % (beats_per_bar * 2)
 	var click_pattern := click_step % 4 == 1
@@ -149,19 +142,18 @@ func _render_sample(real_time: float) -> float:
 		click_pattern = click_step % 7 == 3 or click_step % 7 == 6
 	elif beats_per_bar == 5:
 		click_pattern = click_step % 5 == 1 or click_step % 5 == 4
-	# Leave breathing room at phrase endings, then add a small pickup into the next phrase.
 	if bar_in_phrase == 7 and click_step >= (beats_per_bar * 2 - 2):
 		click_pattern = false
 	elif bar_in_phrase == 0 and click_step < 2 and section % 4 != 0:
 		click_pattern = click_pattern or click_step == 1
 	if click_phase < 0.10 and click_pattern:
 		output += sin(TWO_PI * (680.0 + float((bar + step) % 5) * 73.0) * real_time) * exp(-click_phase * 45.0) * 0.035
+
 	var hat_phase := fposmod(beat * 4.0, 1.0)
 	if hat_phase < 0.075:
 		var hash_value := sin(float(int(t * SAMPLE_RATE) % 997) * 12.9898) * 43758.5453
 		var noise_value := (fposmod(hash_value, 2.0) - 1.0)
 		output += noise_value * exp(-hat_phase * 55.0) * 0.012 * (1.0 if section % 4 != 3 else 0.45)
 
-	# Gentle end-of-phrase variation and conservative limiting.
 	output += sin(TWO_PI * root * 4.0 * real_time) * 0.004 * (0.5 + energy)
 	return clampf(output, -0.82, 0.82)
