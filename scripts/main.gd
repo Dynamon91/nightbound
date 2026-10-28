@@ -180,14 +180,14 @@ func build_shallow_pool(p:Vector3,radius_x:float,radius_z:float)->void:
 	water.position=p
 	water.scale=Vector3(radius_x,1.0,radius_z)
 	var water_material:=StandardMaterial3D.new()
-	water_material.albedo_color=Color(.13,.43,.63,.72)
+	water_material.albedo_color=Color(.1,.45,.72,.82)
 	water_material.transparency=BaseMaterial3D.TRANSPARENCY_ALPHA
 	water_material.roughness=.22
 	water_material.metallic=.16
 	water_material.shading_mode=BaseMaterial3D.SHADING_MODE_UNSHADED
 	water_material.emission_enabled=true
 	water_material.emission=Color("#164c7d")
-	water_material.emission_energy_multiplier=.24
+	water_material.emission_energy_multiplier=.35
 	water.material_override=water_material
 	add_child(water)
 	for ripple_index in range(3):
@@ -477,12 +477,12 @@ func build_valley()->void:
 	build_lantern(Vector3(3.35,0,-16.6),.9,Color("#ffbf70"))
 	build_lantern(Vector3(-1.75,0,8.0),.72,Color("#ffd18b"))
 	build_lantern(Vector3(1.75,0,8.0),.72,Color("#ffd18b"))
-	build_shallow_pool(Vector3(-30,.02,-27.0),3.8,2.6)
-	build_shallow_pool(Vector3(29,.02,-30.0),3.6,2.5)
-	build_waterfall(Vector3(-30,0,-24.0),2.6,1.55)
-	build_waterfall(Vector3(28,0,-26.0),2.4,1.55)
-	build_waterfall(Vector3(-38,0,-32.0),2.1,2.85)
-	build_waterfall(Vector3(38,0,-36.0),2.1,3.25)
+	build_shallow_pool(Vector3(-30,.02,-12.0),4.5,4.0)
+	build_shallow_pool(Vector3(28,.02,-14.0),4.2,3.6)
+	build_waterfall(Vector3(-30,0,-16.0),2.6,1.55)
+	build_waterfall(Vector3(28,0,-18.0),2.4,1.55)
+	build_waterfall(Vector3(-38,0,-24.0),2.1,2.95)
+	build_waterfall(Vector3(38,0,-28.0),2.1,3.25)
 func build_veilwood()->void:
 	build_motes(130,28,31,Color("#d5a1ff"))
 	box(Vector3(130,-.5,0),Vector3(76,1,76),Color("#252d50"),true)
