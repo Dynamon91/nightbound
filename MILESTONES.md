@@ -1,10 +1,16 @@
+## Latest character-art pass — face and chest readability
+
+- Added a compact muzzle, contrasting nose and chest bib to break up the single dark head/body silhouette.
+- These details are procedural meshes; proportions still need visual inspection in a live game camera.
+- Commit: `803c33043fb4e803156bce2d16ac10f2f509cff3`.
+
 # Nightbound — Milestones & Mockup-Fidelity Progress
 
 This is the project's working implementation roadmap. Percentages are **development estimates for the prototype's visual/asset implementation**, not measured completion percentages and not a claim that the full game is finished.
 
 ## Primary milestone — Reach the generated mockup's visual quality
 
-**Current overall mockup-fidelity implementation: 59%**
+**Current overall mockup-fidelity implementation: 60%**
 
 The goal is an original, polished colourful 3D platforming world: a memorable bat protagonist, strong silhouettes, rich materials, layered environments, lighting, landmarks and substantial exploration spaces. The mockup is a visual quality target, not a claim that the game should copy Spyro.
 
