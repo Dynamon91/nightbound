@@ -4,7 +4,7 @@ This is the project's working implementation roadmap. Percentages are **developm
 
 ## Primary milestone — Reach the generated mockup's visual quality
 
-**Current overall mockup-fidelity implementation: 52%**
+**Current overall mockup-fidelity implementation: 53%**
 
 The goal is an original, polished colourful 3D platforming world: a memorable bat protagonist, strong silhouettes, rich materials, layered environments, lighting, landmarks and substantial exploration spaces. The mockup is a visual quality target, not a claim that the game should copy Spyro.
 
@@ -12,8 +12,8 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 
 | Area | Progress | Target |
 |---|---:|---|
-| Original bat protagonist model | 52% | Recognisable, expressive, polished 3D hero with clean silhouette, wings, face and animation-ready proportions |
-| Hero materials / eyes / wing detail | 45% | Cohesive stylized materials, readable eyes and membrane detail at gameplay distance |
+| Original bat protagonist model | 54% | Recognisable, expressive, polished 3D hero with clean silhouette, wings, face and animation-ready proportions |
+| Hero materials / eyes / wing detail | 47% | Cohesive stylized materials, readable eyes and membrane detail at gameplay distance |
 | Terrain and cliffs | 48% | Layered stylized ground, cliffs, ledges and natural shapes rather than placeholder boxes |
 | Rocks / props | 52% | Reusable stylized rock, crystal, ruin and environmental prop families |
 | Vegetation | 44% | Distinct tree, grass, shrub and magical-forest families with controlled repetition |
@@ -84,6 +84,7 @@ For long levels, tracks may exceed the target duration or use additional section
 - [x] Wings, face, ears and feet represented in the running scene
 - [ ] Polished hero proportions and authored surface details
 - [ ] Animation-quality wing/flight presentation
+- [x] Procedural wing-beat animation for idle, falling and gliding (initial pass; needs visual polish in gameplay capture)
 
 ### Gate B — Environment
 - [x] Distinct Moonlit Valley and Veilwood identities
@@ -113,7 +114,7 @@ The milestone is considered visually reached only when the running game—not me
 ## Next art pass
 
 1. Replace the most obvious primitive terrain shapes with authored cliff/rock forms.
-2. Improve the bat's proportions, face and wing presentation.
+2. Improve the bat's proportions, face and wing presentation; the first procedural wing-beat pass is now implemented.
 3. Build reusable vegetation and prop variants.
 4. Add stronger material variation to ground, stone and magical objects.
 5. Implement the long-form music system and realm-aware looping.
