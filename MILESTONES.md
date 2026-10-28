@@ -4,7 +4,7 @@ This is the project's working implementation roadmap. Percentages are **developm
 
 ## Primary milestone — Reach the generated mockup's visual quality
 
-**Current overall mockup-fidelity implementation: 56%**
+**Current overall mockup-fidelity implementation: 57%**
 
 The goal is an original, polished colourful 3D platforming world: a memorable bat protagonist, strong silhouettes, rich materials, layered environments, lighting, landmarks and substantial exploration spaces. The mockup is a visual quality target, not a claim that the game should copy Spyro.
 
@@ -16,12 +16,12 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 | Hero materials / eyes / wing detail | 53% | Cohesive stylized materials, readable eyes and membrane detail at gameplay distance |
 | Terrain and cliffs | 48% | Layered stylized ground, cliffs, ledges and natural shapes rather than placeholder boxes |
 | Rocks / props | 52% | Reusable stylized rock, crystal, ruin and environmental prop families |
-| Vegetation | 49% | Distinct tree, grass, shrub and magical-forest families with controlled repetition |
+| Vegetation | 56% | Distinct tree, grass, shrub and magical-forest families with controlled repetition |
 | Crystals / collectibles | 65% | Consistent collectible language, glow, placement and feedback |
 | Lighting / atmosphere | 65% | Moonlight, fog/depth, warm-vs-cool contrast and readable magical accents |
 | Landmark quality | 62% | Large silhouettes visible across the level to support navigation |
-| Veilwood environment | 60% | Distinct bioluminescent forest identity with layered traversal spaces |
-| Moonlit Valley environment | 51% | Stronger authored scenery replacing generic prototype geometry |
+| Veilwood environment | 62% | Distinct bioluminescent forest identity with layered traversal spaces |
+| Moonlit Valley environment | 54% | Stronger authored scenery replacing generic prototype geometry |
 
 ### Platforming / level implementation
 
@@ -37,13 +37,18 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 | Enemy / encounter variety | 15% | Distinct enemies and encounters integrated into exploration |
 | Boss / major set pieces | 0% | Not yet implemented/verified |
 
+## Latest art pass — layered forest silhouettes
+
+- Added a reusable stylized tree prop with a tapered trunk, faceted canopy and a small emissive magical-light accent.
+- Moonlit Valley now has a second layer of trees around its play spaces so the background no longer reads as an empty green plane surrounded only by cliffs.
+- Veilwood now has its own darker purple forest silhouettes, deliberately distinct from the Valley's greener tree palette.
+- This is still placeholder-quality geometry compared with the final mockup target; the next art pass should replace these primitive tree forms with authored low-poly assets and richer material breakup.
+- Commit: `84e873cdc4941e6a0fdc1f6f4a3739a622b77b46`.
+
 ## Latest gameplay pass — persistence and checkpoints
 
 - Fixed collectible persistence: crystals, Moonshards and Moonseeds now receive stable IDs, are recorded in the save file, and are omitted when the game rebuilds the world after loading.
 - Fixed checkpoint persistence: entering a new checkpoint now immediately saves the new respawn position instead of only changing it in memory.
-- The save format retains the existing realm and collectible totals while adding the collected-ID arrays.
-- Commit: `d89c1bc1ee52991821d81fbc3e49e4e0b6e831a9`.
-- This commit still requires Godot CI/runtime verification before being marked tested.
 
 ## Audio / music milestone
 
@@ -71,11 +76,6 @@ For long levels, tracks may exceed the target duration or use additional section
 - The audio director now advances the procedural score every 16 bars using each track's own BPM and meter rather than leaving the section selector dormant.
 - The eight-section cycle is reset when a new level/boss theme starts and remains compatible with the existing two-player crossfade system.
 - This is intended to make the 4–7 minute target loops feel like evolving compositions instead of short phrases repeated unchanged.
-- Commit: `b9b2b0c92a4567aa30bf5324c5ec0dde0af71119`.
-
-## Latest gameplay UI pass — glide energy meter
-
-- Added an on-screen `GLIDE ENERGY` bar that updates during gameplay, displays remaining glide stamina as a percentage, and changes tint as energy runs low.
 
 ## Latest traversal pass — controlled glide
 
