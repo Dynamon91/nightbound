@@ -618,6 +618,41 @@ func build_veilwood()->void:
 	for i in range(5):
 		var id:="moonseed_%02d"%i; if not collected_seeds.has(id): var n:=gem(seed_positions[i],Color("#f0a8ff")); n.name=id; seed_nodes.append(n)
 	checkpoint(Vector3(130,1.5,4)); checkpoint(Vector3(130,1.5,-24))
+func make_bat_wing_mesh(side:float)->ArrayMesh:
+	# A small fan of triangles forms a pointed bat wing with scalloped trailing edges.
+	var vertices:=PackedVector3Array([
+		Vector3(0.0,0.0,0.0),
+		Vector3(.46,.24,0.0),
+		Vector3(.40,-.10,0.0),
+		Vector3(.91,.38,0.0),
+		Vector3(.78,-.30,0.0),
+		Vector3(1.48,.20,0.0),
+		Vector3(1.19,-.12,0.0)
+	])
+	for vertex_index in range(vertices.size()):
+		var vertex:=vertices[vertex_index]
+		vertex.x*=side
+		vertices[vertex_index]=vertex
+	var indices:=PackedInt32Array([0,1,2,2,1,3,2,3,4,4,3,5,4,5,6])
+	# Mirror triangle winding on the left wing so both membranes retain consistent front normals.
+	if side<0.0:
+		for triangle_index in range(0,indices.size(),3):
+			var temp:=indices[triangle_index+1]
+			indices[triangle_index+1]=indices[triangle_index+2]
+			indices[triangle_index+2]=temp
+	var normals:=PackedVector3Array()
+	normals.resize(vertices.size())
+	for normal_index in range(normals.size()):
+		normals[normal_index]=Vector3(0,0,1)
+	var arrays:Array=[]
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX]=vertices
+	arrays[Mesh.ARRAY_NORMAL]=normals
+	arrays[Mesh.ARRAY_INDEX]=indices
+	var wing_mesh:=ArrayMesh.new()
+	wing_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays)
+	return wing_mesh
+
 func build_player()->void:
 	player=CharacterBody3D.new(); player.name="NightboundBat"; player.position=checkpoint_position; add_child(player); var cs:=CollisionShape3D.new(); var cap:=CapsuleShape3D.new(); cap.radius=.42; cap.height=1.45; cs.shape=cap; player.add_child(cs)
 	body_visual=orb(player,Vector3(0,.25,0),.55,Color("#2e243b")); body_visual.scale=Vector3(.78,1.15,.75); head_visual=orb(player,Vector3(0,.95,-.02),.48,Color("#3b2b47")); head_visual.scale=Vector3(.9,.95,.9)
@@ -633,7 +668,7 @@ func build_player()->void:
 		ear.mesh=ear_mesh; ear.position=Vector3(side*.27,1.48,-.015); ear.rotation.z=-side*.16; ear.material_override=mat(Color("#392642"),.7); player.add_child(ear)
 		var ear_inner:=orb(player,Vector3(side*.27,1.49,-.12),.075,Color("#a65bba")); ear_inner.scale=Vector3(.65,1.6,.3)
 		var w:=Node3D.new(); w.position=Vector3(side*.2,.42,.03); player.add_child(w); wings.append(w)
-		var membrane:=MeshInstance3D.new(); var membrane_mesh:=BoxMesh.new(); membrane_mesh.size=Vector3(1.5,.78,.055); membrane.mesh=membrane_mesh; membrane.position=Vector3(side*.76,.18,0); membrane.rotation.z=side*.31; membrane.material_override=mat(Color("#493258"),.78); w.add_child(membrane)
+		var membrane:=MeshInstance3D.new(); membrane.mesh=make_bat_wing_mesh(side); membrane.position=Vector3(0,.18,0); membrane.rotation.z=side*.045; var membrane_material:=mat(Color("#493258"),.78); membrane_material.cull_mode=BaseMaterial3D.CULL_DISABLED; membrane.material_override=membrane_material; w.add_child(membrane)
 		var rib_mat:=mat(Color("#82629a"),.65)
 		for rib_i in range(3):
 			var rib:=MeshInstance3D.new(); var rib_mesh:=BoxMesh.new(); rib_mesh.size=Vector3(.035,.67,.075); rib.mesh=rib_mesh
