@@ -30,14 +30,14 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 | 3D movement / camera | 71% | Responsive third-person movement with polished camera behaviour |
 | Jump + glide | 67% | Reliable aerial traversal, readable glide routes and a live on-screen stamina meter |
 | Ability-gated exploration | 55% | Abilities open shortcuts, secrets and revisited routes |
-| Collectible routes | 60% | Main path + risky detours + hidden optional paths |
+| Collectible routes | 62% | Main path + risky detours + hidden optional paths, including optional elevated Moonshard caches |
 | Realm transition | 65% | Seamless-feeling gate/realm progression |
 | Large level structure | 44% | Broad interconnected areas with vertical layers, caves, alcoves and multiple routes |
-| Secrets / optional challenges | 36% | Exploration rewards and revisitation loops |
+| Secrets / optional challenges | 39% | Exploration rewards and revisitation loops, with three persistent optional Moonshards on raised Valley routes |
 | Enemy / encounter variety | 15% | Distinct enemies and encounters integrated into exploration |
 | Boss / major set pieces | 0% | Not yet implemented/verified |
 
-## Audio / music milestone
+## Latest gameplay pass — optional aerial treasures\n\n- Added three optional glowing Moonshards along raised Moonlit Valley platforms. They float and rotate, are collected separately from the 11 gate crystals, and do not change the gate requirement.\n- Moonshard totals and collected IDs are included in the save file; previously collected shards are removed when progress loads. The HUD displays a separate 0/3 counter.\n- Gameplay commit: `b97e0dca42565f317976567810a0d7c7c9b4a3f2`; HUD formatting correction: `cca98df31fba7a9c5671d33e2121435522d9c37e`. CI and runtime validation for these newest commits are pending.\n\n## Audio / music milestone
 
 Implemented in code: `scripts/audio_director.gd` provides two-player crossfades, track IDs for the first two level themes and boss themes, safe missing-asset handling, and loop flags for Ogg Vorbis/WAV. `scripts/main.gd` requests the Moonlit Valley theme at startup and switches to the Veilwood theme on realm transition. Because the actual audio assets do not exist yet, this is integration scaffolding—not finished or audible soundtrack content. The latest code also resynchronizes the requested realm theme after loading a save. The first runtime verification must check Godot parsing, warnings, playback, transitions and loop seams; CI success alone does not establish that audio was heard in-game.
 
