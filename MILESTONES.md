@@ -1,3 +1,9 @@
+## Latest environment pass — drifting luminous motes
+
+- Added 24 soft teal motes to the Moonlit Valley and 28 violet motes to the Veilwood. They float gently and rotate, with separate palettes to help distinguish the two realms.
+- Motes are lightweight procedural spheres with emission; density, readability and performance still need in-game inspection.
+- Commit: `c5adedde8603b8c8331cc39685692b11f12ecc13`.
+
 ## Latest animation pass — subtle life in the bat silhouette
 
 - Added a restrained body bob, slight head counter-motion and a gentle tail sway, layered on top of the existing wing flap and body banking.
@@ -16,7 +22,7 @@ This is the project's working implementation roadmap. Percentages are **developm
 
 ## Primary milestone — Reach the generated mockup's visual quality
 
-**Current overall mockup-fidelity implementation: 61%**
+**Current overall mockup-fidelity implementation: 62%**
 
 The goal is an original, polished colourful 3D platforming world: a memorable bat protagonist, strong silhouettes, rich materials, layered environments, lighting, landmarks and substantial exploration spaces. The mockup is a visual quality target, not a claim that the game should copy Spyro.
 
