@@ -248,7 +248,7 @@ func build_crystal_cluster(p:Vector3,main_color:Color,size_value:float)->void:
 		shard_material.emission_energy_multiplier=1.65 if shard_index==0 else 1.25
 func build_crystal_grotto()->void:
 	# Optional side-route landmark: a dark cave mouth, weathered stone surround and luminous crystal core.
-	var cave_center:=Vector3(-34.0,0.0,-3.5)
+	var cave_center:=Vector3(-27.0,0.0,-1.5)
 	box(cave_center+Vector3(0,1.35,-.28),Vector3(4.6,2.8,.5),Color("#101a35"))
 	box(cave_center+Vector3(0,-.02,0),Vector3(5.6,.28,1.65),Color("#35485f"))
 	# Chunky low-poly rock shoulders and lintel frame the opening as a cave, not a door.
@@ -275,7 +275,7 @@ func build_crystal_grotto()->void:
 	cave_crystal_three.rotation.z=.25
 	# Four raised stones suggest an optional approach without blocking the main central bridge.
 	var approach:Array[Vector3]=[
-		Vector3(-12.0,.25,3.4),Vector3(-17.0,.45,1.0),Vector3(-22.0,.7,-1.0),Vector3(-27.0,.95,-2.5)
+		Vector3(-12.0,.25,3.4),Vector3(-16.0,.45,1.7),Vector3(-20.0,.7,.2),Vector3(-24.0,.95,-.6)
 	]
 	for step_index in range(approach.size()):
 		var stone_pos:Vector3=approach[step_index]
