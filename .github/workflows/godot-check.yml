@@ -78,14 +78,18 @@ jobs:
               cat /tmp/nightbound-godot.log
               exit 1
             fi
+            # _ready() runs before the first rendered frame; allow the splash to disappear.
+            sleep 5
             colors=0
+            file_bytes=0
             for attempt in 1 2 3 4 5 6 7 8; do
               import -window root -crop 1280x720+0+0 "$RUNNER_TEMP/Nightbound-gameplay.png"
               colors="$(identify -format "%k" "$RUNNER_TEMP/Nightbound-gameplay.png")"
-              if [ "$colors" -ge 32 ]; then
+              file_bytes="$(stat -c %s "$RUNNER_TEMP/Nightbound-gameplay.png")"
+              if [ "$colors" -ge 32 ] && [ "$file_bytes" -ge 60000 ]; then
                 break
               fi
-              echo "Screenshot still blank (attempt $attempt/8); waiting for the 3D scene to render."
+              echo "Screenshot looks like a splash/blank frame (attempt $attempt/8; colors=$colors; bytes=$file_bytes); waiting for gameplay render."
               sleep 5
               if ! kill -0 "$game_pid" 2>/dev/null; then
                 cat /tmp/nightbound-godot.log
@@ -95,8 +99,8 @@ jobs:
             identify "$RUNNER_TEMP/Nightbound-gameplay.png"
             mean="$(convert "$RUNNER_TEMP/Nightbound-gameplay.png" -colorspace gray -format "%[fx:mean]" info:)"
             echo "Gameplay screenshot unique colors: $colors; normalized grayscale mean: $mean"
-            if [ "$colors" -lt 32 ]; then
-              echo "Gameplay screenshot is effectively blank (fewer than 32 unique colors)."
+            if [ "$colors" -lt 32 ] || [ "$file_bytes" -lt 60000 ]; then
+              echo "Gameplay screenshot is blank or still a splash screen (colors=$colors; bytes=$file_bytes)."
               cat /tmp/nightbound-godot.log
               exit 1
             fi
