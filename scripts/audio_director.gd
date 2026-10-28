@@ -26,10 +26,18 @@ var _section_elapsed := 0.0
 var _last_reported_section := -1
 
 func _ready() -> void:
+	# Keep music isolated from future SFX/voice buses so later gameplay audio can
+	# duck or mute music without changing the soundtrack's own crossfade levels.
+	var music_bus := AudioServer.get_bus_index("Music")
+	if music_bus < 0:
+		AudioServer.add_bus()
+		music_bus = AudioServer.bus_count - 1
+		AudioServer.set_bus_name(music_bus, "Music")
+	AudioServer.set_bus_volume_db(music_bus, -1.5)
 	for index in range(2):
 		var player := AudioStreamPlayer.new()
 		player.name = "MusicPlayer%d" % index
-		player.bus = "Master"
+		player.bus = "Music"
 		player.volume_db = -80.0
 		add_child(player)
 		_players.append(player)
