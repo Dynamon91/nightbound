@@ -39,7 +39,9 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 
 ## Audio / music milestone
 
-**Current music implementation: 10%** — direction and integration requirements are defined; final original tracks are not yet implemented.
+Implemented in code: `scripts/audio_director.gd` provides two-player crossfades, track IDs for the first two level themes and boss themes, safe missing-asset handling, and loop flags for Ogg Vorbis/WAV. `scripts/main.gd` requests the Moonlit Valley theme at startup and switches to the Veilwood theme on realm transition. Because the actual audio assets do not exist yet, this is integration scaffolding—not finished or audible soundtrack content. The first runtime verification must check Godot parsing, warnings, playback, transitions and loop seams after tracks are added.
+
+**Music system integration: 20%** — an initial realm-aware routing/crossfade script is wired into gameplay. **Original music content: 0%** — final tracks have not yet been composed or added.
 
 Nightbound's soundtrack must use **long-form original compositions built for excellent seamless looping**. The intended musical character takes high-level inspiration from the energetic, syncopated, rhythmically intricate and highly percussive spirit associated with **Stewart Copeland**, while remaining distinctly original: no copied melodies, riffs, arrangements, recordings or other protected elements.
 
@@ -118,7 +120,7 @@ The milestone is considered visually reached only when the running game—not me
 2. Improve the bat's proportions, face and wing presentation; procedural wing beats, emissive eyes/catchlights and fine membrane ribs are implemented as first passes.
 3. Build reusable vegetation and prop variants.
 4. Add stronger material variation to ground, stone and magical objects.
-5. Implement the long-form music system and realm-aware looping.
+5. Add the original level/boss audio assets and verify the music director's crossfade and loop behaviour.
 6. Create original long-form themes for **every playable level and every boss**, not just each realm.
 7. Re-capture real gameplay screenshots and compare them against the mockup.
 8. Iterate until the screenshot—not the design document—shows the intended quality.
