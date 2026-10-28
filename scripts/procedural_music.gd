@@ -88,8 +88,17 @@ func _render_sample(real_time: float) -> float:
 		var local_beat := fposmod(beat * 2.0, 1.0)
 		var envelope := exp(-local_beat * 4.2)
 		var bell := sin(TWO_PI * melody_freq * real_time) * 0.045
-		bell += sin(TWO_PI * melody_freq * 2.01 * real_time) * 0.013
-		bell += sin(TWO_PI * melody_freq * 3.97 * real_time) * 0.004
+		# Give each location a distinct synthesized colour without borrowing samples:
+		# Veilwood is rounder and breathier; boss themes are sharper and more metallic.
+		if _track_id == "veilwood_level_2":
+			bell += sin(TWO_PI * melody_freq * 1.5 * real_time + 0.35) * 0.010
+			bell += sin(TWO_PI * melody_freq * 2.98 * real_time) * 0.006
+		elif _track_id.find("boss") >= 0:
+			bell += sin(TWO_PI * melody_freq * 2.7 * real_time) * 0.018
+			bell += sin(TWO_PI * melody_freq * 4.03 * real_time + 0.2) * 0.008
+		else:
+			bell += sin(TWO_PI * melody_freq * 2.01 * real_time) * 0.013
+			bell += sin(TWO_PI * melody_freq * 3.97 * real_time) * 0.004
 		output += bell * envelope * energy
 
 	# Offbeat counter-plucks create a second rhythmic voice against the bass.
@@ -109,6 +118,10 @@ func _render_sample(real_time: float) -> float:
 	output += sin(TWO_PI * pad_freq * 0.5 * real_time) * 0.035
 	output += sin(TWO_PI * pad_freq * 0.75 * real_time + 0.7) * 0.018
 	output += sin(TWO_PI * pad_freq * 1.5 * real_time + 1.1) * 0.012
+	if _track_id == "veilwood_level_2":
+		output += sin(TWO_PI * pad_freq * 2.0 * real_time + 0.4) * 0.009
+	elif _track_id.find("boss") >= 0:
+		output += sin(TWO_PI * pad_freq * 1.414 * real_time) * 0.012
 
 	# Original synthesized percussion: kick, offbeat wooden click and a short noise-like hat.
 	var beat_fraction := fposmod(beat, 1.0)
