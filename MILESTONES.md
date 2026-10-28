@@ -100,6 +100,7 @@ For long levels, tracks may exceed the target duration or use additional section
 
 - Added a safety recovery when the player falls below the playable world: position resets to the current saved checkpoint, velocity is cleared, and glide stamina is reset.
 - Added luminous checkpoint rings at three Moonlit Valley perches and two Veilwood route landmarks. Entering a ring updates the respawn position and triggers an automatic save.
+- Adjusted the two elevated Valley checkpoint positions to align their rings and respawn points with the tops of their stepping platforms; the correction is awaiting CI.
 - Checkpoint activation is filtered by the current realm to avoid accidentally binding a distant point in the other area. The portal arrival also establishes a Veilwood fallback point.
 - The checkpoint feature is committed; its Godot CI parse/launch check is pending, and in-game positioning still needs a visual/runtime pass.
 
