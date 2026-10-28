@@ -11,7 +11,7 @@ const TRACKS := {
 	"veilwood_boss_2": "res://audio/music/veilwood_boss_2.ogg",
 }
 
-# Musical identity targets for the eventual authored tracks. These are deliberately
+# Musical identity targets for eventual authored tracks. These are deliberately
 # descriptive rather than copies of any existing composition.
 const TRACK_PROFILES := {
 	"moonlit_valley_level_1": {"bpm": 108, "meter": "4/4", "character": "playful nocturnal syncopation", "palette": "wood clicks, rounded bass, bright mallet-like synth", "loop_bars": 128},
@@ -25,6 +25,7 @@ var _players: Array[AudioStreamPlayer] = []
 var _active_index := 0
 var _current_track_id := ""
 var _generators: Array[Node] = []
+var _current_section := 0
 
 func _ready() -> void:
 	for index in range(2):
@@ -42,6 +43,9 @@ func _ready() -> void:
 func get_track_profile(track_id: String) -> Dictionary:
 	return TRACK_PROFILES.get(track_id, {})
 
+func get_current_track() -> String:
+	return _current_track_id
+
 ## Returns false only for an unknown track. Missing final audio assets use original procedural music.
 func play_track(track_id: String, fade_seconds := DEFAULT_FADE_SECONDS) -> bool:
 	if track_id == _current_track_id and _players[_active_index].playing:
@@ -52,8 +56,6 @@ func play_track(track_id: String, fade_seconds := DEFAULT_FADE_SECONDS) -> bool:
 	var path: String = TRACKS[track_id]
 	var has_asset := ResourceLoader.exists(path)
 	var stream: AudioStream = load(path) as AudioStream if has_asset else null
-	# Set loop metadata for formats exposing a loop flag. Loop points still need
-	# to be authored/tested in the source asset to guarantee a seamless transition.
 	if stream is AudioStreamOggVorbis:
 		(stream as AudioStreamOggVorbis).loop = true
 	elif stream is AudioStreamWAV:
@@ -79,6 +81,7 @@ func play_track(track_id: String, fade_seconds := DEFAULT_FADE_SECONDS) -> bool:
 	tween.chain().tween_callback(_generators[outgoing_index].stop_generation)
 	_active_index = next_index
 	_current_track_id = track_id
+	_current_section = 0
 	return true
 
 func stop_music(fade_seconds := DEFAULT_FADE_SECONDS) -> void:
@@ -90,3 +93,9 @@ func stop_music(fade_seconds := DEFAULT_FADE_SECONDS) -> void:
 	tween.tween_property(outgoing, "volume_db", -60.0, maxf(0.0, fade_seconds))
 	tween.tween_callback(outgoing.stop)
 	_current_track_id = ""
+
+func set_section(section_index: int) -> void:
+	_current_section = maxi(section_index, 0)
+	for generator in _generators:
+		if generator.has_method("set_section"):
+			generator.set_section(_current_section)
