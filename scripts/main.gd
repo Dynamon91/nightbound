@@ -36,6 +36,7 @@ var heart_blooms: Array[MeshInstance3D] = []
 var heart_tree_light: OmniLight3D
 var veilwood_motes: Array[MeshInstance3D] = []
 var veilwood_mote_bases: Array[Vector3] = []
+var hero_wing_pivots: Array[Node3D] = []
 
 func material(color: Color, roughness := 0.75) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -383,9 +384,14 @@ func build_player() -> void:
 	var muzzle := add_sphere(player, Vector3(0, 0.82, -0.39), 0.22, Color("#624258"))
 	muzzle.scale = Vector3(1.2, 0.7, 0.8)
 	for side in [-1.0, 1.0]:
-		add_wing_membrane(player, side)
-		var wing_arm := add_box(player, Vector3(side * 0.75, 0.35, 0.02), Vector3(0.12, 0.12, 1.55), Color("#241c2f"))
+		# Animate each membrane and its arm together for a readable wing silhouette.
+		var wing_pivot := Node3D.new()
+		wing_pivot.name = "LeftWingPivot" if side < 0.0 else "RightWingPivot"
+		player.add_child(wing_pivot)
+		add_wing_membrane(wing_pivot, side)
+		var wing_arm := add_box(wing_pivot, Vector3(side * 0.75, 0.35, 0.02), Vector3(0.12, 0.12, 1.55), Color("#241c2f"))
 		wing_arm.rotation.z = side * 0.55
+		hero_wing_pivots.append(wing_pivot)
 	for side in [-1.0, 1.0]:
 		var foot := add_sphere(player, Vector3(side * 0.22, -0.43, -0.12), 0.14, Color("#b77a86"))
 		foot.scale = Vector3(1.0, 0.55, 1.35)
@@ -464,6 +470,14 @@ func _physics_process(delta: float) -> void:
 	player.move_and_slide()
 	pulse_time = maxf(0.0, pulse_time - delta)
 	var ambience_time := float(Time.get_ticks_msec()) / 1000.0
+	# Broad wing beats while gliding, faster flaps while falling, subtle idle flutter.
+	var wing_rate := 8.5 if glide_active else (6.0 if not player.is_on_floor() else 2.2)
+	var wing_amount := 0.34 if glide_active else (0.24 if not player.is_on_floor() else 0.075)
+	for i in range(hero_wing_pivots.size()):
+		var wing: Node3D = hero_wing_pivots[i]
+		if is_instance_valid(wing):
+			var side := -1.0 if i == 0 else 1.0
+			wing.rotation.z = side * sin(ambience_time * wing_rate) * wing_amount
 	for i in range(veilwood_motes.size()):
 		var mote: MeshInstance3D = veilwood_motes[i]
 		if is_instance_valid(mote):
