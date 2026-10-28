@@ -3,16 +3,12 @@ class_name NightboundAudioDirector
 ## Music routing/crossfade framework. Uses original rendered assets when present;
 ## otherwise starts the in-project procedural score generator for a playable music bed.
 const ProceduralMusicScript = preload("res://scripts/procedural_music.gd")
-
 const TRACKS := {
 	"moonlit_valley_level_1": "res://audio/music/moonlit_valley_level_1.ogg",
 	"moonlit_valley_boss_1": "res://audio/music/moonlit_valley_boss_1.ogg",
 	"veilwood_level_2": "res://audio/music/veilwood_level_2.ogg",
 	"veilwood_boss_2": "res://audio/music/veilwood_boss_2.ogg",
 }
-
-# Musical identity targets for eventual authored tracks. These are deliberately
-# descriptive rather than copies of any existing composition.
 const TRACK_PROFILES := {
 	"moonlit_valley_level_1": {"bpm": 108, "meter": "4/4", "character": "playful nocturnal syncopation", "palette": "wood clicks, rounded bass, bright mallet-like synth", "loop_bars": 128},
 	"moonlit_valley_boss_1": {"bpm": 132, "meter": "7/8", "character": "restless asymmetric combat drive", "palette": "tight kick, dry percussion, sharp synth stabs", "loop_bars": 112},
@@ -20,12 +16,14 @@ const TRACK_PROFILES := {
 	"veilwood_boss_2": {"bpm": 116, "meter": "5/4", "character": "dark escalating ritual groove", "palette": "metallic accents, low toms, tense ostinato", "loop_bars": 112},
 }
 const DEFAULT_FADE_SECONDS := 2.5
-
+const SECTION_LENGTH_BARS := 16
 var _players: Array[AudioStreamPlayer] = []
 var _active_index := 0
 var _current_track_id := ""
 var _generators: Array[Node] = []
 var _current_section := 0
+var _section_elapsed := 0.0
+var _last_reported_section := -1
 
 func _ready() -> void:
 	for index in range(2):
@@ -40,13 +38,29 @@ func _ready() -> void:
 		add_child(generator)
 		_generators.append(generator)
 
+func _process(delta: float) -> void:
+	if _current_track_id == "" or not _players[_active_index].playing:
+		return
+	_section_elapsed += delta
+	var profile: Dictionary = TRACK_PROFILES.get(_current_track_id, {})
+	var bpm: float = float(profile.get("bpm", 100.0))
+	var meter := str(profile.get("meter", "4/4"))
+	var slash := meter.find("/")
+	var beats_per_bar := maxi(1, int(meter.substr(0, slash))) if slash > 0 else 4
+	var section_seconds := 60.0 / bpm * float(beats_per_bar * SECTION_LENGTH_BARS)
+	if section_seconds <= 0.0:
+		return
+	var section := int(floor(_section_elapsed / section_seconds)) % 8
+	if section != _last_reported_section:
+		_last_reported_section = section
+		set_section(section)
+
 func get_track_profile(track_id: String) -> Dictionary:
 	return TRACK_PROFILES.get(track_id, {})
 
 func get_current_track() -> String:
 	return _current_track_id
 
-## Returns false only for an unknown track. Missing final audio assets use original procedural music.
 func play_track(track_id: String, fade_seconds := DEFAULT_FADE_SECONDS) -> bool:
 	if track_id == _current_track_id and _players[_active_index].playing:
 		return true
@@ -82,6 +96,9 @@ func play_track(track_id: String, fade_seconds := DEFAULT_FADE_SECONDS) -> bool:
 	_active_index = next_index
 	_current_track_id = track_id
 	_current_section = 0
+	_section_elapsed = 0.0
+	_last_reported_section = -1
+	set_section(0)
 	return true
 
 func stop_music(fade_seconds := DEFAULT_FADE_SECONDS) -> void:
@@ -93,6 +110,7 @@ func stop_music(fade_seconds := DEFAULT_FADE_SECONDS) -> void:
 	tween.tween_property(outgoing, "volume_db", -60.0, maxf(0.0, fade_seconds))
 	tween.tween_callback(outgoing.stop)
 	_current_track_id = ""
+	_section_elapsed = 0.0
 
 func set_section(section_index: int) -> void:
 	_current_section = maxi(section_index, 0)
