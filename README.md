@@ -13,12 +13,19 @@ Nightbound is an original **3D third-person exploration-platformer prototype** s
 - Burst movement and a crystal-gated Shadow Dash
 - Local save/load of collected crystals and player position
 - Moonlit environment lighting and a purple glow near the realm gate
+- Veilwood realm with Moonseed collection objective, Heart-Tree reward, animated wisps and a rune-lit arrival trail
 
 This is an early prototype. Larger features such as a complete multi-level campaign, finished boss encounter, checkpoints, and quest chains are **not yet verified as implemented in the current main-branch source**.
 
 ## Level design direction
 
 Nightbound's levels must be substantial, expansive 3D adventure spaces—not short, narrow stages. The target is the sense of scale and discovery found in classic Spyro the Dragon levels: broad areas to roam, branching routes, vertical platforms and gliding paths, hidden caves and alcoves, optional challenges, plentiful collectibles, and secrets that reward revisiting areas after unlocking abilities. Each realm should feel like a memorable place with multiple connected sub-areas and meaningful exploration time. Keep the protagonist an original fantasy bat; Spyro is a reference for level structure and gameplay feel, not for replacing Nightbound's character or copying its worlds.
+
+## Mockup-fidelity milestone
+
+The project now tracks a dedicated **Mockup-Fidelity Implementation** milestone for the models, terrain, props, vegetation, lighting and level-art work needed to make the running game visually approach the generated mockup. The current development estimate is **42%** for this visual/asset milestone. See [`MILESTONES.md`](MILESTONES.md) for the detailed per-area progress and acceptance criteria.
+
+The percentage is a planning estimate, not a measured visual score. The milestone is only considered reached when the running game itself demonstrates the target quality in verified gameplay screenshots.
 
 ## Controls
 
