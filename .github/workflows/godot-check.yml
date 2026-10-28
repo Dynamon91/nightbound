@@ -65,6 +65,19 @@ jobs:
             fi
             import -window root -crop 1280x720+0+0 "$RUNNER_TEMP/Nightbound-gameplay.png"
             identify "$RUNNER_TEMP/Nightbound-gameplay.png"
+            colors="$(identify -format '%k' "$RUNNER_TEMP/Nightbound-gameplay.png")"
+            mean="$(convert "$RUNNER_TEMP/Nightbound-gameplay.png" -colorspace gray -format '%[fx:mean]' info:)"
+            echo "Gameplay screenshot unique colors: $colors; normalized grayscale mean: $mean"
+            if [ "$colors" -lt 32 ]; then
+              echo "Gameplay screenshot is effectively blank (fewer than 32 unique colors)."
+              cat /tmp/nightbound-godot.log
+              exit 1
+            fi
+            awk -v mean="$mean" 'BEGIN { if (mean < 0.015) exit 1 }' || {
+              echo "Gameplay screenshot is too dark/blank to verify."
+              cat /tmp/nightbound-godot.log
+              exit 1
+            }
             # Keep runtime logs as an artifact so startup errors are diagnosable.
             cp /tmp/nightbound-godot.log "$RUNNER_TEMP/Nightbound-godot.log"
             kill "$game_pid" 2>/dev/null || true
