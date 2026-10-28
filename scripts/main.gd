@@ -266,10 +266,34 @@ func build_crystal_grotto()->void:
 	rock(cave_center+Vector3(1.45,2.48,.04),Vector3(1.15,.68,.88),Color("#3d4d68"),131)
 	# Carved cool runes guide the eye to the hidden chamber.
 	for side in [-1.0,1.0]:
-		var rune:=glowing_box(cave_center+Vector3(side*1.72,1.25,.53),Vector3(.075,1.8,.055),Color("#58d9ee"))
-		rune.rotation.z=side*.08
+		var rune:=glowing_box(cave_center+Vector3(side*1.78,1.25,.63),Vector3(.14,2.25,.12),Color("#49eaff"))
+		rune.rotation.z=side*.05
+		var rune_material:=rune.material_override as StandardMaterial3D
+		rune_material.emission_energy_multiplier=1.8
 		for rune_index in range(3):
-			glowing_box(cave_center+Vector3(side*(1.72-.13*float(rune_index%2)),.58+float(rune_index)*.48,.55),Vector3(.25,.055,.06),Color("#8be8ee"))
+			var cross_rune:=glowing_box(cave_center+Vector3(side*(1.78-.14*float(rune_index%2)),.58+float(rune_index)*.48,.67),Vector3(.28,.065,.08),Color("#8be8ee"))
+			var cross_material:=cross_rune.material_override as StandardMaterial3D
+			cross_material.emission_energy_multiplier=1.35
+	# A luminous ring makes the secret entrance read clearly against the dark stone.
+	var cave_ring:=MeshInstance3D.new()
+	var cave_ring_mesh:=TorusMesh.new()
+	cave_ring_mesh.inner_radius=1.02
+	cave_ring_mesh.outer_radius=1.23
+	cave_ring_mesh.ring_segments=28
+	cave_ring_mesh.rings=8
+	cave_ring.mesh=cave_ring_mesh
+	cave_ring.rotation.x=PI*.5
+	cave_ring.position=cave_center+Vector3(0,1.35,.66)
+	cave_ring.scale=Vector3(1.18,1.15,1.0)
+	var cave_ring_material:=mat(Color("#4bdff4"),.22)
+	cave_ring_material.emission_enabled=true
+	cave_ring_material.emission=Color("#38dff8")
+	cave_ring_material.emission_energy_multiplier=1.7
+	cave_ring.material_override=cave_ring_material
+	add_child(cave_ring)
+	var top_rune:=glowing_box(cave_center+Vector3(0,2.68,.65),Vector3(3.7,.13,.12),Color("#a38cff"))
+	var top_rune_material:=top_rune.material_override as StandardMaterial3D
+	top_rune_material.emission_energy_multiplier=1.5
 	# Oversized decorative crystals form a focal point inside the cave; they are not counted as pickups.
 	var cave_crystal:=gem(cave_center+Vector3(-.48,.95,.02),Color("#5cdfff"))
 	cave_crystal.scale=Vector3(.95,1.6,.8)
@@ -280,6 +304,9 @@ func build_crystal_grotto()->void:
 	var cave_crystal_three:=gem(cave_center+Vector3(1.02,.47,.12),Color("#6be9ff"))
 	cave_crystal_three.scale=Vector3(.38,.76,.42)
 	cave_crystal_three.rotation.z=.25
+	for cave_shard in [cave_crystal,cave_crystal_two,cave_crystal_three]:
+		var cave_shard_material:=cave_shard.material_override as StandardMaterial3D
+		cave_shard_material.emission_energy_multiplier=2.0
 	# Four raised stones suggest an optional approach without blocking the main central bridge.
 	var approach:Array[Vector3]=[
 		Vector3(-12.0,.25,3.4),Vector3(-14.5,.45,.4),Vector3(-16.0,.7,-3.2),Vector3(-17.0,.95,-6.1)
