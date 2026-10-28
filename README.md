@@ -14,6 +14,7 @@ Nightbound is an original **3D third-person exploration-platformer prototype** s
 - Local save/load of collected crystals and player position
 - Moonlit environment lighting and a purple glow near the realm gate
 - Veilwood realm with Moonseed collection objective, Heart-Tree reward, animated wisps and a rune-lit arrival trail
+- Initial realm-aware music director with two-player crossfades and loop flags for Ogg Vorbis/WAV assets; original music files are still pending
 
 This is an early prototype. Larger features such as a complete multi-level campaign, finished boss encounter, checkpoints, and quest chains are **not yet verified as implemented in the current main-branch source**.
 
@@ -23,7 +24,7 @@ Nightbound's levels must be substantial, expansive 3D adventure spaces—not sho
 
 ## Mockup-fidelity milestone
 
-The project now tracks a dedicated **Mockup-Fidelity Implementation** milestone for the models, terrain, props, vegetation, lighting and level-art work needed to make the running game visually approach the generated mockup. The current development estimate is **42%** for this visual/asset milestone. See [`MILESTONES.md`](MILESTONES.md) for the detailed per-area progress and acceptance criteria.
+The project now tracks a dedicated **Mockup-Fidelity Implementation** milestone for the models, terrain, props, vegetation, lighting and level-art work needed to make the running game visually approach the generated mockup. The current development estimate is **53%** for this visual/asset milestone. See [`MILESTONES.md`](MILESTONES.md) for detailed per-area progress and acceptance criteria, and [`AUDIO_IMPLEMENTATION.md`](AUDIO_IMPLEMENTATION.md) for the music system, track inventory and asset requirements.
 
 The percentage is a planning estimate, not a measured visual score. The milestone is only considered reached when the running game itself demonstrates the target quality in verified gameplay screenshots.
 
