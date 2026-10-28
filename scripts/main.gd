@@ -116,16 +116,31 @@ func build_distant_citadel()->void:
 	for mark_index in range(5):
 		var mark:=orb(self,Vector3(11.4+float((mark_index*7)%5)*.72,15.1+float((mark_index*3)%4)*.63,-54.88),.28+float(mark_index%2)*.12,Color("#aebde1"))
 		mark.scale=Vector3(1.0,1.0,.035)
-	# Sparse stars are kept above the silhouette so they do not compete with pickups.
+	# Batch the star field into one draw call so the software renderer stays responsive in CI.
+	var star_mesh:=SphereMesh.new()
+	star_mesh.radius=1.0
+	star_mesh.height=2.0
+	star_mesh.radial_segments=5
+	star_mesh.rings=3
+	var star_material:=mat(Color("#b9d5ff"),.35)
+	star_material.emission_enabled=true
+	star_material.emission=Color("#b9d5ff")
+	star_material.emission_energy_multiplier=.85
+	var star_batch:=MultiMesh.new()
+	star_batch.transform_format=MultiMesh.TRANSFORM_3D
+	star_batch.mesh=star_mesh
+	star_batch.instance_count=52
 	for star_index in range(52):
 		var sx:=float(((star_index*37)%93)-46)
 		var sy:=11.0+float((star_index*17)%16)
 		var sz:=-52.0-float((star_index*11)%8)
-		var star:=orb(self,Vector3(sx,sy,sz),.025+float(star_index%3)*.012,Color("#c8e5ff") if star_index%4==0 else Color("#b1c9ff"))
-		var star_material:=star.material_override as StandardMaterial3D
-		star_material.emission_enabled=true
-		star_material.emission=star_material.albedo_color
-		star_material.emission_energy_multiplier=.85
+		var star_scale:=.025+float(star_index%3)*.012
+		var star_transform:=Transform3D(Basis().scaled(Vector3.ONE*star_scale),Vector3(sx,sy,sz))
+		star_batch.set_instance_transform(star_index,star_transform)
+	var starfield:=MultiMeshInstance3D.new()
+	starfield.multimesh=star_batch
+	starfield.material_override=star_material
+	add_child(starfield)
 func build_gate_detail()->void:
 	# Layered stone footing, thin carved trim and emissive runes make the gate a real landmark.
 	for side in [-1.0,1.0]:
