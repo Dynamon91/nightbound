@@ -77,12 +77,12 @@ func set_gate_state(awake:bool)->void:
 func build_distant_citadel()->void:
 	# A stacked low-poly skyline gives the gate a destination to frame, rather than an empty horizon.
 	box(Vector3(0,1.55,-45.5),Vector3(14.0,3.1,2.4),Color("#273858"))
-	box(Vector3(0,3.8,-45.0),Vector3(5.4,4.4,3.2),Color("#35466f"))
-	box(Vector3(0,6.8,-45.1),Vector3(2.5,4.8,2.3),Color("#46578b"))
+	box(Vector3(0,3.3,-45.0),Vector3(5.4,3.8,3.2),Color("#35466f"))
+	box(Vector3(0,5.3,-45.1),Vector3(2.5,4.2,2.3),Color("#46578b"))
 	var tower_data:Array[Vector4]=[
-		Vector4(-5.0,3.5,-46.0,6.2),Vector4(5.0,3.5,-46.0,6.2),
-		Vector4(-8.0,2.2,-44.0,4.1),Vector4(8.0,2.2,-44.0,4.1),
-		Vector4(-2.8,4.0,-43.6,8.0),Vector4(2.8,4.0,-43.6,8.0)
+		Vector4(-5.0,3.0,-46.0,4.8),Vector4(5.0,3.0,-46.0,4.8),
+		Vector4(-8.0,1.8,-44.0,3.3),Vector4(8.0,1.8,-44.0,3.3),
+		Vector4(-2.8,3.4,-43.6,6.0),Vector4(2.8,3.4,-43.6,6.0)
 	]
 	for tower_index in range(tower_data.size()):
 		var tower:Vector4=tower_data[tower_index]
@@ -92,7 +92,7 @@ func build_distant_citadel()->void:
 		var cone_mesh:=CylinderMesh.new()
 		cone_mesh.top_radius=.015
 		cone_mesh.bottom_radius=width*.78
-		cone_mesh.height=1.55 if tower_index<4 else 1.9
+		cone_mesh.height=1.25 if tower_index<4 else 1.55
 		cone_mesh.radial_segments=6
 		cone.mesh=cone_mesh
 		cone.position=Vector3(tower.x,tower.y+tower.w+(cone_mesh.height*.5),tower.z)
@@ -105,16 +105,16 @@ func build_distant_citadel()->void:
 	for side in [-1.0,1.0]:
 		box(Vector3(side*6.2,1.4,-43.5),Vector3(1.25,2.8,4.0),Color("#293b5e"))
 	# The moon is a flattened sphere with a dark rim and understated surface marks.
-	var moon_rim:=orb(self,Vector3(13.0,16.2,-55.5),4.25,Color("#536ba2"))
+	var moon_rim:=orb(self,Vector3(13.0,10.8,-55.5),3.65,Color("#536ba2"))
 	moon_rim.scale=Vector3(1.0,1.0,.055)
-	var moon:=orb(self,Vector3(13.0,16.2,-55.0),3.88,Color("#d3def6"))
+	var moon:=orb(self,Vector3(13.0,10.8,-55.0),3.35,Color("#d3def6"))
 	moon.scale=Vector3(1.0,1.0,.055)
 	var moon_material:=moon.material_override as StandardMaterial3D
 	moon_material.emission_enabled=true
 	moon_material.emission=Color("#b4ccff")
 	moon_material.emission_energy_multiplier=.34
 	for mark_index in range(5):
-		var mark:=orb(self,Vector3(11.4+float((mark_index*7)%5)*.72,15.1+float((mark_index*3)%4)*.63,-54.88),.28+float(mark_index%2)*.12,Color("#aebde1"))
+		var mark:=orb(self,Vector3(11.8+float((mark_index*7)%5)*.55,10.0+float((mark_index*3)%4)*.5,-54.88),.28+float(mark_index%2)*.12,Color("#aebde1"))
 		mark.scale=Vector3(1.0,1.0,.035)
 	# Batch the star field into one draw call so the software renderer stays responsive in CI.
 	var star_mesh:=SphereMesh.new()
@@ -132,7 +132,7 @@ func build_distant_citadel()->void:
 	star_batch.instance_count=52
 	for star_index in range(52):
 		var sx:=float(((star_index*37)%93)-46)
-		var sy:=11.0+float((star_index*17)%16)
+		var sy:=8.0+float((star_index*17)%12)
 		var sz:=-52.0-float((star_index*11)%8)
 		var star_scale:=.025+float(star_index%3)*.012
 		var star_transform:=Transform3D(Basis().scaled(Vector3.ONE*star_scale),Vector3(sx,sy,sz))
@@ -141,6 +141,33 @@ func build_distant_citadel()->void:
 	starfield.multimesh=star_batch
 	starfield.material_override=star_material
 	add_child(starfield)
+func bush_cluster(p:Vector3,size_value:float,main_color:Color)->void:
+	# Overlapping faceted canopies create readable, layered shrubs at the edges of the route.
+	var placements:Array[Vector3]=[Vector3(-.5,.42,0),Vector3(0,.62,-.12),Vector3(.52,.43,.04)]
+	var colors:Array[Color]=[main_color,main_color.lightened(.12),main_color.darkened(.1)]
+	for cluster_index in range(placements.size()):
+		var canopy:=orb(self,p+placements[cluster_index]*size_value,.62*size_value,colors[cluster_index])
+		canopy.scale=Vector3(1.15,.78,.95)
+		var canopy_material:=canopy.material_override as StandardMaterial3D
+		canopy_material.roughness=.94
+func build_lantern(p:Vector3,size_value:float,light_color:Color)->void:
+	# Warm lanterns give the cold blue scene a few authored focal points.
+	box(p+Vector3(0,.13*size_value,0),Vector3(.62,.26,.62)*size_value,Color("#3c435a"))
+	box(p+Vector3(0,.72*size_value,0),Vector3(.19,.95,.19)*size_value,Color("#4a405b"))
+	box(p+Vector3(0,1.28*size_value,0),Vector3(.48,.44,.48)*size_value,Color("#3b4562"))
+	var flame:=orb(self,p+Vector3(0,1.28*size_value,0),.17*size_value,light_color)
+	var flame_material:=flame.material_override as StandardMaterial3D
+	flame_material.emission_enabled=true
+	flame_material.emission=light_color
+	flame_material.emission_energy_multiplier=1.5
+	box(p+Vector3(0,1.56*size_value,0),Vector3(.56,.12,.56)*size_value,Color("#5d4f65"))
+	var light:=OmniLight3D.new()
+	light.position=p+Vector3(0,1.3*size_value,0)
+	light.light_color=light_color
+	light.light_energy=1.1
+	light.omni_range=6.0*size_value
+	light.shadow_enabled=false
+	add_child(light)
 func build_gate_detail()->void:
 	# Layered stone footing, thin carved trim and emissive runes make the gate a real landmark.
 	for side in [-1.0,1.0]:
@@ -354,6 +381,11 @@ func build_valley()->void:
 	for p in [Vector3(-8,0,10),Vector3(8,0,14),Vector3(-22,0,16),Vector3(22,0,18)]: tree(p,.72,Color("#3e6247"))
 	build_entry_bridge()
 	build_valley_ground_detail()
+	for bush_index in range(12):
+		var side:float=-1.0 if bush_index%2==0 else 1.0
+		var row:=float(bush_index/2)
+		var bush_pos:=Vector3(side*(11.5+float((bush_index*3)%4)*5.0),0.02,4.0+row*4.8)
+		bush_cluster(bush_pos,1.0+float(bush_index%3)*.16,Color("#285548") if bush_index%2==0 else Color("#345c4c"))
 	var ps=[Vector3(-5,1,-5),Vector3(7,1.5,-12),Vector3(-14,1.2,-10),Vector3(-25,1.5,-21),Vector3(-38,3.2,-29),Vector3(25,1.5,-23),Vector3(38,3.4,-33),Vector3(-25,1.5,24),Vector3(-38,3.5,35),Vector3(25,1.6,25),Vector3(38,3.7,36)]
 	for i in range(11):
 		var id:="crystal_%02d"%i; if not collected_crystals.has(id): var n:=gem(ps[i],Color("#68e9ff")); n.name=id; crystal_nodes.append(n)
@@ -372,6 +404,10 @@ func build_valley()->void:
 	box(Vector3(-2.25,2.4,-18),Vector3(.75,4.8,1),Color("#45445f"),true); box(Vector3(2.25,2.4,-18),Vector3(.75,4.8,1),Color("#45445f"),true); box(Vector3(0,4.85,-18),Vector3(5.1,.75,1),Color("#56516e"),true)
 	build_gate_detail()
 	build_distant_citadel()
+	build_lantern(Vector3(-3.35,0,-16.6),.9,Color("#ffbf70"))
+	build_lantern(Vector3(3.35,0,-16.6),.9,Color("#ffbf70"))
+	build_lantern(Vector3(-1.75,0,8.0),.72,Color("#ffd18b"))
+	build_lantern(Vector3(1.75,0,8.0),.72,Color("#ffd18b"))
 func build_veilwood()->void:
 	build_motes(130,28,31,Color("#d5a1ff"))
 	box(Vector3(130,-.5,0),Vector3(76,1,76),Color("#252d50"),true)
