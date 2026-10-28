@@ -1,10 +1,12 @@
 extends Node3D
 
 const SAVE_PATH := "user://nightbound_save.json"
+const AudioDirectorScript = preload("res://scripts/audio_director.gd")
 const GLIDE_MAX_STAMINA := 2.8
 var glide_stamina := 0.0
 var glide_active := false
 var checkpoint_position := Vector3(0, 1.5, 3)
+var audio_director: Node
 var player: CharacterBody3D
 var camera: Camera3D
 var hud: Label
@@ -150,6 +152,13 @@ func _ready() -> void:
 	build_camera()
 	build_hud()
 	load_game()
+	audio_director = AudioDirectorScript.new()
+	audio_director.name = "AudioDirector"
+	add_child(audio_director)
+	if current_realm == "The Veilwood":
+		audio_director.call("play_track", "veilwood_level_2")
+	else:
+		audio_director.call("play_track", "moonlit_valley_level_1")
 	show_message("Explore the valley. Press E to reveal hidden echoes.")
 
 func build_world() -> void:
@@ -578,6 +587,8 @@ func _physics_process(delta: float) -> void:
 		if not realm_transitioned and portal_anim_time >= 1.8 and player.global_position.distance_to(Vector3(0, 2.5, -18)) < 3.0:
 			realm_transitioned = true
 			current_realm = "The Veilwood"
+			if is_instance_valid(audio_director):
+				audio_director.call("play_track", "veilwood_level_2")
 			player.velocity = Vector3.ZERO
 			player.global_position = Vector3(130, 2.0, 4)
 			checkpoint_position = player.global_position
