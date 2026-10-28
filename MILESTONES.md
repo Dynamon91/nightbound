@@ -4,7 +4,7 @@ This is the project's working implementation roadmap. Percentages are **developm
 
 ## Primary milestone — Reach the generated mockup's visual quality
 
-**Current overall mockup-fidelity implementation: 54%**
+**Current overall mockup-fidelity implementation: 55%**
 
 The goal is an original, polished colourful 3D platforming world: a memorable bat protagonist, strong silhouettes, rich materials, layered environments, lighting, landmarks and substantial exploration spaces. The mockup is a visual quality target, not a claim that the game should copy Spyro.
 
@@ -16,7 +16,7 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 | Hero materials / eyes / wing detail | 53% | Cohesive stylized materials, readable eyes and membrane detail at gameplay distance |
 | Terrain and cliffs | 48% | Layered stylized ground, cliffs, ledges and natural shapes rather than placeholder boxes |
 | Rocks / props | 52% | Reusable stylized rock, crystal, ruin and environmental prop families |
-| Vegetation | 47% | Distinct tree, grass, shrub and magical-forest families with controlled repetition |
+| Vegetation | 49% | Distinct tree, grass, shrub and magical-forest families with controlled repetition |
 | Crystals / collectibles | 65% | Consistent collectible language, glow, placement and feedback |
 | Lighting / atmosphere | 65% | Moonlight, fog/depth, warm-vs-cool contrast and readable magical accents |
 | Landmark quality | 62% | Large silhouettes visible across the level to support navigation |
@@ -78,6 +78,12 @@ For long levels, tracks may exceed the target duration or use additional section
 - Realm themes should have identifiable motifs while supporting exploration and discovery.
 - Heart-Tree and major discoveries should preferably add or intensify layers instead of hard-cutting to unrelated music.
 - Final audio must use original or properly licensed material; no copyrighted recordings should be bundled as game assets.
+
+## Latest visual pass — grass silhouettes and wind motion
+
+- Added low-poly, crossed-blade grass tufts to both Moonlit Valley and Veilwood, with palette changes between realms and exclusions around key routes.
+- Added subtle phase-offset wind sway to the tuft meshes so the ground layer has motion rather than reading as static decoration.
+- CI workflow for the grass silhouette pass completed successfully; the new wind-animation commit is queued and still requires its own CI result before being considered verified.
 
 ## Visual implementation gates
 
