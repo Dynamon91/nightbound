@@ -401,6 +401,18 @@ func build_player() -> void:
 		glint.name = "EyeGlint"
 	var muzzle := add_sphere(player, Vector3(0, 0.82, -0.39), 0.22, Color("#624258"))
 	muzzle.scale = Vector3(1.2, 0.7, 0.8)
+	# Small facial accents help the hero read clearly at gameplay distance.
+	var nose := add_sphere(player, Vector3(0, 0.84, -0.585), 0.055, Color("#f0a0c5"))
+	nose.scale = Vector3(1.2, 0.8, 0.75)
+	for side in [-1.0, 1.0]:
+		var cheek := add_sphere(player, Vector3(side * 0.245, 0.82, -0.50), 0.065, Color("#8c526f"))
+		cheek.scale = Vector3(1.15, 0.55, 0.35)
+		var inner_ear := add_sphere(player, Vector3(side * 0.285, 1.34, -0.075), 0.105, Color("#c77fa9"))
+		inner_ear.scale = Vector3(0.65, 1.2, 0.25)
+	# A soft chest tuft breaks up the torso silhouette without adding a heavy model.
+	for tuft in range(3):
+		var fur := add_sphere(player, Vector3((float(tuft) - 1.0) * 0.12, 0.12 - absf(float(tuft) - 1.0) * 0.035, -0.405), 0.105, Color("#8b6b91"))
+		fur.scale = Vector3(0.8, 1.25, 0.55)
 	for side in [-1.0, 1.0]:
 		# Animate each membrane and its arm together for a readable wing silhouette.
 		var wing_pivot := Node3D.new()
@@ -632,6 +644,8 @@ func load_game() -> void:
 		return
 	crystals = int(parsed.get("crystals", 0))
 	current_realm = str(parsed.get("current_realm", "Moonlit Valley"))
+	if is_instance_valid(audio_director):
+		audio_director.call("play_track", "veilwood_level_2" if current_realm == "The Veilwood" else "moonlit_valley_level_1")
 	veilwood_seeds = int(parsed.get("veilwood_seeds", 0))
 	collected_veilwood_seeds = parsed.get("collected_veilwood_seeds", [])
 	realm_transitioned = current_realm == "The Veilwood"
