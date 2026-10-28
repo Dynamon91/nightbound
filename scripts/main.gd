@@ -103,9 +103,26 @@ func build_veilwood()->void:
 func build_player()->void:
 	player=CharacterBody3D.new(); player.name="NightboundBat"; player.position=checkpoint; add_child(player); var cs:=CollisionShape3D.new(); var cap:=CapsuleShape3D.new(); cap.radius=.42; cap.height=1.45; cs.shape=cap; player.add_child(cs)
 	body_visual=orb(player,Vector3(0,.25,0),.55,Color("#2e243b")); body_visual.scale=Vector3(.78,1.15,.75); head_visual=orb(player,Vector3(0,.95,-.02),.48,Color("#3b2b47")); head_visual.scale=Vector3(.9,.95,.9)
+	# Ears give the bat a sharper silhouette at gameplay distance.
 	for side in [-1.0,1.0]:
-		orb(player,Vector3(side*.28,1.3,-.02),.28,Color("#493258")); var w:=Node3D.new(); player.add_child(w); wings.append(w); var mem:=box(Vector3(side*.75,.2,0),Vector3(1.45,.7,.06),Color("#493258")); mem.rotation.z=side*.35; w.add_child(mem)
-	for p in [Vector3(-.17,1.04,-.39),Vector3(.17,1.04,-.39)]: var eye:=orb(player,p,.085,Color("#d5a6ff")); var em:=eye.material_override as StandardMaterial3D; em.emission_enabled=true; em.emission=Color("#b878ff"); em.emission_energy_multiplier=1.0
+		var ear:=MeshInstance3D.new()
+		var ear_mesh:=CylinderMesh.new()
+		ear_mesh.top_radius=.015; ear_mesh.bottom_radius=.16; ear_mesh.height=.48; ear_mesh.radial_segments=5
+		ear.mesh=ear_mesh; ear.position=Vector3(side*.27,1.48,-.015); ear.rotation.z=-side*.16; ear.material_override=mat(Color("#392642"),.7); player.add_child(ear)
+		var ear_inner:=orb(player,Vector3(side*.27,1.49,-.12),.075,Color("#a65bba")); ear_inner.scale=Vector3(.65,1.6,.3)
+		var w:=Node3D.new(); w.position=Vector3(side*.2,.42,.03); player.add_child(w); wings.append(w)
+		var membrane:=box(Vector3(side*.76,.18,0),Vector3(1.5,.78,.055),Color("#493258")); membrane.rotation.z=side*.31; w.add_child(membrane)
+		var rib_mat:=mat(Color("#82629a"),.65)
+		for rib_i in range(3):
+			var rib:=MeshInstance3D.new(); var rib_mesh:=BoxMesh.new(); rib_mesh.size=Vector3(.035,.67,.075); rib.mesh=rib_mesh
+			rib.position=Vector3(side*(.42+rib_i*.32),.19, -.045); rib.rotation.z=side*(.15+rib_i*.16); rib.material_override=rib_mat; w.add_child(rib)
+	# Small feet and a tapered tail tuft make the silhouette less spherical.
+	for side in [-1.0,1.0]:
+		var foot:=orb(player,Vector3(side*.2,-.28,-.03),.13,Color("#594064")); foot.scale=Vector3(.8,.65,1.25)
+	var tail:=MeshInstance3D.new(); var tail_mesh:=CylinderMesh.new(); tail_mesh.top_radius=.025; tail_mesh.bottom_radius=.13; tail_mesh.height=.42; tail_mesh.radial_segments=5; tail.mesh=tail_mesh; tail.position=Vector3(0,-.08,.43); tail.rotation.x=PI*.35; tail.material_override=mat(Color("#493258")); player.add_child(tail)
+	for p in [Vector3(-.17,1.04,-.39),Vector3(.17,1.04,-.39)]:
+		var eye:=orb(player,p,.085,Color("#d5a6ff")); var em:=eye.material_override as StandardMaterial3D; em.emission_enabled=true; em.emission=Color("#b878ff"); em.emission_energy_multiplier=1.0
+		var glint:=orb(player,p+Vector3(-.02,.025,-.055),.024,Color("#ffffff")); glint.scale=Vector3(1,1,.5)
 func build_camera()->void:
 	camera=Camera3D.new(); camera.position=Vector3(0,6.5,10.5); player.add_child(camera); camera.current=true; camera.look_at(Vector3(0,.7,0))
 func build_hud()->void:
