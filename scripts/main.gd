@@ -117,31 +117,16 @@ func build_distant_citadel()->void:
 	for mark_index in range(5):
 		var mark:=orb(self,Vector3(11.8+float((mark_index*7)%5)*.55,10.0+float((mark_index*3)%4)*.5,-54.88),.28+float(mark_index%2)*.12,Color("#aebde1"))
 		mark.scale=Vector3(1.0,1.0,.035)
-	# Batch the star field into one draw call so the software renderer stays responsive in CI.
-	var star_mesh:=SphereMesh.new()
-	star_mesh.radius=1.0
-	star_mesh.height=2.0
-	star_mesh.radial_segments=5
-	star_mesh.rings=3
-	var star_material:=mat(Color("#b9d5ff"),.35)
-	star_material.emission_enabled=true
-	star_material.emission=Color("#b9d5ff")
-	star_material.emission_energy_multiplier=.85
-	var star_batch:=MultiMesh.new()
-	star_batch.transform_format=MultiMesh.TRANSFORM_3D
-	star_batch.mesh=star_mesh
-	star_batch.instance_count=52
-	for star_index in range(52):
+	# Use normal mesh instances here: this stays compatible with Godot's dummy renderer in headless validation.
+	for star_index in range(28):
 		var sx:=float(((star_index*37)%93)-46)
 		var sy:=8.0+float((star_index*17)%12)
 		var sz:=-52.0-float((star_index*11)%8)
-		var star_scale:=.025+float(star_index%3)*.012
-		var star_transform:=Transform3D(Basis().scaled(Vector3.ONE*star_scale),Vector3(sx,sy,sz))
-		star_batch.set_instance_transform(star_index,star_transform)
-	var starfield:=MultiMeshInstance3D.new()
-	starfield.multimesh=star_batch
-	starfield.material_override=star_material
-	add_child(starfield)
+		var star:=orb(self,Vector3(sx,sy,sz),.025+float(star_index%3)*.012,Color("#b9d5ff"))
+		var star_material:=star.material_override as StandardMaterial3D
+		star_material.emission_enabled=true
+		star_material.emission=Color("#b9d5ff")
+		star_material.emission_energy_multiplier=.85
 func bush_cluster(p:Vector3,size_value:float,main_color:Color)->void:
 	# Overlapping faceted canopies create readable, layered shrubs at the edges of the route.
 	var placements:Array[Vector3]=[Vector3(-.5,.42,0),Vector3(0,.62,-.12),Vector3(.52,.43,.04)]
