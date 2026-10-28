@@ -2,9 +2,9 @@
 
 ## Current milestone
 
-**Audio system foundation: 20%**
+**Audio system foundation: 35%**
 
-This is deliberately separate from the final music-composition percentage. The repository currently has the musical direction documented, but no final audio recordings are claimed as complete until they are actually created, imported and heard in the running game.
+This is deliberately separate from the final music-composition percentage. The repository now has an original procedural synthesis fallback that generates music live in Godot when a final Ogg/WAV track is absent. It creates a continuous stereo stream with per-track tempo, mode, motif, synthesized bass, bell-like lead, harmonic bed and percussion. This is real in-game audio generation, but it is a first-pass synthesized score rather than a polished recorded final soundtrack.
 
 ## In-game architecture target
 
@@ -76,10 +76,10 @@ The following is a required production matrix, not a claim that the tracks alrea
 
 As the level roster grows, this table must grow with it. **“Per level + per boss” is a permanent soundtrack rule for the project.**
 
-## Current composition work
+## Current composition and synthesis work
 
-`COMPOSITION_SKETCHES.md` now contains four original score blueprints: Moonlit Valley exploration, Veilwood exploration, Moonlit Valley boss, and Veilwood boss. Each specifies a distinct meter/rhythm, tempo, tonal palette, original motif, instrumentation, arrangement timeline and loop-return design. These are composition plans, **not rendered audio**; audio content remains 0% until recordings or synthesized audio assets are integrated and listened to in-game.
+`COMPOSITION_SKETCHES.md` contains four original score blueprints. `scripts/procedural_music.gd` now synthesizes playable themes for all four registered tracks when no final audio file exists. This means the project has an audible procedural music implementation in code; the final authored/recorded soundtrack files and in-game listening verification are still pending.
 
 ## Next production step
 
-Render the first original Moonlit Valley theme into an Ogg Vorbis asset, import it into Godot, then verify playback, long-form development, loop seam and crossfade in a running build. Continue with each level and boss as a separate track.
+Run the headless Godot checks and listen to the procedural output in an actual game build. Refine the synthesizer for musical variation and smoother phrase transitions, then export a polished Ogg Vorbis version of the Moonlit Valley theme and test the loop seam and crossfade. Continue with each level and boss as a separate track.
