@@ -810,7 +810,7 @@ func _physics_process(delta: float) -> void:
 
 func refresh_hud() -> void:
 	if hud:
-		hud.text = "NIGHTBOUND  •  %s\nCrystals: %d/11  •  Echoes: %d/5  •  Moonseeds: %d/5%s\nWASD Move  |  SPACE Leap/Glide  |  F Burst  |  E Echosense\nSHIFT Shadow Dash (8 crystals)  |  P Save  |  O Load" % [current_realm, crystals, relics_found, veilwood_seeds, bonus_shards, "  •  GATE OPEN" if portal_open else ""]
+		hud.text = "NIGHTBOUND  •  %s\nCrystals: %d/11  •  Echoes: %d/5  •  Moonseeds: %d/5  •  Moonshards: %d/3%s\nWASD Move  |  SPACE Leap/Glide  |  F Burst  |  E Echosense\nSHIFT Shadow Dash (8 crystals)  |  P Save  |  O Load" % [current_realm, crystals, relics_found, veilwood_seeds, bonus_shards, "  •  GATE OPEN" if portal_open else ""]
 
 func show_message(text_value: String) -> void:
 	if message:
