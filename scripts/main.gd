@@ -39,6 +39,8 @@ var heart_tree_light: OmniLight3D
 var veilwood_motes: Array[MeshInstance3D] = []
 var veilwood_mote_bases: Array[Vector3] = []
 var hero_wing_pivots: Array[Node3D] = []
+var hero_body_visual: MeshInstance3D
+var hero_head_visual: MeshInstance3D
 var animated_grass: Array[MeshInstance3D] = []
 var glide_bar: ProgressBar
 var glide_bar_label: Label
@@ -439,10 +441,10 @@ func build_player() -> void:
 	collision.shape = capsule
 	collision.position = Vector3(0, 0.15, 0)
 	player.add_child(collision)
-	var body := add_sphere(player, Vector3(0, 0.25, 0), 0.55, Color("#2e243b"))
-	body.scale = Vector3(0.78, 1.15, 0.75)
-	var head := add_sphere(player, Vector3(0, 0.95, -0.02), 0.48, Color("#3b2b47"))
-	head.scale = Vector3(0.9, 0.95, 0.9)
+	hero_body_visual = add_sphere(player, Vector3(0, 0.25, 0), 0.55, Color("#2e243b"))
+	hero_body_visual.scale = Vector3(0.78, 1.15, 0.75)
+	hero_head_visual = add_sphere(player, Vector3(0, 0.95, -0.02), 0.48, Color("#3b2b47"))
+	hero_head_visual.scale = Vector3(0.9, 0.95, 0.9)
 	for side in [-1.0, 1.0]:
 		var ear := add_sphere(player, Vector3(side * 0.28, 1.3, -0.02), 0.28, Color("#493258"))
 		ear.scale = Vector3(0.7, 1.45, 0.55)
@@ -606,6 +608,15 @@ func _physics_process(delta: float) -> void:
 	if is_instance_valid(glide_bar_label):
 		glide_bar_label.text = "GLIDE ENERGY  •  %d%%" % int(round((1.0 - glide_stamina / GLIDE_MAX_STAMINA) * 100.0))
 	var ambience_time := float(Time.get_ticks_msec()) / 1000.0
+	# The torso banks into turns and pitches into a glide; the head gently
+	# counterbalances to keep the hero's face readable during aerial movement.
+	if is_instance_valid(hero_body_visual):
+		var flight_pitch := -0.16 if glide_active else (0.08 if not player.is_on_floor() else 0.0)
+		hero_body_visual.rotation.x = lerpf(hero_body_visual.rotation.x, flight_pitch, minf(delta * 5.0, 1.0))
+		hero_body_visual.rotation.z = lerpf(hero_body_visual.rotation.z, clampf(-player.velocity.x * 0.018, -0.16, 0.16), minf(delta * 4.0, 1.0))
+		hero_body_visual.position.y = 0.25 + sin(ambience_time * (7.0 if glide_active else 2.4)) * (0.025 if glide_active else 0.012)
+	if is_instance_valid(hero_head_visual):
+		hero_head_visual.rotation.z = lerpf(hero_head_visual.rotation.z, clampf(player.velocity.x * 0.008, -0.07, 0.07), minf(delta * 5.0, 1.0))
 	# Broad wing beats while gliding, faster flaps while falling, subtle idle flutter.
 	var wing_rate := 8.5 if glide_active else (6.0 if not player.is_on_floor() else 2.2)
 	var wing_amount := 0.34 if glide_active else (0.24 if not player.is_on_floor() else 0.075)
