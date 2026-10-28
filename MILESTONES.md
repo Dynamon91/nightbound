@@ -4,7 +4,7 @@ This is the project's working implementation roadmap. Percentages are **developm
 
 ## Primary milestone — Reach the generated mockup's visual quality
 
-**Current overall mockup-fidelity implementation: 58%**
+**Current overall mockup-fidelity implementation: 59%**
 
 The goal is an original, polished colourful 3D platforming world: a memorable bat protagonist, strong silhouettes, rich materials, layered environments, lighting, landmarks and substantial exploration spaces. The mockup is a visual quality target, not a claim that the game should copy Spyro.
 
@@ -37,7 +37,7 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 | Enemy / encounter variety | 15% | Distinct enemies and encounters integrated into exploration |
 | Boss / major set pieces | 0% | Not yet implemented/verified |
 
-## Latest art pass — layered faceted cliff formations\n\n- Reworked cliff clusters from repeated round blobs into irregular low-poly boulders with varied scale, rotation and a controlled cool stone palette.\n- Added broken horizontal ledges to create a more layered cliff silhouette while retaining the existing broad cliff placements. These are visual mesh changes; collision/runtime appearance still need an in-game check.\n- Commit: `f7958982e279dcdaf355125559210765e6697d54`.\n\n## Previous art pass — layered forest silhouettes
+## Latest art pass — bat silhouette refinement\n\n- Added tapered ears with inner accents, three visible membrane ribs per wing, small feet, a tapered tail tuft and white eye glints. Existing wing nodes remain animated by the current flight/idle animation loop.\n- This is a procedural mesh-detail pass, not a final sculpted hero model; proportions and wing deformation still need an in-game visual check.\n- Commit: `adac1176238e1c51eab3b3f9432534a9409ec6fd`.\n\n## Previous art pass — layered faceted cliff formations\n\n- Reworked cliff clusters from repeated round blobs into irregular low-poly boulders with varied scale, rotation and a controlled cool stone palette.\n- Added broken horizontal ledges to create a more layered cliff silhouette while retaining the existing broad cliff placements. These are visual mesh changes; collision/runtime appearance still need an in-game check.\n- Commit: `f7958982e279dcdaf355125559210765e6697d54`.\n\n## Previous art pass — layered forest silhouettes
 
 - Added a reusable stylized tree prop with a tapered trunk, faceted canopy and a small emissive magical-light accent.
 - Moonlit Valley now has a second layer of trees around its play spaces so the background no longer reads as an empty green plane surrounded only by cliffs.
