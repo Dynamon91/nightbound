@@ -76,6 +76,84 @@ func rock(p:Vector3, size:Vector3, c:Color, seed:int)->MeshInstance3D:
 	n.material_override=mat(c,.96)
 	add_child(n)
 	return n
+func plateau(p:Vector3,size:Vector3,seed:int)->void:
+	# Rounded low-poly platform with a darker exposed-stone skirt and a grass cap.
+	var body:=StaticBody3D.new()
+	body.position=p
+	add_child(body)
+	var collision:=CollisionShape3D.new()
+	var collision_shape:=BoxShape3D.new()
+	collision_shape.size=Vector3(size.x*.92,size.y+.12,size.z*.92)
+	collision.shape=collision_shape
+	collision.position.y=.06
+	body.add_child(collision)
+	var base:=MeshInstance3D.new()
+	var base_mesh:=CylinderMesh.new()
+	base_mesh.top_radius=1.0
+	base_mesh.bottom_radius=1.08
+	base_mesh.height=size.y
+	base_mesh.radial_segments=7
+	base.mesh=base_mesh
+	base.scale=Vector3(size.x*.47,1.0,size.z*.47)
+	base.rotation.y=float(seed%7)*.17
+	base.material_override=mat(Color("#3b5267") if seed%2==0 else Color("#405a68"),.94)
+	body.add_child(base)
+	var cap:=MeshInstance3D.new()
+	var cap_mesh:=CylinderMesh.new()
+	cap_mesh.top_radius=1.0
+	cap_mesh.bottom_radius=1.025
+	cap_mesh.height=.16
+	cap_mesh.radial_segments=7
+	cap.mesh=cap_mesh
+	cap.scale=Vector3(size.x*.465,1.0,size.z*.465)
+	cap.position.y=size.y*.5+.025
+	cap.rotation.y=float((seed*3)%7)*.11
+	var top_shades:Array[Color]=[Color("#587c7a"),Color("#607f7c"),Color("#547771"),Color("#68847c")]
+	cap.material_override=mat(top_shades[seed%top_shades.size()],.92)
+	body.add_child(cap)
+	# Three broad facets break up the uniform cliff edge without cluttering the landing area.
+	for facet_index in range(3):
+		var facet:=MeshInstance3D.new()
+		var facet_mesh:=SphereMesh.new()
+		facet_mesh.radial_segments=6
+		facet_mesh.rings=3
+		facet_mesh.radius=1.0
+		facet_mesh.height=2.0
+		facet.mesh=facet_mesh
+		var angle:=float(facet_index)*TAU/3.0+float(seed%5)*.23
+		facet.position=Vector3(cos(angle)*size.x*.34,-size.y*.24,sin(angle)*size.z*.34)
+		facet.scale=Vector3(size.x*.11,size.y*.2,size.z*.13)
+		facet.material_override=mat(Color("#293c53") if facet_index==0 else Color("#455e70"),.97)
+		body.add_child(facet)
+	# Tiny grass blades sit near platform edges, leaving the center clear for landing.
+	for tuft_index in range(3):
+		var tuft:=MeshInstance3D.new()
+		var tuft_mesh:=CylinderMesh.new()
+		tuft_mesh.top_radius=.008
+		tuft_mesh.bottom_radius=.055
+		tuft_mesh.height=.28+float((seed+tuft_index)%3)*.06
+		tuft_mesh.radial_segments=4
+		tuft.mesh=tuft_mesh
+		var side:float=-1.0 if tuft_index%2==0 else 1.0
+		tuft.position=Vector3(side*size.x*.28,size.y*.5+.15,-size.z*.24+float(tuft_index)*size.z*.23)
+		tuft.rotation.z=side*.18
+		tuft.material_override=mat(Color("#568b75") if tuft_index%2==0 else Color("#6b9578"),.9)
+		body.add_child(tuft)
+func build_entry_bridge()->void:
+	# Break the old plain plank into individual deck boards, inset runners and wayfinding lights.
+	var board_colors:Array[Color]=[Color("#896b5c"),Color("#9b7964"),Color("#806454")]
+	for board_index in range(6):
+		var z_pos:=2.3+float(board_index)*1.48
+		box(Vector3(0,.1,z_pos),Vector3(2.42,.4,1.34),board_colors[board_index%board_colors.size()],true)
+		box(Vector3(-1.13,.315,z_pos),Vector3(.07,.045,1.22),Color("#5f7d88"))
+		box(Vector3(1.13,.315,z_pos),Vector3(.07,.045,1.22),Color("#5f7d88"))
+		if board_index%2==0:
+			for side in [-1.0,1.0]:
+				var stud:=orb(self,Vector3(side*.91,.36,z_pos),.065,Color("#8fe9e1"))
+				var stud_material:=stud.material_override as StandardMaterial3D
+				stud_material.emission_enabled=true
+				stud_material.emission=Color("#71dcd6")
+				stud_material.emission_energy_multiplier=1.05
 func cliff(p:Vector3,s:float)->void:
 	var shades:Array[Color]=[Color("#424d68"),Color("#53617d"),Color("#68758d"),Color("#3a455e"),Color("#778198")]
 	for i in range(5):
@@ -107,11 +185,11 @@ func build_valley()->void:
 	var w:=WorldEnvironment.new(); var e:=Environment.new(); e.background_mode=Environment.BG_COLOR; e.background_color=Color("#10182d"); e.ambient_light_source=Environment.AMBIENT_SOURCE_COLOR; e.ambient_light_color=Color("#8195cf"); e.ambient_light_energy=.42; e.fog_enabled=true; e.fog_density=.012; e.fog_light_color=Color("#252d49"); e.fog_light_energy=.78; w.environment=e; add_child(w)
 	var light:=DirectionalLight3D.new(); light.rotation_degrees=Vector3(-48,-32,0); light.light_color=Color("#b8ccff"); light.light_energy=1.15; light.shadow_enabled=true; add_child(light)
 	box(Vector3(0,-.5,0),Vector3(100,1,100),Color("#2f4d49"),true)
-	for p in [Vector3(-12,.4,-9),Vector3(11,1.2,-14),Vector3(17,.4,9),Vector3(-17,3.2,13),Vector3(-30,1,-20),Vector3(-38,2.4,-28),Vector3(-27,3.8,-36),Vector3(28,1,-22),Vector3(38,2.5,-32),Vector3(31,4,-40),Vector3(-31,1,24),Vector3(-39,2.6,34),Vector3(-27,4,40),Vector3(29,1,25),Vector3(39,2.8,35),Vector3(27,4.2,42)]: box(p,Vector3(8,1.2,8),Color("#506b5d"),true)
+	var platform_positions:Array[Vector3]=[Vector3(-12,.4,-9),Vector3(11,1.2,-14),Vector3(17,.4,9),Vector3(-17,3.2,13),Vector3(-30,1,-20),Vector3(-38,2.4,-28),Vector3(-27,3.8,-36),Vector3(28,1,-22),Vector3(38,2.5,-32),Vector3(31,4,-40),Vector3(-31,1,24),Vector3(-39,2.6,34),Vector3(-27,4,40),Vector3(29,1,25),Vector3(39,2.8,35),Vector3(27,4.2,42)]\n\tfor platform_index in range(platform_positions.size()):\n\t\tplateau(platform_positions[platform_index],Vector3(8,1.2,8),platform_index)
 	for p in [Vector3(-43,1.4,-17),Vector3(43,1.6,-20),Vector3(-41,2.4,28),Vector3(41,2.7,29),Vector3(-15,2,-39),Vector3(16,2.2,-41)]: cliff(p,3.3)
 	for p in [Vector3(-21,0,-4),Vector3(18,0,-7),Vector3(-33,0,8),Vector3(34,0,8),Vector3(-12,0,31),Vector3(15,0,34),Vector3(-40,0,-7),Vector3(41,0,-8)]: tree(p,1.15,Color("#31533f"))
 	for p in [Vector3(-8,0,10),Vector3(8,0,14),Vector3(-22,0,16),Vector3(22,0,18)]: tree(p,.72,Color("#3e6247"))
-	box(Vector3(0,.1,7),Vector3(2.5,.4,9),Color("#9b7047"),true)
+	build_entry_bridge()
 	for i in range(72):
 		var p:=Vector3(float(((i*17)%83)-41),.03,float(((i*29)%87)-43)); var g:=box(p+Vector3(0,.3,0),Vector3(.06,.6,.18),Color("#6d9b62") if i%3==0 else Color("#47785a")); g.rotation.y=float(i%3)*2.09; g.rotation.z=.12
 	var ps=[Vector3(-5,1,-5),Vector3(7,1.5,-12),Vector3(-14,1.2,-10),Vector3(-25,1.5,-21),Vector3(-38,3.2,-29),Vector3(25,1.5,-23),Vector3(38,3.4,-33),Vector3(-25,1.5,24),Vector3(-38,3.5,35),Vector3(25,1.6,25),Vector3(38,3.7,36)]
