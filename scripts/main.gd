@@ -41,7 +41,7 @@ func box(pos:Vector3,size:Vector3,c:Color,solid:=false)->MeshInstance3D:
 func orb(parent:Node3D,pos:Vector3,r:float,c:Color)->MeshInstance3D:
 	var n:=MeshInstance3D.new(); var mesh:=SphereMesh.new(); mesh.radius=r; mesh.height=r*2; mesh.radial_segments=8; mesh.rings=4; n.mesh=mesh; n.position=pos; n.material_override=mat(c,0.35); parent.add_child(n); return n
 func gem(pos:Vector3,c:Color)->MeshInstance3D:
-	var n:=MeshInstance3D.new(); var mesh:=CylinderMesh.new(); mesh.top_radius=.03; mesh.bottom_radius=.32; mesh.height=1.4; mesh.radial_segments=6; n.mesh=mesh; n.position=pos; var m:=mat(c,.2); m.emission_enabled=true; m.emission=c; m.emission_energy_multiplier=1.0; n.material_override=m; add_child(n); return n
+	var n:=MeshInstance3D.new(); var mesh:=CylinderMesh.new(); mesh.top_radius=.03; mesh.bottom_radius=.32; mesh.height=1.4; mesh.radial_segments=6; n.mesh=mesh; n.position=pos; var m:=mat(c,.2); m.emission_enabled=true; m.emission=c; m.emission_energy_multiplier=1.0; n.material_override=m; n.set_meta("float_origin",pos); n.set_meta("float_phase",float(abs(int(pos.x*13.0+pos.z*7.0))%31)*.2); add_child(n); return n
 func rock(p:Vector3, size:Vector3, c:Color, seed:int)->MeshInstance3D:
 	# Faceted low-poly boulder: irregular silhouette without a box-like outline.
 	var n:=MeshInstance3D.new()
@@ -162,7 +162,14 @@ func _physics_process(d:float)->void:
 	collect_near(crystal_nodes,1.25,"Crystal"); collect_near(shard_nodes,1.3,"Moonshard"); collect_near(seed_nodes,1.25,"Moonseed")
 	if crystals>=11: portal_open=true
 	if portal_open and realm=="Moonlit Valley" and player.global_position.distance_to(Vector3(0,2.5,-18))<3: realm="The Veilwood"; player.position=Vector3(130,2,4); checkpoint=Vector3(130,2,4); audio_director.call("play_track","veilwood_level_2"); save_game(); show_message("REALM SHIFT — Welcome to the Veilwood!")
-	t+=d; body_visual.rotation.z=lerpf(body_visual.rotation.z,clampf(-player.velocity.x*.018,-.16,.16),d*4); body_visual.position.y=.25+sin(t*5.0)*.025; head_visual.rotation.z=lerpf(head_visual.rotation.z,clampf(player.velocity.x*.008,-.07,.07),d*5); head_visual.rotation.x=sin(t*3.2)*.025; tail_visual.rotation.z=sin(t*4.5)*.18; for i in wings.size(): wings[i].rotation.z=sin(t*8.5)*.3*(-1 if i==0 else 1); for i in mote_nodes.size(): mote_nodes[i].position=mote_origins[i]+Vector3(0,sin(t*1.3+float(i)*.7)*.22,0); mote_nodes[i].rotation.y=t*.25+float(i); refresh_hud()
+	t+=d; body_visual.rotation.z=lerpf(body_visual.rotation.z,clampf(-player.velocity.x*.018,-.16,.16),d*4); body_visual.position.y=.25+sin(t*5.0)*.025; head_visual.rotation.z=lerpf(head_visual.rotation.z,clampf(player.velocity.x*.008,-.07,.07),d*5); head_visual.rotation.x=sin(t*3.2)*.025; tail_visual.rotation.z=sin(t*4.5)*.18; for i in wings.size(): wings[i].rotation.z=sin(t*8.5)*.3*(-1 if i==0 else 1); for i in mote_nodes.size(): mote_nodes[i].position=mote_origins[i]+Vector3(0,sin(t*1.3+float(i)*.7)*.22,0); mote_nodes[i].rotation.y=t*.25+float(i); animate_collectibles(crystal_nodes); animate_collectibles(shard_nodes); animate_collectibles(seed_nodes); refresh_hud()
+func animate_collectibles(nodes:Array[MeshInstance3D])->void:
+	for n in nodes:
+		if not is_instance_valid(n): continue
+		var origin:Vector3=n.get_meta("float_origin",n.position)
+		var phase:float=float(n.get_meta("float_phase",0.0))
+		n.position=origin+Vector3(0,sin(t*2.2+phase)*.13,0)
+		n.rotation.y=sin(t*1.1+phase)*.18
 func collect_near(nodes:Array[MeshInstance3D],dist:float,label:String)->void:
 	for i in range(nodes.size()-1,-1,-1):
 		var n:=nodes[i]; if not is_instance_valid(n): nodes.remove_at(i); continue
