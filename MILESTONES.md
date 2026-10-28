@@ -45,6 +45,14 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 - This is still placeholder-quality geometry compared with the final mockup target; the next art pass should replace these primitive tree forms with authored low-poly assets and richer material breakup.
 - Commit: `84e873cdc4941e6a0fdc1f6f4a3739a622b77b46`.
 
+## Latest art-direction pass — model and environment quality gate
+
+- Added `ART_STYLE_GUIDE.md` as the working specification for the visual upgrade from prototype primitives to authored-looking assets.
+- The guide defines concrete targets for the bat silhouette, wing membranes, terrain/cliff silhouettes, rock families, vegetation clustering, collectible readability, landmarks, camera framing and realm-specific lighting.
+- It also defines a screenshot-quality gate: foreground/midground/background layering, readable traversal, distinct realm identity and no dependence on HUD labels to recognize the hero.
+- This is a production guide, not a claim that these final assets already exist.
+- Commit: `24e9a999e8357bf06e591f74912ca32c365c1b23`.
+
 ## Latest gameplay pass — persistence and checkpoints
 
 - Fixed collectible persistence: crystals, Moonshards and Moonseeds now receive stable IDs, are recorded in the save file, and are omitted when the game rebuilds the world after loading.
