@@ -168,6 +168,74 @@ func build_lantern(p:Vector3,size_value:float,light_color:Color)->void:
 	light.omni_range=6.0*size_value
 	light.shadow_enabled=false
 	add_child(light)
+func build_shallow_pool(p:Vector3,radius_x:float,radius_z:float)->void:
+	# A low, translucent magical pool adds a cool reflective break to the flat ground plane.
+	var water:=MeshInstance3D.new()
+	var water_mesh:=CylinderMesh.new()
+	water_mesh.top_radius=1.0
+	water_mesh.bottom_radius=1.0
+	water_mesh.height=.025
+	water_mesh.radial_segments=24
+	water.mesh=water_mesh
+	water.position=p
+	water.scale=Vector3(radius_x,1.0,radius_z)
+	var water_material:=StandardMaterial3D.new()
+	water_material.albedo_color=Color(.13,.43,.63,.72)
+	water_material.transparency=BaseMaterial3D.TRANSPARENCY_ALPHA
+	water_material.roughness=.22
+	water_material.metallic=.16
+	water_material.shading_mode=BaseMaterial3D.SHADING_MODE_UNSHADED
+	water_material.emission_enabled=true
+	water_material.emission=Color("#164c7d")
+	water_material.emission_energy_multiplier=.24
+	water.material_override=water_material
+	add_child(water)
+	for ripple_index in range(3):
+		var ripple:=MeshInstance3D.new()
+		var ripple_mesh:=TorusMesh.new()
+		ripple_mesh.inner_radius=.92
+		ripple_mesh.outer_radius=1.0
+		ripple_mesh.radial_segments=24
+		ripple_mesh.rings=6
+		ripple.mesh=ripple_mesh
+		ripple.rotation.x=PI*.5
+		var ripple_scale:=.55+float(ripple_index)*.31
+		ripple.scale=Vector3(radius_x*ripple_scale,1.0,radius_z*ripple_scale)
+		ripple.position=p+Vector3(0,.035+float(ripple_index)*.002,0)
+		var ripple_material:=mat(Color("#4ec8dd"),.3)
+		ripple_material.emission_enabled=true
+		ripple_material.emission=Color("#248bbf")
+		ripple_material.emission_energy_multiplier=.28
+		ripple.material_override=ripple_material
+		add_child(ripple)
+func build_waterfall(p:Vector3,width:float,height:float)->void:
+	# Narrow vertical ribbons make the elevated platforms feel connected to the valley below.
+	var fall:=MeshInstance3D.new()
+	var fall_mesh:=QuadMesh.new()
+	fall_mesh.size=Vector2(width,height)
+	fall.mesh=fall_mesh
+	fall.position=p+Vector3(0,height*.5,0)
+	var fall_material:=StandardMaterial3D.new()
+	fall_material.albedo_color=Color(.28,.72,.9,.54)
+	fall_material.transparency=BaseMaterial3D.TRANSPARENCY_ALPHA
+	fall_material.shading_mode=BaseMaterial3D.SHADING_MODE_UNSHADED
+	fall_material.emission_enabled=true
+	fall_material.emission=Color("#229cda")
+	fall_material.emission_energy_multiplier=.32
+	fall.material_override=fall_material
+	add_child(fall)
+	for ribbon_index in range(2):
+		var ribbon:=MeshInstance3D.new()
+		var ribbon_mesh:=QuadMesh.new()
+		ribbon_mesh.size=Vector2(width*(.11 if ribbon_index==0 else .07),height*.9)
+		ribbon.mesh=ribbon_mesh
+		ribbon.position=p+Vector3((-.22 if ribbon_index==0 else .24)*width,height*.5,.015)
+		var ribbon_material:=mat(Color("#8ee8f0"),.3)
+		ribbon_material.emission_enabled=true
+		ribbon_material.emission=Color("#63d8ed")
+		ribbon_material.emission_energy_multiplier=.3
+		ribbon.material_override=ribbon_material
+		add_child(ribbon)
 func build_gate_detail()->void:
 	# Layered stone footing, thin carved trim and emissive runes make the gate a real landmark.
 	for side in [-1.0,1.0]:
@@ -381,11 +449,12 @@ func build_valley()->void:
 	for p in [Vector3(-8,0,10),Vector3(8,0,14),Vector3(-22,0,16),Vector3(22,0,18)]: tree(p,.72,Color("#3e6247"))
 	build_entry_bridge()
 	build_valley_ground_detail()
-	for bush_index in range(12):
-		var side:float=-1.0 if bush_index%2==0 else 1.0
-		var row:=float(bush_index/2)
-		var bush_pos:=Vector3(side*(11.5+float((bush_index*3)%4)*5.0),0.02,4.0+row*4.8)
-		bush_cluster(bush_pos,1.0+float(bush_index%3)*.16,Color("#285548") if bush_index%2==0 else Color("#345c4c"))
+	var bush_positions:Array[Vector3]=[
+		Vector3(-13,0.02,8),Vector3(13,0.02,8),Vector3(-19,0.02,5),Vector3(19,0.02,5),
+		Vector3(-15,0.02,11),Vector3(15,0.02,11),Vector3(-24,0.02,1),Vector3(24,0.02,1),
+		Vector3(-27,0.02,-3),Vector3(27,0.02,-3),Vector3(-20,0.02,-10),Vector3(20,0.02,-10)]
+	for bush_index in range(bush_positions.size()):
+		bush_cluster(bush_positions[bush_index],1.25+float(bush_index%3)*.22,Color("#285548") if bush_index%2==0 else Color("#345c4c"))
 	var ps=[Vector3(-5,1,-5),Vector3(7,1.5,-12),Vector3(-14,1.2,-10),Vector3(-25,1.5,-21),Vector3(-38,3.2,-29),Vector3(25,1.5,-23),Vector3(38,3.4,-33),Vector3(-25,1.5,24),Vector3(-38,3.5,35),Vector3(25,1.6,25),Vector3(38,3.7,36)]
 	for i in range(11):
 		var id:="crystal_%02d"%i; if not collected_crystals.has(id): var n:=gem(ps[i],Color("#68e9ff")); n.name=id; crystal_nodes.append(n)
@@ -408,6 +477,12 @@ func build_valley()->void:
 	build_lantern(Vector3(3.35,0,-16.6),.9,Color("#ffbf70"))
 	build_lantern(Vector3(-1.75,0,8.0),.72,Color("#ffd18b"))
 	build_lantern(Vector3(1.75,0,8.0),.72,Color("#ffd18b"))
+	build_shallow_pool(Vector3(-30,.02,-27.0),3.8,2.6)
+	build_shallow_pool(Vector3(29,.02,-30.0),3.6,2.5)
+	build_waterfall(Vector3(-30,0,-24.0),2.6,1.55)
+	build_waterfall(Vector3(28,0,-26.0),2.4,1.55)
+	build_waterfall(Vector3(-38,0,-32.0),2.1,2.85)
+	build_waterfall(Vector3(38,0,-36.0),2.1,3.25)
 func build_veilwood()->void:
 	build_motes(130,28,31,Color("#d5a1ff"))
 	box(Vector3(130,-.5,0),Vector3(76,1,76),Color("#252d50"),true)
