@@ -44,15 +44,18 @@ func cliff(p:Vector3,s:float)->void:
 		var n:=orb(self,p+Vector3(cos(i*1.57)*s*.45,(i%2)*s*.25,sin(i*1.57)*s*.45),s*(.75+(i%2)*.12),Color("#4d5872") if i%2==0 else Color("#66718a")); n.scale=Vector3(1,1.25,0.8)
 func checkpoint(p:Vector3)->void:
 	points.append(p); var r:=MeshInstance3D.new(); var tm:=TorusMesh.new(); tm.inner_radius=.5; tm.outer_radius=.68; r.mesh=tm; r.position=p+Vector3(0,.08,0); r.rotation.x=PI*.5; var m:=mat(Color("#83f4df"),.2); m.emission_enabled=true; m.emission=Color("#50e7dd"); m.emission_energy_multiplier=1.5; r.material_override=m; add_child(r)
-func _ready()->void:
-	build_valley(); build_veilwood(); build_player(); build_camera(); build_hud()
-	audio_director=AudioDirectorScript.new(); add_child(audio_director); audio_director.call("play_track","moonlit_valley_level_1"); load_game(); show_message("Explore the valley. Find the crystals and hidden Moonshards.")
+func tree(p:Vector3,scale_value:=1.0,forest_color:=Color("#304a3b"))->void:
+	var trunk:=MeshInstance3D.new(); var tm:=CylinderMesh.new(); tm.top_radius=.18*scale_value; tm.bottom_radius=.32*scale_value; tm.height=2.8*scale_value; tm.radial_segments=7; trunk.mesh=tm; trunk.position=p+Vector3(0,1.4*scale_value,0); trunk.material_override=mat(Color("#44374a"),.95); add_child(trunk)
+	var crown:=MeshInstance3D.new(); var cm:=SphereMesh.new(); cm.radius=1.45*scale_value; cm.height=2.3*scale_value; cm.radial_segments=9; cm.rings=5; crown.mesh=cm; crown.position=p+Vector3(0,3.0*scale_value,0); crown.scale=Vector3(1,.9,.82); crown.material_override=mat(forest_color,.9); add_child(crown)
+	var glow:=orb(self,p+Vector3(0,3.55*scale_value,0),.12*scale_value,Color("#83e6bd")); var gm:=glow.material_override as StandardMaterial3D; gm.emission_enabled=true; gm.emission=Color("#67dcae"); gm.emission_energy_multiplier=.8
 func build_valley()->void:
 	var w:=WorldEnvironment.new(); var e:=Environment.new(); e.background_mode=Environment.BG_COLOR; e.background_color=Color("#10182d"); e.ambient_light_source=Environment.AMBIENT_SOURCE_COLOR; e.ambient_light_color=Color("#8195cf"); e.ambient_light_energy=.58; e.fog_enabled=true; e.fog_density=.008; w.environment=e; add_child(w)
 	var light:=DirectionalLight3D.new(); light.rotation_degrees=Vector3(-48,-32,0); light.light_color=Color("#b8ccff"); light.light_energy=1.15; light.shadow_enabled=true; add_child(light)
 	box(Vector3(0,-.5,0),Vector3(100,1,100),Color("#416b43"),true)
 	for p in [Vector3(-12,.4,-9),Vector3(11,1.2,-14),Vector3(17,.4,9),Vector3(-17,3.2,13),Vector3(-30,1,-20),Vector3(-38,2.4,-28),Vector3(-27,3.8,-36),Vector3(28,1,-22),Vector3(38,2.5,-32),Vector3(31,4,-40),Vector3(-31,1,24),Vector3(-39,2.6,34),Vector3(-27,4,40),Vector3(29,1,25),Vector3(39,2.8,35),Vector3(27,4.2,42)]: box(p,Vector3(8,1.2,8),Color("#668b58"),true)
 	for p in [Vector3(-43,1.4,-17),Vector3(43,1.6,-20),Vector3(-41,2.4,28),Vector3(41,2.7,29),Vector3(-15,2,-39),Vector3(16,2.2,-41)]: cliff(p,3.3)
+	for p in [Vector3(-21,0,-4),Vector3(18,0,-7),Vector3(-33,0,8),Vector3(34,0,8),Vector3(-12,0,31),Vector3(15,0,34),Vector3(-40,0,-7),Vector3(41,0,-8)]: tree(p,1.15,Color("#31533f"))
+	for p in [Vector3(-8,0,10),Vector3(8,0,14),Vector3(-22,0,16),Vector3(22,0,18)]: tree(p,.72,Color("#3e6247"))
 	box(Vector3(0,.1,7),Vector3(2.5,.4,9),Color("#9b7047"),true)
 	for i in range(72):
 		var p:=Vector3(float(((i*17)%83)-41),.03,float(((i*29)%87)-43)); var g:=box(p+Vector3(0,.3,0),Vector3(.06,.6,.18),Color("#6d9b62") if i%3==0 else Color("#47785a")); g.rotation.y=float(i%3)*2.09; g.rotation.z=.12
@@ -67,6 +70,7 @@ func build_valley()->void:
 func build_veilwood()->void:
 	box(Vector3(130,-.5,0),Vector3(76,1,76),Color("#252d50"),true)
 	for p in [Vector3(118,.2,-8),Vector3(126,.7,-14),Vector3(137,1.3,-20),Vector3(146,2,-26),Vector3(138,.6,10),Vector3(149,1.4,18),Vector3(158,2,25)]: box(p,Vector3(7,.8,7),Color("#3c466f"),true)
+	for p in [Vector3(111,0,-13),Vector3(116,0,8),Vector3(151,0,-6),Vector3(158,0,14),Vector3(143,0,30),Vector3(117,0,29)]: tree(p,1.3,Color("#302b50"))
 	for i in range(13):
 		var side:=-1.0 if i%2==0 else 1.0; var p:=Vector3(130+side*(12+float(i%4)*5),0,-30+float(i)*5); box(p+Vector3(0,3,0),Vector3(.8,6,.8),Color("#37304f")); orb(self,p+Vector3(0,5,0),2,Color("#4c3679"))
 	var seed_positions=[Vector3(111,1.1,-4),Vector3(143,1.4,-13),Vector3(155,2.1,23),Vector3(115,1.1,23),Vector3(130,1.4,-24)]
