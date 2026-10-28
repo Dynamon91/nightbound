@@ -12,8 +12,8 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 
 | Area | Progress | Target |
 |---|---:|---|
-| Original bat protagonist model | 54% | Recognisable, expressive, polished 3D hero with clean silhouette, wings, face and animation-ready proportions |
-| Hero materials / eyes / wing detail | 47% | Cohesive stylized materials, readable eyes and membrane detail at gameplay distance |
+| Original bat protagonist model | 55% | Recognisable, expressive, polished 3D hero with clean silhouette, wings, face and animation-ready proportions |
+| Hero materials / eyes / wing detail | 49% | Cohesive stylized materials, readable eyes and membrane detail at gameplay distance |
 | Terrain and cliffs | 48% | Layered stylized ground, cliffs, ledges and natural shapes rather than placeholder boxes |
 | Rocks / props | 52% | Reusable stylized rock, crystal, ruin and environmental prop families |
 | Vegetation | 44% | Distinct tree, grass, shrub and magical-forest families with controlled repetition |
@@ -82,6 +82,7 @@ For long levels, tracks may exceed the target duration or use additional section
 ### Gate A — Hero model
 - [x] Recognisable bat silhouette
 - [x] Wings, face, ears and feet represented in the running scene
+- [x] First face-material pass: emissive violet eyes with tiny catchlights, plus fine contrasting wing ribs
 - [ ] Polished hero proportions and authored surface details
 - [ ] Animation-quality wing/flight presentation
 - [x] Procedural wing-beat animation for idle, falling and gliding (initial pass; needs visual polish in gameplay capture)
@@ -114,7 +115,7 @@ The milestone is considered visually reached only when the running game—not me
 ## Next art pass
 
 1. Replace the most obvious primitive terrain shapes with authored cliff/rock forms.
-2. Improve the bat's proportions, face and wing presentation; the first procedural wing-beat pass is now implemented.
+2. Improve the bat's proportions, face and wing presentation; procedural wing beats, emissive eyes/catchlights and fine membrane ribs are implemented as first passes.
 3. Build reusable vegetation and prop variants.
 4. Add stronger material variation to ground, stone and magical objects.
 5. Implement the long-form music system and realm-aware looping.
