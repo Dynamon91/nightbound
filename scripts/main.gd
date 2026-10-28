@@ -12,6 +12,7 @@ var seed_label: Label
 var shard_label: Label
 var relic_label: Label
 var gate_status_label: Label
+var compass_needle: Label
 var message: Label
 var bar: ProgressBar
 var audio_director: Node
@@ -833,7 +834,7 @@ func build_hud()->void:
 	make_hud_label(compass,Vector2(5,38),Vector2(20,22),"W",11,Color("#c2d4f5"),HORIZONTAL_ALIGNMENT_CENTER)
 	make_hud_label(compass,Vector2(76,38),Vector2(20,22),"E",11,Color("#c2d4f5"),HORIZONTAL_ALIGNMENT_CENTER)
 	make_hud_label(compass,Vector2(38,76),Vector2(25,20),"S",11,Color("#c2d4f5"),HORIZONTAL_ALIGNMENT_CENTER)
-	make_hud_label(compass,Vector2(29,29),Vector2(42,42),"✦",26,Color("#78f0ef"),HORIZONTAL_ALIGNMENT_CENTER)
+	compass_needle=make_hud_label(compass,Vector2(29,29),Vector2(42,42),"▲",23,Color("#78f0ef"),HORIZONTAL_ALIGNMENT_CENTER)
 	gate_status_label=make_hud_label(root,Vector2(530,18),Vector2(220,32),"REALM GATE • LOCKED",12,Color("#d5c3ff"),HORIZONTAL_ALIGNMENT_CENTER)
 	# Key legends are split into small groups so they remain readable at gameplay resolution.
 	var ability_panel:=make_hud_panel(root,Vector2(900,611),Vector2(360,91),Color(.025,.045,.105,.88),Color("#554b92"),11)
@@ -841,7 +842,7 @@ func build_hud()->void:
 	make_hud_label(ability_panel,Vector2(183,7),Vector2(160,29),"E  ECHOSENSE",12,Color("#e2c1ff"))
 	make_hud_label(ability_panel,Vector2(12,42),Vector2(158,29),"F  BURST",12,Color("#ffd9a1"))
 	make_hud_label(ability_panel,Vector2(183,42),Vector2(165,29),"SHIFT  DASH",12,Color("#d1c4ff"))
-	message=make_hud_label(root,Vector2(365,144),Vector2(550,35),"",15,Color("#ffe8b0"),HORIZONTAL_ALIGNMENT_CENTER)
+	message=make_hud_label(root,Vector2(365,163),Vector2(550,32),"",15,Color("#ffe8b0"),HORIZONTAL_ALIGNMENT_CENTER)
 	refresh_hud()
 func refresh_hud()->void:
 	if realm_label: realm_label.text=realm.to_upper()+" • EXPLORATION"
@@ -898,7 +899,7 @@ func _physics_process(d:float)->void:
 		set_gate_state(true)
 		show_message("The Realm Gate awakens — the path is open!")
 	if portal_open and realm=="Moonlit Valley" and player.global_position.distance_to(Vector3(0,2.5,-18))<3: realm="The Veilwood"; player.position=Vector3(130,2,4); checkpoint_position=Vector3(130,2,4); audio_director.call("play_track","veilwood_level_2"); save_game(); show_message("REALM SHIFT — Welcome to the Veilwood!")
-	t+=d; body_visual.rotation.z=lerpf(body_visual.rotation.z,clampf(-player.velocity.x*.018,-.16,.16),d*4); body_visual.position.y=.25+sin(t*5.0)*.025; head_visual.rotation.z=lerpf(head_visual.rotation.z,clampf(player.velocity.x*.008,-.07,.07),d*5); head_visual.rotation.x=sin(t*3.2)*.025; tail_visual.rotation.z=sin(t*4.5)*.18; for wing_index in wings.size(): wings[wing_index].rotation.z=sin(t*8.5)*.3*(-1 if wing_index==0 else 1); for mote_index in mote_nodes.size(): mote_nodes[mote_index].position=mote_origins[mote_index]+Vector3(0,sin(t*1.3+float(mote_index)*.7)*.22,0); mote_nodes[mote_index].rotation.y=t*.25+float(mote_index); animate_collectibles(crystal_nodes); animate_collectibles(shard_nodes); animate_collectibles(seed_nodes); animate_collectibles(relic_nodes); refresh_hud()
+	t+=d; body_visual.rotation.z=lerpf(body_visual.rotation.z,clampf(-player.velocity.x*.018,-.16,.16),d*4); body_visual.position.y=.25+sin(t*5.0)*.025; head_visual.rotation.z=lerpf(head_visual.rotation.z,clampf(player.velocity.x*.008,-.07,.07),d*5); head_visual.rotation.x=sin(t*3.2)*.025; tail_visual.rotation.z=sin(t*4.5)*.18; for wing_index in wings.size(): wings[wing_index].rotation.z=sin(t*8.5)*.3*(-1 if wing_index==0 else 1); for mote_index in mote_nodes.size(): mote_nodes[mote_index].position=mote_origins[mote_index]+Vector3(0,sin(t*1.3+float(mote_index)*.7)*.22,0); mote_nodes[mote_index].rotation.y=t*.25+float(mote_index); animate_collectibles(crystal_nodes); animate_collectibles(shard_nodes); animate_collectibles(seed_nodes); animate_collectibles(relic_nodes); if compass_needle: compass_needle.rotation=-player.rotation.y; refresh_hud()
 func animate_collectibles(nodes:Array[MeshInstance3D])->void:
 	for n in nodes:
 		if not is_instance_valid(n): continue
