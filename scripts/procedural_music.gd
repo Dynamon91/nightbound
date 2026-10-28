@@ -5,10 +5,10 @@ extends Node
 const SAMPLE_RATE := 22050.0
 const TWO_PI := TAU
 const TRACK_DATA := {
-	"moonlit_valley_level_1": {"bpm": 108.0, "beats_per_bar": 4, "bars": 128, "root": 73.42, "mode": [0, 2, 3, 7, 9, 10], "motif": [9, 0, 3, 2, 9, 10, 0]},
-	"veilwood_level_2": {"bpm": 76.0, "beats_per_bar": 6, "bars": 128, "root": 55.0, "mode": [0, 2, 3, 5, 7, 8, 11], "motif": [7, 0, 3, 2, 7, 5, 0]},
-	"moonlit_valley_boss_1": {"bpm": 132.0, "beats_per_bar": 7, "bars": 112, "root": 73.42, "mode": [0, 3, 5, 7, 8, 10], "motif": [0, 3, 7, 6, 7, 10, 3]},
-	"veilwood_boss_2": {"bpm": 116.0, "beats_per_bar": 5, "bars": 112, "root": 55.0, "mode": [0, 2, 3, 5, 7, 8, 11], "motif": [0, 3, 2, 7, 5, 7, 3]}
+	"moonlit_valley_level_1": {"bpm": 112.0, "beats_per_bar": 4, "bars": 128, "root": 73.42, "mode": [0, 2, 3, 7, 9, 10], "motif": [9, 0, 3, 2, 9, 10, 0]},
+	"veilwood_level_2": {"bpm": 98.0, "beats_per_bar": 6, "bars": 128, "root": 55.0, "mode": [0, 2, 3, 5, 7, 8, 11], "motif": [7, 0, 3, 2, 7, 5, 0]},
+	"moonlit_valley_boss_1": {"bpm": 132.0, "beats_per_bar": 4, "bars": 128, "root": 73.42, "mode": [0, 3, 5, 7, 8, 10], "motif": [0, 3, 7, 6, 7, 10, 3]},
+	"veilwood_boss_2": {"bpm": 124.0, "beats_per_bar": 4, "bars": 128, "root": 55.0, "mode": [0, 2, 3, 5, 7, 8, 11], "motif": [0, 3, 2, 7, 5, 7, 3]}
 }
 
 var _player: AudioStreamPlayer
