@@ -28,7 +28,7 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 | Area | Progress | Target |
 |---|---:|---|
 | 3D movement / camera | 70% | Responsive third-person movement with polished camera behaviour |
-| Jump + glide | 66% | Reliable aerial traversal, readable glide routes and a live on-screen stamina meter |
+| Jump + glide | 67% | Reliable aerial traversal, readable glide routes and a live on-screen stamina meter |
 | Ability-gated exploration | 55% | Abilities open shortcuts, secrets and revisited routes |
 | Collectible routes | 60% | Main path + risky detours + hidden optional paths |
 | Realm transition | 65% | Seamless-feeling gate/realm progression |
@@ -83,6 +83,12 @@ For long levels, tracks may exceed the target duration or use additional section
 
 - Added an on-screen `GLIDE ENERGY` bar that updates during gameplay, displays remaining glide stamina as a percentage, and changes tint as energy runs low.
 - This is a gameplay readability improvement in code; the commit's Godot headless parse/launch and screenshot workflow must pass before it is marked runtime-verified.
+
+## Latest traversal pass — controlled glide
+
+- Improved the glide's descent cap from `-3.0` to `-2.4` and reduced the extra downward acceleration while gliding, making the descent more forgiving.
+- Added stronger directional air steering while gliding and gentle horizontal drag when no direction is held, while retaining the finite 2.8-second stamina limit and ground-based refill.
+- This is committed gameplay code; the CI result and runtime feel still need verification before calling the change tested.
 
 ## Latest visual pass — grass silhouettes and wind motion
 
