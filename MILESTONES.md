@@ -4,7 +4,7 @@ This is the project's working implementation roadmap. Percentages are **developm
 
 ## Primary milestone — Reach the generated mockup's visual quality
 
-**Current overall mockup-fidelity implementation: 53%**
+**Current overall mockup-fidelity implementation: 54%**
 
 The goal is an original, polished colourful 3D platforming world: a memorable bat protagonist, strong silhouettes, rich materials, layered environments, lighting, landmarks and substantial exploration spaces. The mockup is a visual quality target, not a claim that the game should copy Spyro.
 
@@ -16,12 +16,12 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 | Hero materials / eyes / wing detail | 53% | Cohesive stylized materials, readable eyes and membrane detail at gameplay distance |
 | Terrain and cliffs | 48% | Layered stylized ground, cliffs, ledges and natural shapes rather than placeholder boxes |
 | Rocks / props | 52% | Reusable stylized rock, crystal, ruin and environmental prop families |
-| Vegetation | 44% | Distinct tree, grass, shrub and magical-forest families with controlled repetition |
+| Vegetation | 47% | Distinct tree, grass, shrub and magical-forest families with controlled repetition |
 | Crystals / collectibles | 65% | Consistent collectible language, glow, placement and feedback |
 | Lighting / atmosphere | 65% | Moonlight, fog/depth, warm-vs-cool contrast and readable magical accents |
 | Landmark quality | 62% | Large silhouettes visible across the level to support navigation |
 | Veilwood environment | 60% | Distinct bioluminescent forest identity with layered traversal spaces |
-| Moonlit Valley environment | 50% | Stronger authored scenery replacing generic prototype geometry |
+| Moonlit Valley environment | 51% | Stronger authored scenery replacing generic prototype geometry |
 
 ### Platforming / level implementation
 
@@ -93,6 +93,7 @@ For long levels, tracks may exceed the target duration or use additional section
 ### Gate B — Environment
 - [x] Distinct Moonlit Valley and Veilwood identities
 - [x] Layered props, crystals, vegetation and landmarks
+- [x] First authored grass-tuft pass in both realms to soften flat ground silhouettes
 - [x] Veilwood arrival arch, moonstone trail and Heart-Tree landmark
 - [ ] Replace remaining obvious primitive forms with authored meshes
 - [ ] Add multiple authored terrain/cliff silhouettes and prop variants
@@ -119,7 +120,7 @@ The milestone is considered visually reached only when the running game—not me
 
 1. Replace the most obvious primitive terrain shapes with authored cliff/rock forms.
 2. Improve the bat's proportions, face and wing presentation; procedural wing beats, emissive eyes/catchlights and fine membrane ribs are implemented as first passes.
-3. Build reusable vegetation and prop variants.
+3. Expand reusable vegetation and prop variants; the first low-poly grass-tuft pass now adds varied silhouettes to both realms.
 4. Add stronger material variation to ground, stone and magical objects.
 5. Add the original level/boss audio assets and verify the music director's crossfade and loop behaviour.
 6. Create original long-form themes for **every playable level and every boss**, not just each realm.
