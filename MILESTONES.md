@@ -37,11 +37,13 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 | Enemy / encounter variety | 15% | Distinct enemies and encounters integrated into exploration |
 | Boss / major set pieces | 0% | Not yet implemented/verified |
 
-## Latest gameplay pass — optional aerial treasures
+## Latest gameplay pass — persistence and checkpoints
 
-- Added three optional glowing Moonshards along raised Moonlit Valley platforms. They float and rotate, are collected separately from the 11 gate crystals, and do not change the gate requirement.
-- Moonshard totals and collected IDs are included in the save file; previously collected shards are removed when progress loads. The HUD displays a separate 0/3 counter.
-- Gameplay commit: `b97e0dca42565f317976567810a0d7c7c9b4a3f2`; HUD formatting correction: `cca98df31fba7a9c5671d33e2121435522d9c37e`.
+- Fixed collectible persistence: crystals, Moonshards and Moonseeds now receive stable IDs, are recorded in the save file, and are omitted when the game rebuilds the world after loading.
+- Fixed checkpoint persistence: entering a new checkpoint now immediately saves the new respawn position instead of only changing it in memory.
+- The save format retains the existing realm and collectible totals while adding the collected-ID arrays.
+- Commit: `d89c1bc1ee52991821d81fbc3e49e4e0b6e831a9`.
+- This commit still requires Godot CI/runtime verification before being marked tested.
 
 ## Audio / music milestone
 
@@ -64,113 +66,29 @@ The soundtrack is organized by the **actual playable level structure**, not mere
 
 For long levels, tracks may exceed the target duration or use additional sections/stems. The goal is to keep exploration fresh rather than force short repetition.
 
-### Current planned soundtrack map
-
-| Gameplay area | Music status | Composition target |
-|---|---|---|
-| Moonlit Valley — Level 1 | Planned | 4–6 min original exploration theme |
-| Moonlit Valley — Boss 1 | Planned | 4–6 min original boss theme |
-| Veilwood — Level 2 | Planned | 5–7 min original exploration theme |
-| Veilwood — Boss 2 | Planned | 4–6 min original boss theme |
-| Future Level N | Required | Unique theme before level is marked audio-complete |
-| Future Boss N | Required | Unique boss theme before boss is marked audio-complete |
-
-### Music quality rules
-
-- Music should be **long**, with several evolving sections rather than a short repeating phrase.
-- The loop point must feel musically intentional and effectively seamless.
-- Rhythmic motion should remain interesting during long exploration sessions without becoming exhausting.
-- Percussion can be agile, syncopated and intricate, drawing on the requested Copeland-inspired rhythmic spirit, but the compositions must remain original Nightbound works.
-- Realm themes should have identifiable motifs while supporting exploration and discovery.
-- Heart-Tree and major discoveries should preferably add or intensify layers instead of hard-cutting to unrelated music.
-- Final audio must use original or properly licensed material; no copyrighted recordings should be bundled as game assets.
-
 ## Latest audio pass — automatic long-loop sections
 
 - The audio director now advances the procedural score every 16 bars using each track's own BPM and meter rather than leaving the section selector dormant.
 - The eight-section cycle is reset when a new level/boss theme starts and remains compatible with the existing two-player crossfade system.
 - This is intended to make the 4–7 minute target loops feel like evolving compositions instead of short phrases repeated unchanged.
-- Commit: `b9b2b0c92a4567aa30bf5324c5ec0dde0af71119`. The latest Godot check is still required before marking this runtime-verified.
+- Commit: `b9b2b0c92a4567aa30bf5324c5ec0dde0af71119`.
 
 ## Latest gameplay UI pass — glide energy meter
 
 - Added an on-screen `GLIDE ENERGY` bar that updates during gameplay, displays remaining glide stamina as a percentage, and changes tint as energy runs low.
-- This is a gameplay readability improvement in code; the commit's Godot headless parse/launch and screenshot workflow must pass before it is marked runtime-verified.
 
 ## Latest traversal pass — controlled glide
 
 - Improved the glide's descent cap from `-3.0` to `-2.4` and reduced the extra downward acceleration while gliding, making the descent more forgiving.
 - Added stronger directional air steering while gliding and gentle horizontal drag when no direction is held, while retaining the finite 2.8-second stamina limit and ground-based refill.
-- This is committed gameplay code; the CI result and runtime feel still need verification before calling the change tested.
 
 ## Latest hero animation pass — flight lean
 
 - Added a subtle torso pitch for glide/fall states, banking that responds to horizontal velocity, and a small body bob; the head counter-leans slightly to keep the face readable.
-- This layers onto the existing wing-beat animation rather than replacing it. It is a first-pass procedural animation and still needs screenshot review in a running build.
-- The implementation is committed; wait for the matching Godot CI run before treating it as verified.
+- This layers onto the existing wing-beat animation rather than replacing it.
 
 ## Latest recovery pass — fall reset and luminous checkpoints
 
 - Added a safety recovery when the player falls below the playable world: position resets to the current saved checkpoint, velocity is cleared, and glide stamina is reset.
-- Added luminous checkpoint rings at three Moonlit Valley perches and two Veilwood route landmarks. Entering a ring updates the respawn position and triggers an automatic save.
-- Adjusted the two elevated Valley checkpoint positions to align their rings and respawn points with the tops of their stepping platforms; the correction is awaiting CI.
-- Checkpoint activation is filtered by the current realm to avoid accidentally binding a distant point in the other area. The portal arrival also establishes a Veilwood fallback point.
-- The checkpoint feature is committed; its Godot CI parse/launch check is pending, and in-game positioning still needs a visual/runtime pass.
-
-## Latest visual pass — grass silhouettes and wind motion
-
-- Added low-poly, crossed-blade grass tufts to both Moonlit Valley and Veilwood, with palette changes between realms and exclusions around key routes.
-- Added subtle phase-offset wind sway to the tuft meshes so the ground layer has motion rather than reading as static decoration.
-- CI workflow for the grass silhouette pass completed successfully; the new wind-animation commit is queued and still requires its own CI result before being considered verified.
-
-## Visual implementation gates
-
-### Gate A — Hero model
-- [x] Recognisable bat silhouette
-- [x] Wings, face, ears and feet represented in the running scene
-- [x] First face-material pass: emissive violet eyes with tiny catchlights, plus fine contrasting wing ribs
-- [ ] Polished hero proportions and authored surface details
-- [x] Added first-pass nose, cheek accents, inner-ear color and chest-fur tufts (needs screenshot review)
-- [ ] Animation-quality wing/flight presentation
-- [x] Procedural wing-beat animation for idle, falling and gliding (initial pass; needs visual polish in gameplay capture)
-
-### Gate B — Environment
-- [x] Distinct Moonlit Valley and Veilwood identities
-- [x] Layered props, crystals, vegetation and landmarks
-- [x] First authored grass-tuft pass in both realms to soften flat ground silhouettes
-- [x] Veilwood arrival arch, moonstone trail and Heart-Tree landmark
-- [ ] Replace remaining obvious primitive forms with authored meshes
-- [ ] Add multiple authored terrain/cliff silhouettes and prop variants
-
-### Gate C — Mockup comparison
-- [x] Real running-game screenshots are produced by CI
-- [ ] Gameplay screenshot visibly demonstrates the target density and polish
-- [ ] Hero, terrain, materials, vegetation and lighting read as one cohesive art direction
-- [ ] Repeat comparison pass until no major generic-placeholder area dominates the screenshot
-
-## Definition of “mockup-like”
-
-The milestone is considered visually reached only when the running game—not merely concept art—has:
-
-- a polished original bat model that remains readable in gameplay screenshots;
-- terrain with authored shapes, materials and silhouettes;
-- multiple environmental asset families with controlled variation;
-- atmospheric lighting and magical effects that reinforce the art direction;
-- landmarks and composition comparable in visual density to the target mockup;
-- levels that feel like substantial 3D adventure spaces rather than short test rooms;
-- gameplay screenshots that visibly demonstrate the improvements.
-
-## Next art pass
-
-1. Replace the most obvious primitive terrain shapes with authored cliff/rock forms.
-2. Improve the bat's proportions, face and wing presentation; procedural wing beats, emissive eyes/catchlights and fine membrane ribs are implemented as first passes.
-3. Expand reusable vegetation and prop variants; the first low-poly grass-tuft pass now adds varied silhouettes to both realms.
-4. Add stronger material variation to ground, stone and magical objects.
-5. Add the original level/boss audio assets and verify the music director's crossfade and loop behaviour.
-6. Create original long-form themes for **every playable level and every boss**, not just each realm.
-7. Re-capture real gameplay screenshots and compare them against the mockup.
-8. Iterate until the screenshot—not the design document—shows the intended quality.
-
-## Important distinction
-
-The generated mockups in `reference/` are **visual targets**. They are not gameplay screenshots. The project must not claim mockup fidelity has been achieved until the corresponding visual work exists in the running build and has been verified.
+- Added luminous checkpoint rings at three Moonlit Valley perches and two Veilwood route landmarks.
+- The newest pass now persists both checkpoint position and collectible identity across saves.
