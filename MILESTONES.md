@@ -1,10 +1,17 @@
+## Latest runtime verification — first nonblank gameplay capture
+
+- Godot 4.3 strict CI passed on source commit 73a17c810feda23693bdd07506f59f1408bb8b74: editor import, 120-frame headless launch, window launch, screenshot capture and source packaging.
+- Inspected the captured 1280×720 screenshot. It shows the actual in-game Moonlit Valley scene, HUD, bat character, crystals, route platforms and gate arch; it is not concept art. The old blank screenshot was traced to the GDScript parse errors now fixed.
+- The world remains an early procedural prototype with primitive terrain/props and flat materials. The screenshot is a truthful starting point for the next art pass, not a claim that mockup fidelity is complete.
+- Workflow and downloadable artifacts: https://github.com/Dynamon91/nightbound/actions/runs/40726069737
+
 ## Latest gameplay repair — main scene startup and hidden relics
 
 - Added an explicit _ready() bootstrap to instantiate the audio director, restore save data before collectibles are created, and build the Valley, Veilwood, bat, camera and HUD.
 - Fixed a GDScript parse blocker where the checkpoint variable collided with the checkpoint() builder function; the saved respawn vector is now named checkpoint_position.
 - Reconnected P/O save-load controls. O reloads the scene so restored collectible IDs are applied during world construction.
 - Implemented Echosense gameplay: E reveals up to five hidden relics with a warm emissive glow for five seconds; relic collection and IDs are persisted in the save file and shown in the HUD.
-- A downloaded CI screenshot from the earlier build was a blank frame, and its runtime log exposed the script parse error. The latest fix is being checked by the updated workflow; do not treat the older success status as proof of playable visuals.
+- An earlier CI screenshot was a blank frame, and its runtime log exposed the script parse error. After the checkpoint-name fix, the current strict Godot 4.3 workflow now passes and the 1280×720 gameplay capture visibly shows the bat, HUD, route geometry and landmarks. This verifies scene startup/rendering, not polished final art or interactive testing of every control.
 - Commits: 08063a54a23bfc0476d4cb0ae0206baaa7dc48e0, 8c47fb97dc873354dee2071801998b051bf8d273, 2fe5640d04b20673406e684e623a7982e4c9da6c.
 
 ## Latest CI reliability pass — script errors now fail checks
