@@ -1,8 +1,9 @@
 ## Latest collectible polish — hovering crystals and Moonseeds
 
 - Crystals, Moonshards and Moonseeds now gently bob and sway in place, with deterministic per-item phase offsets so nearby pickups do not move in lockstep.
-- The effect uses each collectible mesh’s stored spawn position, so motion does not accumulate drift. Visual feel and runtime performance still need in-game verification.
-- Commit: `6b5a9e04dc0250bfbd7deb89bf59bafaf9eea08c`.
+- The effect uses each collectible mesh’s stored spawn position, so motion does not accumulate drift; emissive intensity now pulses softly with the same per-item phase offset.
+- Visual feel and runtime performance still need in-game verification.
+- Commits: `6b5a9e04dc0250bfbd7deb89bf59bafaf9eea08c`, `088b848438803597c875696f25ca4ebd92fc5d69`.
 
 ## Latest environment pass — drifting luminous motes
 
