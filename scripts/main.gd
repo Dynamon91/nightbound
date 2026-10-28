@@ -919,9 +919,7 @@ func collect_near(nodes:Array[MeshInstance3D],dist:float,label:String)->void:
 			elif label=="Moonseed": moonseeds+=1; collected_seeds.append(id)
 			else: relics+=1; collected_relics.append(id)
 			show_message("%s collected!"%label); save_game()
-func refresh_hud()->void:
-	if hud: hud.text="NIGHTBOUND  •  %s\nCrystals: %d/11  •  Moonseeds: %d/5  •  Moonshards: %d/3  •  Relics: %d/5%s\nWASD Move | SPACE Leap/Glide | E Echosense | F Burst | SHIFT Dash | P Save | O Load"%[realm,crystals,moonseeds,moonshards,relics,"  •  GATE OPEN" if portal_open else ""]
-	if bar: bar.value=GLIDE_MAX-glide
+
 func show_message(s:String)->void:
 	if message: message.text=s
 func save_game()->void:
