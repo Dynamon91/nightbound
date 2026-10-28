@@ -19,6 +19,9 @@ var points: Array[Vector3] = []
 var crystal_nodes: Array[MeshInstance3D] = []
 var shard_nodes: Array[MeshInstance3D] = []
 var seed_nodes: Array[MeshInstance3D] = []
+var collected_crystals: Array[String] = []
+var collected_shards: Array[String] = []
+var collected_seeds: Array[String] = []
 var portal_open := false
 var t := 0.0
 var body_visual: MeshInstance3D
@@ -52,10 +55,13 @@ func build_valley()->void:
 	for p in [Vector3(-43,1.4,-17),Vector3(43,1.6,-20),Vector3(-41,2.4,28),Vector3(41,2.7,29),Vector3(-15,2,-39),Vector3(16,2.2,-41)]: cliff(p,3.3)
 	box(Vector3(0,.1,7),Vector3(2.5,.4,9),Color("#9b7047"),true)
 	for i in range(72):
-		var p:=Vector3(float(((i*17)%83)-41),.03,float(((i*29)%87)-43)); var g:=box(p+Vector3(0,.3,0),Vector3(.06,.6,.18),Color("#6d9b62") if i%3==0 else Color("#47785a")); g.rotation.y=float(i%3)*2.09; g.rotation.z=.12; 
+		var p:=Vector3(float(((i*17)%83)-41),.03,float(((i*29)%87)-43)); var g:=box(p+Vector3(0,.3,0),Vector3(.06,.6,.18),Color("#6d9b62") if i%3==0 else Color("#47785a")); g.rotation.y=float(i%3)*2.09; g.rotation.z=.12
+	var ps=[Vector3(-5,1,-5),Vector3(7,1.5,-12),Vector3(-14,1.2,-10),Vector3(-25,1.5,-21),Vector3(-38,3.2,-29),Vector3(25,1.5,-23),Vector3(38,3.4,-33),Vector3(-25,1.5,24),Vector3(-38,3.5,35),Vector3(25,1.6,25),Vector3(38,3.7,36)]
 	for i in range(11):
-		var ps=[Vector3(-5,1,-5),Vector3(7,1.5,-12),Vector3(-14,1.2,-10),Vector3(-25,1.5,-21),Vector3(-38,3.2,-29),Vector3(25,1.5,-23),Vector3(38,3.4,-33),Vector3(-25,1.5,24),Vector3(-38,3.5,35),Vector3(25,1.6,25),Vector3(38,3.7,36)]; crystal_nodes.append(gem(ps[i],Color("#68e9ff")))
-	for p in [Vector3(-31,3,-27),Vector3(32,3.2,-29),Vector3(-27,5,-36)]: shard_nodes.append(gem(p,Color("#f4baff")))
+		var id:="crystal_%02d"%i; if not collected_crystals.has(id): var n:=gem(ps[i],Color("#68e9ff")); n.name=id; crystal_nodes.append(n)
+	var bonus_positions: Array[Vector3]=[Vector3(-31,3,-27),Vector3(32,3.2,-29),Vector3(-27,5,-36)]
+	for i in range(3):
+		var id:="moonshard_%02d"%i; if not collected_shards.has(id): var n:=gem(bonus_positions[i],Color("#f4baff")); n.name=id; shard_nodes.append(n)
 	checkpoint(Vector3(0,1.5,3)); checkpoint(Vector3(-25,1.5,-21)); checkpoint(Vector3(25,1.5,-23))
 	box(Vector3(-2.25,2.4,-18),Vector3(.75,4.8,1),Color("#45445f"),true); box(Vector3(2.25,2.4,-18),Vector3(.75,4.8,1),Color("#45445f"),true); box(Vector3(0,4.85,-18),Vector3(5.1,.75,1),Color("#56516e"),true)
 func build_veilwood()->void:
@@ -63,7 +69,9 @@ func build_veilwood()->void:
 	for p in [Vector3(118,.2,-8),Vector3(126,.7,-14),Vector3(137,1.3,-20),Vector3(146,2,-26),Vector3(138,.6,10),Vector3(149,1.4,18),Vector3(158,2,25)]: box(p,Vector3(7,.8,7),Color("#3c466f"),true)
 	for i in range(13):
 		var side:=-1.0 if i%2==0 else 1.0; var p:=Vector3(130+side*(12+float(i%4)*5),0,-30+float(i)*5); box(p+Vector3(0,3,0),Vector3(.8,6,.8),Color("#37304f")); orb(self,p+Vector3(0,5,0),2,Color("#4c3679"))
-	for p in [Vector3(111,1.1,-4),Vector3(143,1.4,-13),Vector3(155,2.1,23),Vector3(115,1.1,23),Vector3(130,1.4,-24)]: seed_nodes.append(gem(p,Color("#f0a8ff")))
+	var seed_positions=[Vector3(111,1.1,-4),Vector3(143,1.4,-13),Vector3(155,2.1,23),Vector3(115,1.1,23),Vector3(130,1.4,-24)]
+	for i in range(5):
+		var id:="moonseed_%02d"%i; if not collected_seeds.has(id): var n:=gem(seed_positions[i],Color("#f0a8ff")); n.name=id; seed_nodes.append(n)
 	checkpoint(Vector3(130,1.5,4)); checkpoint(Vector3(130,1.5,-24))
 func build_player()->void:
 	player=CharacterBody3D.new(); player.name="NightboundBat"; player.position=checkpoint; add_child(player); var cs:=CollisionShape3D.new(); var cap:=CapsuleShape3D.new(); cap.radius=.42; cap.height=1.45; cs.shape=cap; player.add_child(cs)
@@ -87,28 +95,32 @@ func _physics_process(d:float)->void:
 	if Input.is_action_just_pressed("shadow_dash") and crystals>=8: player.velocity += -player.global_basis.z*18
 	player.move_and_slide()
 	for p in points:
-		if player.global_position.distance_to(p)<2.1: checkpoint=p+Vector3(0,.8,0)
+		if player.global_position.distance_to(p)<2.1 and checkpoint.distance_to(p)>.2: checkpoint=p+Vector3(0,.8,0); save_game(); show_message("Checkpoint attuned — progress secured.")
 	if player.global_position.y < -12: player.global_position=checkpoint; player.velocity=Vector3.ZERO; show_message("Back to the last safe checkpoint.")
-	collect_near(crystal_nodes,1.25,"Crystal",true); collect_near(shard_nodes,1.3,"Moonshard",false)
-	if realm=="The Veilwood": collect_near(seed_nodes,1.25,"Moonseed",false)
+	collect_near(crystal_nodes,1.25,"Crystal"); collect_near(shard_nodes,1.3,"Moonshard"); collect_near(seed_nodes,1.25,"Moonseed")
 	if crystals>=11: portal_open=true
 	if portal_open and realm=="Moonlit Valley" and player.global_position.distance_to(Vector3(0,2.5,-18))<3: realm="The Veilwood"; player.position=Vector3(130,2,4); checkpoint=Vector3(130,2,4); audio_director.call("play_track","veilwood_level_2"); save_game(); show_message("REALM SHIFT — Welcome to the Veilwood!")
 	t+=d; body_visual.rotation.z=lerpf(body_visual.rotation.z,clampf(-player.velocity.x*.018,-.16,.16),d*4); head_visual.rotation.z=lerpf(head_visual.rotation.z,clampf(player.velocity.x*.008,-.07,.07),d*5); for i in wings.size(): wings[i].rotation.z=sin(t*8.5)*.3*(-1 if i==0 else 1); refresh_hud()
-func collect_near(nodes:Array[MeshInstance3D],dist:float,label:String,gate:bool)->void:
+func collect_near(nodes:Array[MeshInstance3D],dist:float,label:String)->void:
 	for i in range(nodes.size()-1,-1,-1):
 		var n:=nodes[i]; if not is_instance_valid(n): nodes.remove_at(i); continue
-		if n.global_position.distance_to(player.global_position)<dist: n.queue_free(); nodes.remove_at(i); if label=="Crystal": crystals+=1; elif label=="Moonshard": moonshards+=1; else: moonseeds+=1; show_message("%s collected!"%label); save_game()
+		if n.global_position.distance_to(player.global_position)<dist:
+			var id:=str(n.name); n.queue_free(); nodes.remove_at(i)
+			if label=="Crystal": crystals+=1; collected_crystals.append(id)
+			elif label=="Moonshard": moonshards+=1; collected_shards.append(id)
+			else: moonseeds+=1; collected_seeds.append(id)
+			show_message("%s collected!"%label); save_game()
 func refresh_hud()->void:
 	if hud: hud.text="NIGHTBOUND  •  %s\nCrystals: %d/11  •  Moonseeds: %d/5  •  Moonshards: %d/3%s\nWASD Move | SPACE Leap/Glide | F Burst | SHIFT Dash | P Save | O Load"%[realm,crystals,moonseeds,moonshards,"  •  GATE OPEN" if portal_open else ""]
 	if bar: bar.value=GLIDE_MAX-glide
 func show_message(s:String)->void:
 	if message: message.text=s
 func save_game()->void:
-	var f:=FileAccess.open(SAVE_PATH,FileAccess.WRITE); if f:f.store_string(JSON.stringify({"crystals":crystals,"moonseeds":moonseeds,"moonshards":moonshards,"realm":realm,"checkpoint":[checkpoint.x,checkpoint.y,checkpoint.z]}))
+	var f:=FileAccess.open(SAVE_PATH,FileAccess.WRITE); if f:f.store_string(JSON.stringify({"crystals":crystals,"moonseeds":moonseeds,"moonshards":moonshards,"collected_crystals":collected_crystals,"collected_shards":collected_shards,"collected_seeds":collected_seeds,"realm":realm,"checkpoint":[checkpoint.x,checkpoint.y,checkpoint.z]}))
 func load_game()->void:
 	if not FileAccess.file_exists(SAVE_PATH):return
 	var f:=FileAccess.open(SAVE_PATH,FileAccess.READ); if not f:return
 	var d=JSON.parse_string(f.get_as_text()); if typeof(d)!=TYPE_DICTIONARY:return
-	crystals=int(d.get("crystals",0)); moonseeds=int(d.get("moonseeds",0)); moonshards=int(d.get("moonshards",0)); realm=str(d.get("realm","Moonlit Valley")); portal_open=crystals>=11
+	crystals=int(d.get("crystals",0)); moonseeds=int(d.get("moonseeds",0)); moonshards=int(d.get("moonshards",0)); collected_crystals=d.get("collected_crystals",[]); collected_shards=d.get("collected_shards",[]); collected_seeds=d.get("collected_seeds",[]); realm=str(d.get("realm","Moonlit Valley")); portal_open=crystals>=11
 	var cp=d.get("checkpoint",[0,1.5,3]); if cp is Array and cp.size()==3:checkpoint=Vector3(float(cp[0]),float(cp[1]),float(cp[2])); if player:player.position=checkpoint
 	if audio_director:audio_director.call("play_track","veilwood_level_2" if realm=="The Veilwood" else "moonlit_valley_level_1"); refresh_hud()
