@@ -601,6 +601,14 @@ func _physics_process(delta: float) -> void:
 	elif not Input.is_action_pressed("shadow_dash"):
 		dash_pressed = false
 	player.move_and_slide()
+	# Recover safely if a missed glide or platform jump sends the hero below
+	# the playable space; keep the current realm checkpoint and clear momentum.
+	if player.global_position.y < -12.0:
+		player.global_position = checkpoint_position
+		player.velocity = Vector3.ZERO
+		glide_active = false
+		glide_stamina = 0.0
+		show_message("Back to the last safe checkpoint.")
 	pulse_time = maxf(0.0, pulse_time - delta)
 	if is_instance_valid(glide_bar):
 		glide_bar.value = GLIDE_MAX_STAMINA - glide_stamina
