@@ -1,3 +1,18 @@
+## Latest gameplay repair — main scene startup and hidden relics
+
+- Added an explicit _ready() bootstrap to instantiate the audio director, restore save data before collectibles are created, and build the Valley, Veilwood, bat, camera and HUD.
+- Fixed a GDScript parse blocker where the checkpoint variable collided with the checkpoint() builder function; the saved respawn vector is now named checkpoint_position.
+- Reconnected P/O save-load controls. O reloads the scene so restored collectible IDs are applied during world construction.
+- Implemented Echosense gameplay: E reveals up to five hidden relics with a warm emissive glow for five seconds; relic collection and IDs are persisted in the save file and shown in the HUD.
+- A downloaded CI screenshot from the earlier build was a blank frame, and its runtime log exposed the script parse error. The latest fix is being checked by the updated workflow; do not treat the older success status as proof of playable visuals.
+- Commits: 08063a54a23bfc0476d4cb0ae0206baaa7dc48e0, 8c47fb97dc873354dee2071801998b051bf8d273, 2fe5640d04b20673406e684e623a7982e4c9da6c.
+
+## Latest CI reliability pass — script errors now fail checks
+
+- The Godot workflow now checks both editor-import and headless-runtime logs for GDScript parse/load errors instead of trusting a zero exit code alone.
+- The visible-window launch also fails if the runtime log contains a script load error, preventing another blank gameplay screenshot from being accepted as healthy.
+- Commit: 8f0988f602d2e6dc3b2659293e3c1f2f4925889d.
+
 ## Latest collectible polish — hovering crystals and Moonseeds
 
 - Crystals, Moonshards and Moonseeds now gently bob and sway in place, with deterministic per-item phase offsets so nearby pickups do not move in lockstep.
