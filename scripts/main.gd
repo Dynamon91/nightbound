@@ -34,6 +34,7 @@ var tail_visual: MeshInstance3D
 var wings: Array[Node3D] = []
 var mote_nodes: Array[MeshInstance3D] = []
 var mote_origins: Array[Vector3] = []
+var gate_runes: Array[MeshInstance3D] = []
 
 func _ready() -> void:
 	# Build the playable scene explicitly; the main scene only provides this root script.
@@ -57,6 +58,42 @@ func box(pos:Vector3,size:Vector3,c:Color,solid:=false)->MeshInstance3D:
 	if solid:
 		var b:=StaticBody3D.new(); b.position=pos; var cs:=CollisionShape3D.new(); var sh:=BoxShape3D.new(); sh.size=size; cs.shape=sh; b.add_child(cs); add_child(b); n.reparent(b)
 	return n
+func glowing_box(pos:Vector3,size:Vector3,c:Color)->MeshInstance3D:
+	var n:=box(pos,size,c)
+	var glow_material:=n.material_override as StandardMaterial3D
+	glow_material.emission_enabled=true
+	glow_material.emission=c
+	glow_material.emission_energy_multiplier=.7
+	return n
+func set_gate_state(awake:bool)->void:
+	var rune_color:=Color("#8df6df") if awake else Color("#a58df2")
+	for rune in gate_runes:
+		if not is_instance_valid(rune): continue
+		var rune_material:=rune.material_override as StandardMaterial3D
+		if rune_material:
+			rune_material.albedo_color=rune_color
+			rune_material.emission=rune_color
+			rune_material.emission_energy_multiplier=1.65 if awake else .55
+func build_gate_detail()->void:
+	# Layered stone footing, thin carved trim and emissive runes make the gate a real landmark.
+	for side in [-1.0,1.0]:
+		box(Vector3(side*2.22,.28,-18.05),Vector3(1.0,.56,1.35),Color("#3b405f"),true)
+		var outer_trim:=glowing_box(Vector3(side*1.78,2.45,-18.57),Vector3(.11,3.85,.10),Color("#a58df2"))
+		gate_runes.append(outer_trim)
+		for mark_index in range(3):
+			var rune:=glowing_box(Vector3(side*2.22,.9+float(mark_index)*1.15,-18.59),Vector3(.13,.24,.07),Color("#a58df2"))
+			gate_runes.append(rune)
+	var crown_trim:=glowing_box(Vector3(0,5.05,-18.56),Vector3(3.55,.11,.10),Color("#a58df2"))
+	gate_runes.append(crown_trim)
+	for shard_index in range(3):
+		var shard:=orb(self,Vector3(0,5.34,-18.57),.13+float(shard_index%2)*.035,Color("#bfa8ff"))
+		shard.position.x=float(shard_index-1)*.34
+		var shard_material:=shard.material_override as StandardMaterial3D
+		shard_material.emission_enabled=true
+		shard_material.emission=Color("#a58df2")
+		shard_material.emission_energy_multiplier=.9
+		gate_runes.append(shard)
+	if portal_open: set_gate_state(true)
 func orb(parent:Node3D,pos:Vector3,r:float,c:Color)->MeshInstance3D:
 	var n:=MeshInstance3D.new(); var mesh:=SphereMesh.new(); mesh.radius=r; mesh.height=r*2; mesh.radial_segments=8; mesh.rings=4; n.mesh=mesh; n.position=pos; n.material_override=mat(c,0.35); parent.add_child(n); return n
 func gem(pos:Vector3,c:Color)->MeshInstance3D:
@@ -251,6 +288,7 @@ func build_valley()->void:
 		var id:="moonshard_%02d"%i; if not collected_shards.has(id): var n:=gem(bonus_positions[i],Color("#f4baff")); n.name=id; shard_nodes.append(n)
 	checkpoint(Vector3(0,1.5,3)); checkpoint(Vector3(-25,1.5,-21)); checkpoint(Vector3(25,1.5,-23))
 	box(Vector3(-2.25,2.4,-18),Vector3(.75,4.8,1),Color("#45445f"),true); box(Vector3(2.25,2.4,-18),Vector3(.75,4.8,1),Color("#45445f"),true); box(Vector3(0,4.85,-18),Vector3(5.1,.75,1),Color("#56516e"),true)
+	build_gate_detail()
 func build_veilwood()->void:
 	build_motes(130,28,31,Color("#d5a1ff"))
 	box(Vector3(130,-.5,0),Vector3(76,1,76),Color("#252d50"),true)
@@ -332,7 +370,10 @@ func _physics_process(d:float)->void:
 					relic.visible = false
 					var relic_material := relic.material_override as StandardMaterial3D
 					if relic_material: relic_material.emission_enabled = false
-	if crystals>=11: portal_open=true
+	if crystals>=11 and not portal_open:
+		portal_open=true
+		set_gate_state(true)
+		show_message("The Realm Gate awakens — the path is open!")
 	if portal_open and realm=="Moonlit Valley" and player.global_position.distance_to(Vector3(0,2.5,-18))<3: realm="The Veilwood"; player.position=Vector3(130,2,4); checkpoint_position=Vector3(130,2,4); audio_director.call("play_track","veilwood_level_2"); save_game(); show_message("REALM SHIFT — Welcome to the Veilwood!")
 	t+=d; body_visual.rotation.z=lerpf(body_visual.rotation.z,clampf(-player.velocity.x*.018,-.16,.16),d*4); body_visual.position.y=.25+sin(t*5.0)*.025; head_visual.rotation.z=lerpf(head_visual.rotation.z,clampf(player.velocity.x*.008,-.07,.07),d*5); head_visual.rotation.x=sin(t*3.2)*.025; tail_visual.rotation.z=sin(t*4.5)*.18; for wing_index in wings.size(): wings[wing_index].rotation.z=sin(t*8.5)*.3*(-1 if wing_index==0 else 1); for mote_index in mote_nodes.size(): mote_nodes[mote_index].position=mote_origins[mote_index]+Vector3(0,sin(t*1.3+float(mote_index)*.7)*.22,0); mote_nodes[mote_index].rotation.y=t*.25+float(mote_index); animate_collectibles(crystal_nodes); animate_collectibles(shard_nodes); animate_collectibles(seed_nodes); animate_collectibles(relic_nodes); refresh_hud()
 func animate_collectibles(nodes:Array[MeshInstance3D])->void:
