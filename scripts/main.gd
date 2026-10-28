@@ -389,6 +389,52 @@ func grass_cluster(p:Vector3,scale_value:float,add_bloom:bool)->void:
 		bloom_material.emission_enabled=true
 		bloom_material.emission=Color("#82d9e8")
 		bloom_material.emission_energy_multiplier=.65
+func apply_moonlit_ground_material(ground:MeshInstance3D)->void:
+	# World-space procedural mottling gives the broad ground plane layered moss/stone variation.
+	var ground_shader:=Shader.new()
+	ground_shader.code="""shader_type spatial;
+	render_mode diffuse_burley, specular_schlick_ggx;
+	varying vec3 v_world_position;
+	float hash21(vec2 p) {
+		p = fract(p * vec2(123.34, 456.21));
+		p += dot(p, p + 45.32);
+		return fract(p.x * p.y);
+	}
+	float value_noise(vec2 p) {
+		vec2 cell = floor(p);
+		vec2 f = fract(p);
+		f = f * f * (3.0 - 2.0 * f);
+		float a = hash21(cell);
+		float b = hash21(cell + vec2(1.0, 0.0));
+		float c = hash21(cell + vec2(0.0, 1.0));
+		float d = hash21(cell + vec2(1.0, 1.0));
+		return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+	}
+	void vertex() {
+		v_world_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	}
+	void fragment() {
+		vec2 p = v_world_position.xz;
+		float broad = value_noise(p * 0.075);
+		float mid = value_noise(p * 0.24 + vec2(13.0, 7.0));
+		float fine = value_noise(p * 0.82 + vec2(4.0, 19.0));
+		float moss_mask = smoothstep(0.28, 0.74, broad * 0.72 + mid * 0.28);
+		float stone_speckle = smoothstep(0.59, 0.86, fine);
+		vec3 deep_stone = vec3(0.035, 0.080, 0.125);
+		vec3 blue_stone = vec3(0.075, 0.145, 0.195);
+		vec3 moss = vec3(0.065, 0.145, 0.125);
+		vec3 color = mix(deep_stone, blue_stone, moss_mask * 0.72);
+		color = mix(color, moss, smoothstep(0.38, 0.76, broad) * 0.58);
+		color = mix(color, color * vec3(0.68, 0.76, 0.80), stone_speckle * 0.19);
+		ALBEDO = color;
+		ROUGHNESS = 0.94;
+		METALLIC = 0.0;
+	}
+	"""
+	var ground_material:=ShaderMaterial.new()
+	ground_material.shader=ground_shader
+	ground.material_override=ground_material
+
 func build_valley_ground_detail()->void:
 	# Keep a clear central traversal corridor while adding foreground and side-plane texture.
 	var rock_colors:Array[Color]=[Color("#435968"),Color("#536979"),Color("#384d5e"),Color("#617582")]
@@ -421,7 +467,8 @@ func build_valley()->void:
 	build_motes(0,24,38,Color("#9ce9d9"))
 	var w:=WorldEnvironment.new(); var e:=Environment.new(); e.background_mode=Environment.BG_COLOR; e.background_color=Color("#10182d"); e.ambient_light_source=Environment.AMBIENT_SOURCE_COLOR; e.ambient_light_color=Color("#8195cf"); e.ambient_light_energy=.42; e.fog_enabled=true; e.fog_density=.012; e.fog_light_color=Color("#252d49"); e.fog_light_energy=.78; w.environment=e; add_child(w)
 	var light:=DirectionalLight3D.new(); light.rotation_degrees=Vector3(-48,-32,0); light.light_color=Color("#b8ccff"); light.light_energy=1.15; light.shadow_enabled=true; add_child(light)
-	box(Vector3(0,-.5,0),Vector3(100,1,100),Color("#2f4d49"),true)
+	var main_ground:=box(Vector3(0,-.5,0),Vector3(100,1,100),Color("#2f4d49"),true)
+	apply_moonlit_ground_material(main_ground)
 	var platform_positions:Array[Vector3]=[Vector3(-12,.4,-9),Vector3(11,1.2,-14),Vector3(17,.4,9),Vector3(-17,3.2,13),Vector3(-30,1,-20),Vector3(-38,2.4,-28),Vector3(-27,3.8,-36),Vector3(28,1,-22),Vector3(38,2.5,-32),Vector3(31,4,-40),Vector3(-31,1,24),Vector3(-39,2.6,34),Vector3(-27,4,40),Vector3(29,1,25),Vector3(39,2.8,35),Vector3(27,4.2,42)]
 	for platform_index in range(platform_positions.size()):
 		plateau(platform_positions[platform_index],Vector3(8,1.2,8),platform_index)
