@@ -112,13 +112,36 @@ func _render_sample(real_time: float) -> float:
 
 	# Original synthesized percussion: kick, offbeat wooden click and a short noise-like hat.
 	var beat_fraction := fposmod(beat, 1.0)
-	var kick_hit := beat_fraction < 0.14 and (int(floor(beat)) % beats_per_bar == 0 or (section > 0 and int(floor(beat)) % beats_per_bar == 2))
+	var beat_in_bar_index := int(floor(beat)) % beats_per_bar
+	var bar_in_phrase := bar % 8
+	var downbeat := beat_in_bar_index == 0
+	var backbeat := beat_in_bar_index == (3 if beats_per_bar == 4 else (3 if beats_per_bar == 6 else beats_per_bar - 1))
+	# Change the kick pattern by meter and phrase, not just by volume.
+	var kick_pattern := downbeat or (section > 0 and backbeat and bar_in_phrase % 2 == 0)
+	if beats_per_bar == 7:
+		kick_pattern = downbeat or (beat_in_bar_index == 4 and bar_in_phrase % 2 == 1)
+	elif beats_per_bar == 5:
+		kick_pattern = downbeat or (beat_in_bar_index == 3 and bar_in_phrase % 2 == 0)
+	var kick_hit := beat_fraction < 0.14 and kick_pattern
 	if kick_hit:
 		var kick_env := exp(-beat_fraction * 38.0)
 		var kick_freq := 72.0 - 34.0 * minf(beat_fraction * 5.0, 1.0)
-		output += sin(TWO_PI * kick_freq * real_time) * kick_env * 0.17
+		output += sin(TWO_PI * kick_freq * real_time) * kick_env * (0.15 if bar_in_phrase == 7 else 0.17)
 	var click_phase := fposmod(beat * 2.0, 1.0)
-	if click_phase < 0.10 and int(floor(beat * 2.0)) % 4 == 1:
+	var click_step := int(floor(beat * 2.0)) % (beats_per_bar * 2)
+	var click_pattern := click_step % 4 == 1
+	if beats_per_bar == 6:
+		click_pattern = click_step % 6 == 2 or click_step % 6 == 5
+	elif beats_per_bar == 7:
+		click_pattern = click_step % 7 == 3 or click_step % 7 == 6
+	elif beats_per_bar == 5:
+		click_pattern = click_step % 5 == 1 or click_step % 5 == 4
+	# Leave breathing room at phrase endings, then add a small pickup into the next phrase.
+	if bar_in_phrase == 7 and click_step >= (beats_per_bar * 2 - 2):
+		click_pattern = false
+	elif bar_in_phrase == 0 and click_step < 2 and section % 4 != 0:
+		click_pattern = click_pattern or click_step == 1
+	if click_phase < 0.10 and click_pattern:
 		output += sin(TWO_PI * (680.0 + float((bar + step) % 5) * 73.0) * real_time) * exp(-click_phase * 45.0) * 0.035
 	var hat_phase := fposmod(beat * 4.0, 1.0)
 	if hat_phase < 0.075:
