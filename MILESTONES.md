@@ -28,7 +28,7 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 | Area | Progress | Target |
 |---|---:|---|
 | 3D movement / camera | 70% | Responsive third-person movement with polished camera behaviour |
-| Jump + glide | 65% | Reliable aerial traversal and readable glide routes |
+| Jump + glide | 66% | Reliable aerial traversal, readable glide routes and a live on-screen stamina meter |
 | Ability-gated exploration | 55% | Abilities open shortcuts, secrets and revisited routes |
 | Collectible routes | 60% | Main path + risky detours + hidden optional paths |
 | Realm transition | 65% | Seamless-feeling gate/realm progression |
@@ -78,6 +78,11 @@ For long levels, tracks may exceed the target duration or use additional section
 - Realm themes should have identifiable motifs while supporting exploration and discovery.
 - Heart-Tree and major discoveries should preferably add or intensify layers instead of hard-cutting to unrelated music.
 - Final audio must use original or properly licensed material; no copyrighted recordings should be bundled as game assets.
+
+## Latest gameplay UI pass — glide energy meter
+
+- Added an on-screen `GLIDE ENERGY` bar that updates during gameplay, displays remaining glide stamina as a percentage, and changes tint as energy runs low.
+- This is a gameplay readability improvement in code; the commit's Godot headless parse/launch and screenshot workflow must pass before it is marked runtime-verified.
 
 ## Latest visual pass — grass silhouettes and wind motion
 
