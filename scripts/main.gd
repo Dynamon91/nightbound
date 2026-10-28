@@ -13,12 +13,16 @@ var realm := "Moonlit Valley"
 var crystals := 0
 var moonshards := 0
 var moonseeds := 0
+var relics := 0
+var echo_timer := 0.0
+var collected_relics: Array[String] = []
 var glide := 0.0
 var checkpoint := Vector3(0,1.5,3)
 var points: Array[Vector3] = []
 var crystal_nodes: Array[MeshInstance3D] = []
 var shard_nodes: Array[MeshInstance3D] = []
 var seed_nodes: Array[MeshInstance3D] = []
+var relic_nodes: Array[MeshInstance3D] = []
 var collected_crystals: Array[String] = []
 var collected_shards: Array[String] = []
 var collected_seeds: Array[String] = []
@@ -113,6 +117,14 @@ func build_valley()->void:
 	var ps=[Vector3(-5,1,-5),Vector3(7,1.5,-12),Vector3(-14,1.2,-10),Vector3(-25,1.5,-21),Vector3(-38,3.2,-29),Vector3(25,1.5,-23),Vector3(38,3.4,-33),Vector3(-25,1.5,24),Vector3(-38,3.5,35),Vector3(25,1.6,25),Vector3(38,3.7,36)]
 	for i in range(11):
 		var id:="crystal_%02d"%i; if not collected_crystals.has(id): var n:=gem(ps[i],Color("#68e9ff")); n.name=id; crystal_nodes.append(n)
+	var relic_positions: Array[Vector3]=[Vector3(-17,1.7,13),Vector3(17,2.0,17),Vector3(-39,4.0,35),Vector3(38,4.2,36),Vector3(-28,4.8,-36)]
+	for i in range(relic_positions.size()):
+		var relic_id:="relic_%02d"%i
+		if not collected_relics.has(relic_id):
+			var relic:=gem(relic_positions[i],Color("#f8d58b")); relic.name=relic_id; relic.visible=false
+			var relic_material:=relic.material_override as StandardMaterial3D
+			relic_material.emission_enabled=false
+			relic_nodes.append(relic)
 	var bonus_positions: Array[Vector3]=[Vector3(-31,3,-27),Vector3(32,3.2,-29),Vector3(-27,5,-36)]
 	for i in range(3):
 		var id:="moonshard_%02d"%i; if not collected_shards.has(id): var n:=gem(bonus_positions[i],Color("#f4baff")); n.name=id; shard_nodes.append(n)
@@ -165,8 +177,19 @@ func _physics_process(d:float)->void:
 	if Input.is_action_just_pressed("save_game"):
 		save_game(); show_message("Game saved — progress secured.")
 	if Input.is_action_just_pressed("load_game"):
-		if FileAccess.file_exists(SAVE_PATH): load_game(); show_message("Save loaded.")
+		if FileAccess.file_exists(SAVE_PATH): get_tree().reload_current_scene()
 		else: show_message("No save file yet — press P to create one.")
+	if Input.is_action_just_pressed("echosense"):
+		echo_timer = 5.0
+		for relic in relic_nodes:
+			if is_instance_valid(relic):
+				relic.visible = true
+				var relic_material := relic.material_override as StandardMaterial3D
+				if relic_material:
+					relic_material.emission_enabled = true
+					relic_material.emission = Color("#f8d58b")
+					relic_material.emission_energy_multiplier = 1.8
+		show_message("Echosense reveals hidden relics for 5 seconds.")
 	var v:=Input.get_vector("move_left","move_right","move_forward","move_back"); var dir:=Vector3(v.x,0,v.y); if dir.length()>.05: player.rotation.y=atan2(-dir.x,-dir.z)
 	if not player.is_on_floor():
 		if Input.is_action_pressed("jump") and player.velocity.y<.5 and glide<GLIDE_MAX: glide=minf(glide+d,GLIDE_MAX); player.velocity.y=maxf(player.velocity.y-4*d,-2.4); player.velocity.x=move_toward(player.velocity.x,dir.x*9.4,18*d); player.velocity.z=move_toward(player.velocity.z,dir.z*9.4,18*d)
@@ -179,10 +202,18 @@ func _physics_process(d:float)->void:
 	for p in points:
 		if player.global_position.distance_to(p)<2.1 and checkpoint.distance_to(p)>.2: checkpoint=p+Vector3(0,.8,0); save_game(); show_message("Checkpoint attuned — progress secured.")
 	if player.global_position.y < -12: player.global_position=checkpoint; player.velocity=Vector3.ZERO; show_message("Back to the last safe checkpoint.")
-	collect_near(crystal_nodes,1.25,"Crystal"); collect_near(shard_nodes,1.3,"Moonshard"); collect_near(seed_nodes,1.25,"Moonseed")
+	collect_near(crystal_nodes,1.25,"Crystal"); collect_near(shard_nodes,1.3,"Moonshard"); collect_near(seed_nodes,1.25,"Moonseed"); collect_near(relic_nodes,1.25,"Relic")
+	if echo_timer > 0.0:
+		echo_timer = maxf(0.0, echo_timer-d)
+		if echo_timer == 0.0:
+			for relic in relic_nodes:
+				if is_instance_valid(relic) and not collected_relics.has(str(relic.name)):
+					relic.visible = false
+					var relic_material := relic.material_override as StandardMaterial3D
+					if relic_material: relic_material.emission_enabled = false
 	if crystals>=11: portal_open=true
 	if portal_open and realm=="Moonlit Valley" and player.global_position.distance_to(Vector3(0,2.5,-18))<3: realm="The Veilwood"; player.position=Vector3(130,2,4); checkpoint=Vector3(130,2,4); audio_director.call("play_track","veilwood_level_2"); save_game(); show_message("REALM SHIFT — Welcome to the Veilwood!")
-	t+=d; body_visual.rotation.z=lerpf(body_visual.rotation.z,clampf(-player.velocity.x*.018,-.16,.16),d*4); body_visual.position.y=.25+sin(t*5.0)*.025; head_visual.rotation.z=lerpf(head_visual.rotation.z,clampf(player.velocity.x*.008,-.07,.07),d*5); head_visual.rotation.x=sin(t*3.2)*.025; tail_visual.rotation.z=sin(t*4.5)*.18; for i in wings.size(): wings[i].rotation.z=sin(t*8.5)*.3*(-1 if i==0 else 1); for i in mote_nodes.size(): mote_nodes[i].position=mote_origins[i]+Vector3(0,sin(t*1.3+float(i)*.7)*.22,0); mote_nodes[i].rotation.y=t*.25+float(i); animate_collectibles(crystal_nodes); animate_collectibles(shard_nodes); animate_collectibles(seed_nodes); refresh_hud()
+	t+=d; body_visual.rotation.z=lerpf(body_visual.rotation.z,clampf(-player.velocity.x*.018,-.16,.16),d*4); body_visual.position.y=.25+sin(t*5.0)*.025; head_visual.rotation.z=lerpf(head_visual.rotation.z,clampf(player.velocity.x*.008,-.07,.07),d*5); head_visual.rotation.x=sin(t*3.2)*.025; tail_visual.rotation.z=sin(t*4.5)*.18; for i in wings.size(): wings[i].rotation.z=sin(t*8.5)*.3*(-1 if i==0 else 1); for i in mote_nodes.size(): mote_nodes[i].position=mote_origins[i]+Vector3(0,sin(t*1.3+float(i)*.7)*.22,0); mote_nodes[i].rotation.y=t*.25+float(i); animate_collectibles(crystal_nodes); animate_collectibles(shard_nodes); animate_collectibles(seed_nodes); animate_collectibles(relic_nodes); refresh_hud()
 func animate_collectibles(nodes:Array[MeshInstance3D])->void:
 	for n in nodes:
 		if not is_instance_valid(n): continue
@@ -195,23 +226,25 @@ func animate_collectibles(nodes:Array[MeshInstance3D])->void:
 func collect_near(nodes:Array[MeshInstance3D],dist:float,label:String)->void:
 	for i in range(nodes.size()-1,-1,-1):
 		var n:=nodes[i]; if not is_instance_valid(n): nodes.remove_at(i); continue
+		if label=="Relic" and not n.visible: continue
 		if n.global_position.distance_to(player.global_position)<dist:
 			var id:=str(n.name); n.queue_free(); nodes.remove_at(i)
 			if label=="Crystal": crystals+=1; collected_crystals.append(id)
 			elif label=="Moonshard": moonshards+=1; collected_shards.append(id)
-			else: moonseeds+=1; collected_seeds.append(id)
+			elif label=="Moonseed": moonseeds+=1; collected_seeds.append(id)
+			else: relics+=1; collected_relics.append(id)
 			show_message("%s collected!"%label); save_game()
 func refresh_hud()->void:
-	if hud: hud.text="NIGHTBOUND  •  %s\nCrystals: %d/11  •  Moonseeds: %d/5  •  Moonshards: %d/3%s\nWASD Move | SPACE Leap/Glide | F Burst | SHIFT Dash | P Save | O Load"%[realm,crystals,moonseeds,moonshards,"  •  GATE OPEN" if portal_open else ""]
+	if hud: hud.text="NIGHTBOUND  •  %s\nCrystals: %d/11  •  Moonseeds: %d/5  •  Moonshards: %d/3  •  Relics: %d/5%s\nWASD Move | SPACE Leap/Glide | E Echosense | F Burst | SHIFT Dash | P Save | O Load"%[realm,crystals,moonseeds,moonshards,relics,"  •  GATE OPEN" if portal_open else ""]
 	if bar: bar.value=GLIDE_MAX-glide
 func show_message(s:String)->void:
 	if message: message.text=s
 func save_game()->void:
-	var f:=FileAccess.open(SAVE_PATH,FileAccess.WRITE); if f:f.store_string(JSON.stringify({"crystals":crystals,"moonseeds":moonseeds,"moonshards":moonshards,"collected_crystals":collected_crystals,"collected_shards":collected_shards,"collected_seeds":collected_seeds,"realm":realm,"checkpoint":[checkpoint.x,checkpoint.y,checkpoint.z]}))
+	var f:=FileAccess.open(SAVE_PATH,FileAccess.WRITE); if f:f.store_string(JSON.stringify({"crystals":crystals,"moonseeds":moonseeds,"moonshards":moonshards,"relics":relics,"collected_relics":collected_relics,"collected_crystals":collected_crystals,"collected_shards":collected_shards,"collected_seeds":collected_seeds,"realm":realm,"checkpoint":[checkpoint.x,checkpoint.y,checkpoint.z]}))
 func load_game()->void:
 	if not FileAccess.file_exists(SAVE_PATH):return
 	var f:=FileAccess.open(SAVE_PATH,FileAccess.READ); if not f:return
 	var d=JSON.parse_string(f.get_as_text()); if typeof(d)!=TYPE_DICTIONARY:return
-	crystals=int(d.get("crystals",0)); moonseeds=int(d.get("moonseeds",0)); moonshards=int(d.get("moonshards",0)); collected_crystals=d.get("collected_crystals",[]); collected_shards=d.get("collected_shards",[]); collected_seeds=d.get("collected_seeds",[]); realm=str(d.get("realm","Moonlit Valley")); portal_open=crystals>=11
+	crystals=int(d.get("crystals",0)); moonseeds=int(d.get("moonseeds",0)); moonshards=int(d.get("moonshards",0)); relics=int(d.get("relics",0)); collected_relics=d.get("collected_relics",[]); collected_crystals=d.get("collected_crystals",[]); collected_shards=d.get("collected_shards",[]); collected_seeds=d.get("collected_seeds",[]); realm=str(d.get("realm","Moonlit Valley")); portal_open=crystals>=11
 	var cp=d.get("checkpoint",[0,1.5,3]); if cp is Array and cp.size()==3:checkpoint=Vector3(float(cp[0]),float(cp[1]),float(cp[2])); if player:player.position=checkpoint
 	if audio_director:audio_director.call("play_track","veilwood_level_2" if realm=="The Veilwood" else "moonlit_valley_level_1"); refresh_hud()
