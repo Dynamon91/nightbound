@@ -4,7 +4,7 @@
 
 Nightbound should have **long-form original music designed for seamless looping**. Music is part of the level identity, not a short placeholder jingle.
 
-The soundtrack should take **high-level inspiration from the energy, rhythmic drive, syncopation, dynamic interplay and percussive spirit associated with Stewart Copeland's work**, while remaining an original Nightbound sound. Do not reproduce melodies, riffs, arrangements, recordings, or other protectable elements from existing compositions.
+The soundtrack should explicitly draw on the **broad musical character of Stewart Copeland's original Spyro the Dragon score**: playful, mischievous fantasy-adventure energy; punchy and nimble percussion; syncopated, interlocking rhythmic parts; distinctive bass movement; bright, quirky timbres; and themes whose instrumentation and groove reflect each place. Aim for that sense of lively exploration and characterful world-specific scoring—not a generic orchestral fantasy soundtrack. Translate those high-level traits into Nightbound's own nocturnal, bat-led identity. All melodies, motifs, riffs, arrangements, sound design and recordings must remain original; do not recreate or closely imitate any Spyro cue.
 
 ## Realm themes
 
