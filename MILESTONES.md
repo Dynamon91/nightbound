@@ -12,7 +12,7 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 
 | Area | Progress | Target |
 |---|---:|---|
-| Original bat protagonist model | 58% | Recognisable, expressive, polished 3D hero with clean silhouette, wings, face and animation-ready proportions |
+| Original bat protagonist model | 59% | Recognisable, expressive, polished 3D hero with clean silhouette, wings, face and animation-ready proportions |
 | Hero materials / eyes / wing detail | 53% | Cohesive stylized materials, readable eyes and membrane detail at gameplay distance |
 | Terrain and cliffs | 48% | Layered stylized ground, cliffs, ledges and natural shapes rather than placeholder boxes |
 | Rocks / props | 52% | Reusable stylized rock, crystal, ruin and environmental prop families |
@@ -89,6 +89,12 @@ For long levels, tracks may exceed the target duration or use additional section
 - Improved the glide's descent cap from `-3.0` to `-2.4` and reduced the extra downward acceleration while gliding, making the descent more forgiving.
 - Added stronger directional air steering while gliding and gentle horizontal drag when no direction is held, while retaining the finite 2.8-second stamina limit and ground-based refill.
 - This is committed gameplay code; the CI result and runtime feel still need verification before calling the change tested.
+
+## Latest hero animation pass — flight lean
+
+- Added a subtle torso pitch for glide/fall states, banking that responds to horizontal velocity, and a small body bob; the head counter-leans slightly to keep the face readable.
+- This layers onto the existing wing-beat animation rather than replacing it. It is a first-pass procedural animation and still needs screenshot review in a running build.
+- The implementation is committed; wait for the matching Godot CI run before treating it as verified.
 
 ## Latest visual pass — grass silhouettes and wind motion
 
