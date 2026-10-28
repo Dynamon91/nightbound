@@ -12,8 +12,8 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 
 | Area | Progress | Target |
 |---|---:|---|
-| Original bat protagonist model | 55% | Recognisable, expressive, polished 3D hero with clean silhouette, wings, face and animation-ready proportions |
-| Hero materials / eyes / wing detail | 49% | Cohesive stylized materials, readable eyes and membrane detail at gameplay distance |
+| Original bat protagonist model | 58% | Recognisable, expressive, polished 3D hero with clean silhouette, wings, face and animation-ready proportions |
+| Hero materials / eyes / wing detail | 53% | Cohesive stylized materials, readable eyes and membrane detail at gameplay distance |
 | Terrain and cliffs | 48% | Layered stylized ground, cliffs, ledges and natural shapes rather than placeholder boxes |
 | Rocks / props | 52% | Reusable stylized rock, crystal, ruin and environmental prop families |
 | Vegetation | 44% | Distinct tree, grass, shrub and magical-forest families with controlled repetition |
@@ -39,7 +39,7 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 
 ## Audio / music milestone
 
-Implemented in code: `scripts/audio_director.gd` provides two-player crossfades, track IDs for the first two level themes and boss themes, safe missing-asset handling, and loop flags for Ogg Vorbis/WAV. `scripts/main.gd` requests the Moonlit Valley theme at startup and switches to the Veilwood theme on realm transition. Because the actual audio assets do not exist yet, this is integration scaffolding—not finished or audible soundtrack content. The first runtime verification must check Godot parsing, warnings, playback, transitions and loop seams after tracks are added.
+Implemented in code: `scripts/audio_director.gd` provides two-player crossfades, track IDs for the first two level themes and boss themes, safe missing-asset handling, and loop flags for Ogg Vorbis/WAV. `scripts/main.gd` requests the Moonlit Valley theme at startup and switches to the Veilwood theme on realm transition. Because the actual audio assets do not exist yet, this is integration scaffolding—not finished or audible soundtrack content. The latest code also resynchronizes the requested realm theme after loading a save. The first runtime verification must check Godot parsing, warnings, playback, transitions and loop seams after tracks are added.
 
 **Music system integration: 20%** — an initial realm-aware routing/crossfade script is wired into gameplay. **Original music content: 0%** — final tracks have not yet been composed or added.
 
@@ -86,6 +86,7 @@ For long levels, tracks may exceed the target duration or use additional section
 - [x] Wings, face, ears and feet represented in the running scene
 - [x] First face-material pass: emissive violet eyes with tiny catchlights, plus fine contrasting wing ribs
 - [ ] Polished hero proportions and authored surface details
+- [x] Added first-pass nose, cheek accents, inner-ear color and chest-fur tufts (needs screenshot review)
 - [ ] Animation-quality wing/flight presentation
 - [x] Procedural wing-beat animation for idle, falling and gliding (initial pass; needs visual polish in gameplay capture)
 
