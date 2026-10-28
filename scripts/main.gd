@@ -246,6 +246,51 @@ func build_crystal_cluster(p:Vector3,main_color:Color,size_value:float)->void:
 		shard.rotation.y=angle
 		var shard_material:=shard.material_override as StandardMaterial3D
 		shard_material.emission_energy_multiplier=1.65 if shard_index==0 else 1.25
+func build_crystal_grotto()->void:
+	# Optional side-route landmark: a dark cave mouth, weathered stone surround and luminous crystal core.
+	var cave_center:=Vector3(-34.0,0.0,-3.5)
+	box(cave_center+Vector3(0,1.35,-.28),Vector3(4.6,2.8,.5),Color("#101a35"))
+	box(cave_center+Vector3(0,-.02,0),Vector3(5.6,.28,1.65),Color("#35485f"))
+	# Chunky low-poly rock shoulders and lintel frame the opening as a cave, not a door.
+	rock(cave_center+Vector3(-2.15,1.0,.02),Vector3(.85,1.35,.9),Color("#44536d"),107)
+	rock(cave_center+Vector3(2.1,1.1,.06),Vector3(.82,1.3,.92),Color("#53647b"),109)
+	rock(cave_center+Vector3(-1.45,2.5,.02),Vector3(1.25,.62,.95),Color("#4a5d77"),113)
+	rock(cave_center+Vector3(0,2.82,-.02),Vector3(1.25,.55,.92),Color("#617087"),127)
+	rock(cave_center+Vector3(1.45,2.48,.04),Vector3(1.15,.68,.88),Color("#3d4d68"),131)
+	# Carved cool runes guide the eye to the hidden chamber.
+	for side in [-1.0,1.0]:
+		var rune:=glowing_box(cave_center+Vector3(side*1.72,1.25,.53),Vector3(.075,1.8,.055),Color("#58d9ee"))
+		rune.rotation.z=side*.08
+		for rune_index in range(3):
+			glowing_box(cave_center+Vector3(side*(1.72-.13*float(rune_index%2)),.58+float(rune_index)*.48,.55),Vector3(.25,.055,.06),Color("#8be8ee"))
+	# Oversized decorative crystals form a focal point inside the cave; they are not counted as pickups.
+	var cave_crystal:=gem(cave_center+Vector3(-.48,.95,.02),Color("#5cdfff"))
+	cave_crystal.scale=Vector3(.95,1.6,.8)
+	cave_crystal.rotation.z=-.08
+	var cave_crystal_two:=gem(cave_center+Vector3(.58,.72,.0),Color("#a08cff"))
+	cave_crystal_two.scale=Vector3(.58,1.18,.62)
+	cave_crystal_two.rotation.z=.18
+	var cave_crystal_three:=gem(cave_center+Vector3(1.02,.47,.12),Color("#6be9ff"))
+	cave_crystal_three.scale=Vector3(.38,.76,.42)
+	cave_crystal_three.rotation.z=.25
+	# Four raised stones suggest an optional approach without blocking the main central bridge.
+	var approach:Array[Vector3]=[
+		Vector3(-12.0,.25,3.4),Vector3(-17.0,.45,1.0),Vector3(-22.0,.7,-1.0),Vector3(-27.0,.95,-2.5)
+	]
+	for step_index in range(approach.size()):
+		var stone_pos:Vector3=approach[step_index]
+		var stone:=rock(stone_pos,Vector3(1.35,.28,1.05),Color("#526a7b") if step_index%2==0 else Color("#3c526b"),step_index+151)
+		var stone_body:=StaticBody3D.new()
+		stone_body.position=stone_pos
+		add_child(stone_body)
+		var stone_collision:=CollisionShape3D.new()
+		var stone_shape:=BoxShape3D.new()
+		stone_shape.size=Vector3(2.2,.55,1.75)
+		stone_collision.shape=stone_shape
+		stone_collision.position.y=.12
+		stone_body.add_child(stone_collision)
+		stone.reparent(stone_body)
+
 func build_gate_detail()->void:
 	# Layered stone footing, thin carved trim and emissive runes make the gate a real landmark.
 	for side in [-1.0,1.0]:
@@ -629,6 +674,7 @@ func build_valley()->void:
 	checkpoint(Vector3(0,1.5,3)); checkpoint(Vector3(-25,1.5,-21)); checkpoint(Vector3(25,1.5,-23))
 	box(Vector3(-2.25,2.4,-18),Vector3(.75,4.8,1),Color("#45445f"),true); box(Vector3(2.25,2.4,-18),Vector3(.75,4.8,1),Color("#45445f"),true); box(Vector3(0,4.85,-18),Vector3(5.1,.75,1),Color("#56516e"),true)
 	build_gate_detail()
+	build_crystal_grotto()
 	build_distant_citadel()
 	build_moonlit_clouds()
 	build_lantern(Vector3(-3.35,0,-16.6),.9,Color("#ffbf70"))
