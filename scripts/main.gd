@@ -74,6 +74,58 @@ func set_gate_state(awake:bool)->void:
 			rune_material.albedo_color=rune_color
 			rune_material.emission=rune_color
 			rune_material.emission_energy_multiplier=1.65 if awake else .55
+func build_distant_citadel()->void:
+	# A stacked low-poly skyline gives the gate a destination to frame, rather than an empty horizon.
+	box(Vector3(0,1.55,-45.5),Vector3(14.0,3.1,2.4),Color("#273858"))
+	box(Vector3(0,3.8,-45.0),Vector3(5.4,4.4,3.2),Color("#35466f"))
+	box(Vector3(0,6.8,-45.1),Vector3(2.5,4.8,2.3),Color("#46578b"))
+	var tower_data:Array[Vector4]=[
+		Vector4(-5.0,3.5,-46.0,6.2),Vector4(5.0,3.5,-46.0,6.2),
+		Vector4(-8.0,2.2,-44.0,4.1),Vector4(8.0,2.2,-44.0,4.1),
+		Vector4(-2.8,4.0,-43.6,8.0),Vector4(2.8,4.0,-43.6,8.0)
+	]
+	for tower_index in range(tower_data.size()):
+		var tower:Vector4=tower_data[tower_index]
+		var width:=1.25 if tower_index<4 else .9
+		box(Vector3(tower.x,tower.y+tower.w*.5,tower.z),Vector3(width,tower.w,width),Color("#35466f") if tower_index%2==0 else Color("#43568a"))
+		var cone:=MeshInstance3D.new()
+		var cone_mesh:=CylinderMesh.new()
+		cone_mesh.top_radius=.015
+		cone_mesh.bottom_radius=width*.78
+		cone_mesh.height=1.55 if tower_index<4 else 1.9
+		cone_mesh.radial_segments=6
+		cone.mesh=cone_mesh
+		cone.position=Vector3(tower.x,tower.y+tower.w+(cone_mesh.height*.5),tower.z)
+		cone.material_override=mat(Color("#6b70bd"),.72)
+		add_child(cone)
+		var spire:=glowing_box(Vector3(tower.x,tower.y+tower.w+cone_mesh.height+.18,tower.z),Vector3(.055,.42,.055),Color("#7de8f0"))
+		# Narrow windows catch moonlight and visually link the skyline to the gate.
+		for window_index in range(2):
+			glowing_box(Vector3(tower.x-.23+float(window_index)*.46,tower.y+tower.w*.48,tower.z+width*.505),Vector3(.09,.55,.035),Color("#61cfe9"))
+	for side in [-1.0,1.0]:
+		box(Vector3(side*6.2,1.4,-43.5),Vector3(1.25,2.8,4.0),Color("#293b5e"))
+	# The moon is a flattened sphere with a dark rim and understated surface marks.
+	var moon_rim:=orb(self,Vector3(13.0,16.2,-55.5),4.25,Color("#536ba2"))
+	moon_rim.scale=Vector3(1.0,1.0,.055)
+	var moon:=orb(self,Vector3(13.0,16.2,-55.0),3.88,Color("#d3def6"))
+	moon.scale=Vector3(1.0,1.0,.055)
+	var moon_material:=moon.material_override as StandardMaterial3D
+	moon_material.emission_enabled=true
+	moon_material.emission=Color("#b4ccff")
+	moon_material.emission_energy_multiplier=.34
+	for mark_index in range(5):
+		var mark:=orb(self,Vector3(11.4+float((mark_index*7)%5)*.72,15.1+float((mark_index*3)%4)*.63,-54.88),.28+float(mark_index%2)*.12,Color("#aebde1"))
+		mark.scale=Vector3(1.0,1.0,.035)
+	# Sparse stars are kept above the silhouette so they do not compete with pickups.
+	for star_index in range(52):
+		var sx:=float(((star_index*37)%93)-46)
+		var sy:=11.0+float((star_index*17)%16)
+		var sz:=-52.0-float((star_index*11)%8)
+		var star:=orb(self,Vector3(sx,sy,sz),.025+float(star_index%3)*.012,Color("#c8e5ff") if star_index%4==0 else Color("#b1c9ff"))
+		var star_material:=star.material_override as StandardMaterial3D
+		star_material.emission_enabled=true
+		star_material.emission=star_material.albedo_color
+		star_material.emission_energy_multiplier=.85
 func build_gate_detail()->void:
 	# Layered stone footing, thin carved trim and emissive runes make the gate a real landmark.
 	for side in [-1.0,1.0]:
@@ -162,6 +214,21 @@ func plateau(p:Vector3,size:Vector3,seed:int)->void:
 		facet.scale=Vector3(size.x*.11,size.y*.2,size.z*.13)
 		facet.material_override=mat(Color("#293c53") if facet_index==0 else Color("#455e70"),.97)
 		body.add_child(facet)
+	if p.y>=2.0:
+		# Hanging tapered rock spires make elevated routes read as floating islands.
+		for root_index in range(3):
+			var root_spire:=MeshInstance3D.new()
+			var root_mesh:=CylinderMesh.new()
+			root_mesh.top_radius=.035
+			root_mesh.bottom_radius=.24+float(root_index%2)*.07
+			root_mesh.height=1.15+float((seed+root_index)%3)*.28
+			root_mesh.radial_segments=5
+			root_spire.mesh=root_mesh
+			var root_angle:=float(root_index)*TAU/3.0+float(seed%4)*.2
+			root_spire.position=Vector3(cos(root_angle)*size.x*.22,-size.y*.5-root_mesh.height*.42,sin(root_angle)*size.z*.22)
+			root_spire.rotation.z=cos(root_angle)*.12
+			root_spire.material_override=mat(Color("#2e435b") if root_index==0 else Color("#40586c"),.98)
+			body.add_child(root_spire)
 	# Tiny grass blades sit near platform edges, leaving the center clear for landing.
 	for tuft_index in range(3):
 		var tuft:=MeshInstance3D.new()
@@ -289,6 +356,7 @@ func build_valley()->void:
 	checkpoint(Vector3(0,1.5,3)); checkpoint(Vector3(-25,1.5,-21)); checkpoint(Vector3(25,1.5,-23))
 	box(Vector3(-2.25,2.4,-18),Vector3(.75,4.8,1),Color("#45445f"),true); box(Vector3(2.25,2.4,-18),Vector3(.75,4.8,1),Color("#45445f"),true); box(Vector3(0,4.85,-18),Vector3(5.1,.75,1),Color("#56516e"),true)
 	build_gate_detail()
+	build_distant_citadel()
 func build_veilwood()->void:
 	build_motes(130,28,31,Color("#d5a1ff"))
 	box(Vector3(130,-.5,0),Vector3(76,1,76),Color("#252d50"),true)
