@@ -26,7 +26,7 @@ Nightbound's levels must be substantial, expansive 3D adventure spaces—not sho
 
 The project now tracks a dedicated **Mockup-Fidelity Implementation** milestone for the models, terrain, props, vegetation, lighting and level-art work needed to make the running game visually approach the generated mockup. The current development estimate is **63%** for this visual/asset milestone. See [`MILESTONES.md`](MILESTONES.md) for detailed per-area progress and acceptance criteria, and [`AUDIO_IMPLEMENTATION.md`](AUDIO_IMPLEMENTATION.md) for the music system, track inventory and asset requirements.
 
-The percentage is a planning estimate, not a measured visual score. A first actual 1280×720 gameplay capture now verifies that the scene starts and renders; it still shows prototype-quality geometry and does not mean the target visual quality has been reached. See the [latest Godot CI run and its screenshot/source artifacts](https://github.com/Dynamon91/nightbound/actions/runs/40726069737).
+The percentage is a planning estimate, not a measured visual score. A Godot 4.3 workflow now checks script load errors, runs the scene headlessly, and captures an actual 1280×720 gameplay frame. The latest environment pass adds a cooler moonlit palette and blue-violet distance fog; geometry remains prototype-quality and the target visual quality has not been reached. See the [latest Godot CI run and its screenshot/source artifacts](https://github.com/Dynamon91/nightbound/actions/runs/40726069737).
 
 ## Controls
 
