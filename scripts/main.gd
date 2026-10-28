@@ -39,6 +39,7 @@ var heart_tree_light: OmniLight3D
 var veilwood_motes: Array[MeshInstance3D] = []
 var veilwood_mote_bases: Array[Vector3] = []
 var hero_wing_pivots: Array[Node3D] = []
+var animated_grass: Array[MeshInstance3D] = []
 
 func material(color: Color, roughness := 0.75) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -139,6 +140,7 @@ func add_grass_tuft(parent: Node3D, pos: Vector3, scale_value: float, color: Col
 	tuft_mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
 	tuft.material_override = tuft_mat
 	parent.add_child(tuft)
+	animated_grass.append(tuft)
 	return tuft
 
 func add_wing_membrane(parent: Node3D, side: float) -> void:
@@ -569,6 +571,13 @@ func _physics_process(delta: float) -> void:
 		if is_instance_valid(wing):
 			var side := -1.0 if i == 0 else 1.0
 			wing.rotation.z = side * sin(ambience_time * wing_rate) * wing_amount
+	# Gentle, offset wind motion gives both realms a living ground layer.
+	for i in range(animated_grass.size()):
+		var tuft: MeshInstance3D = animated_grass[i]
+		if is_instance_valid(tuft):
+			var phase := float(i) * 1.37
+			tuft.rotation.x = sin(ambience_time * 1.15 + phase) * 0.055
+			tuft.rotation.z = cos(ambience_time * 0.92 + phase * 0.8) * 0.075
 	for i in range(veilwood_motes.size()):
 		var mote: MeshInstance3D = veilwood_motes[i]
 		if is_instance_valid(mote):
