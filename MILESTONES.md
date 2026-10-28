@@ -96,10 +96,12 @@ For long levels, tracks may exceed the target duration or use additional section
 - This layers onto the existing wing-beat animation rather than replacing it. It is a first-pass procedural animation and still needs screenshot review in a running build.
 - The implementation is committed; wait for the matching Godot CI run before treating it as verified.
 
-## Latest recovery pass — fall reset
+## Latest recovery pass — fall reset and luminous checkpoints
 
 - Added a safety recovery when the player falls below the playable world: position resets to the current saved checkpoint, velocity is cleared, and glide stamina is reset.
-- This makes failed jumps less punishing, but does not replace proper in-level checkpoint placement and still requires the corresponding CI result.
+- Added luminous checkpoint rings at three Moonlit Valley perches and two Veilwood route landmarks. Entering a ring updates the respawn position and triggers an automatic save.
+- Checkpoint activation is filtered by the current realm to avoid accidentally binding a distant point in the other area. The portal arrival also establishes a Veilwood fallback point.
+- The checkpoint feature is committed; its Godot CI parse/launch check is pending, and in-game positioning still needs a visual/runtime pass.
 
 ## Latest visual pass — grass silhouettes and wind motion
 
