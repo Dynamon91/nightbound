@@ -39,9 +39,32 @@ func orb(parent:Node3D,pos:Vector3,r:float,c:Color)->MeshInstance3D:
 	var n:=MeshInstance3D.new(); var mesh:=SphereMesh.new(); mesh.radius=r; mesh.height=r*2; mesh.radial_segments=8; mesh.rings=4; n.mesh=mesh; n.position=pos; n.material_override=mat(c,0.35); parent.add_child(n); return n
 func gem(pos:Vector3,c:Color)->MeshInstance3D:
 	var n:=MeshInstance3D.new(); var mesh:=CylinderMesh.new(); mesh.top_radius=.03; mesh.bottom_radius=.32; mesh.height=1.4; mesh.radial_segments=6; n.mesh=mesh; n.position=pos; var m:=mat(c,.2); m.emission_enabled=true; m.emission=c; m.emission_energy_multiplier=1.0; n.material_override=m; add_child(n); return n
+func rock(p:Vector3, size:Vector3, c:Color, seed:int)->MeshInstance3D:
+	# Faceted low-poly boulder: irregular silhouette without a box-like outline.
+	var n:=MeshInstance3D.new()
+	var mesh:=SphereMesh.new()
+	mesh.radial_segments=7
+	mesh.rings=4
+	mesh.radius=1.0
+	mesh.height=2.0
+	n.mesh=mesh
+	n.position=p
+	n.scale=size
+	n.rotation_degrees=Vector3(float((seed*13)%19)-9.0,float(seed*47%360),float((seed*7)%17)-8.0)
+	n.material_override=mat(c,.96)
+	add_child(n)
+	return n
 func cliff(p:Vector3,s:float)->void:
-	for i in range(4):
-		var n:=orb(self,p+Vector3(cos(i*1.57)*s*.45,(i%2)*s*.25,sin(i*1.57)*s*.45),s*(.75+(i%2)*.12),Color("#4d5872") if i%2==0 else Color("#66718a")); n.scale=Vector3(1,1.25,0.8)
+	var shades:Array[Color]=[Color("#424d68"),Color("#53617d"),Color("#68758d"),Color("#3a455e"),Color("#778198")]
+	for i in range(5):
+		var angle:=float(i)*TAU/5.0
+		var offset:=Vector3(cos(angle)*s*.42,float((i%3)-1)*s*.14,sin(angle)*s*.42)
+		var size:=Vector3(s*(.56+float((i*3)%4)*.07),s*(.62+float((i*2)%3)*.12),s*(.5+float((i*5)%3)*.08))
+		rock(p+offset,size,shades[(i+int(abs(p.x)))%shades.size()],i+int(abs(p.z)*3.0))
+	# Thin broken ledges give the cliff a readable layered silhouette.
+	for i in range(2):
+		var ledge:=rock(p+Vector3((-.35 if i==0 else .32)*s,s*(.42+float(i)*.2),-.18*s),Vector3(s*.58,s*.13,s*.5),Color("#8290a2") if i==0 else Color("#39455e"),i+31)
+		ledge.rotation.z=.12 if i==0 else -.16
 func checkpoint(p:Vector3)->void:
 	points.append(p); var r:=MeshInstance3D.new(); var tm:=TorusMesh.new(); tm.inner_radius=.5; tm.outer_radius=.68; r.mesh=tm; r.position=p+Vector3(0,.08,0); r.rotation.x=PI*.5; var m:=mat(Color("#83f4df"),.2); m.emission_enabled=true; m.emission=Color("#50e7dd"); m.emission_energy_multiplier=1.5; r.material_override=m; add_child(r)
 func tree(p:Vector3,scale_value:=1.0,forest_color:=Color("#304a3b"))->void:
