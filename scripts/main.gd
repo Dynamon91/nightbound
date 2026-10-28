@@ -6,6 +6,12 @@ const AudioDirectorScript = preload("res://scripts/audio_director.gd")
 var player: CharacterBody3D
 var camera: Camera3D
 var hud: Label
+var realm_label: Label
+var crystal_label: Label
+var seed_label: Label
+var shard_label: Label
+var relic_label: Label
+var gate_status_label: Label
 var message: Label
 var bar: ProgressBar
 var audio_director: Node
@@ -762,8 +768,89 @@ func build_player()->void:
 		var glint:=orb(player,p+Vector3(-.02,.025,-.055),.024,Color("#ffffff")); glint.scale=Vector3(1,1,.5)
 func build_camera()->void:
 	camera=Camera3D.new(); camera.position=Vector3(0,6.5,10.5); player.add_child(camera); camera.current=true; camera.look_at(Vector3(0,.7,0))
+func make_hud_panel(parent:Control,pos:Vector2,size:Vector2,bg:Color,border:Color,radius:int)->Panel:
+	var panel:=Panel.new()
+	panel.position=pos
+	panel.size=size
+	var style:=StyleBoxFlat.new()
+	style.bg_color=bg
+	style.border_color=border
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(radius)
+	style.shadow_color=Color(0,0,0,.42)
+	style.shadow_size=8
+	style.shadow_offset=Vector2(0,4)
+	panel.add_theme_stylebox_override("panel",style)
+	parent.add_child(panel)
+	return panel
+func make_hud_label(parent:Control,pos:Vector2,size:Vector2,text_value:String,font_size:int,color:Color,alignment:=HORIZONTAL_ALIGNMENT_LEFT)->Label:
+	var label:=Label.new()
+	label.position=pos
+	label.size=size
+	label.text=text_value
+	label.add_theme_font_size_override("font_size",font_size)
+	label.add_theme_color_override("font_color",color)
+	label.add_theme_color_override("font_shadow_color",Color(0,0,0,.72))
+	label.add_theme_constant_override("shadow_offset_x",1)
+	label.add_theme_constant_override("shadow_offset_y",1)
+	label.horizontal_alignment=alignment
+	label.vertical_alignment=VERTICAL_ALIGNMENT_CENTER
+	parent.add_child(label)
+	return label
 func build_hud()->void:
-	var layer:=CanvasLayer.new(); add_child(layer); hud=Label.new(); hud.position=Vector2(22,18); hud.add_theme_font_size_override("font_size",20); layer.add_child(hud); message=Label.new(); message.position=Vector2(22,100); message.size=Vector2(1000,48); layer.add_child(message); bar=ProgressBar.new(); bar.position=Vector2(22,145); bar.size=Vector2(220,16); bar.max_value=GLIDE_MAX; layer.add_child(bar); refresh_hud()
+	var layer:=CanvasLayer.new()
+	layer.layer=10
+	add_child(layer)
+	# Compact translucent status plate with separate color-coded counters.
+	var status_panel:=make_hud_panel(layer,Vector2(18,16),Vector2(490,142),Color(.025,.045,.105,.91),Color("#6654a9"),13)
+	hud=make_hud_label(status_panel,Vector2(14,5),Vector2(230,29),"NIGHTBOUND",21,Color("#f3edff"))
+	realm_label=make_hud_label(status_panel,Vector2(15,29),Vector2(425,20),"MOONLIT VALLEY • EXPLORATION",11,Color("#a8c9ed"))
+	crystal_label=make_hud_label(status_panel,Vector2(15,51),Vector2(205,22),"◆ CRYSTALS 0/11",14,Color("#74e8ff"))
+	seed_label=make_hud_label(status_panel,Vector2(247,51),Vector2(215,22),"✦ MOONSEEDS 0/5",14,Color("#e5a8ff"))
+	shard_label=make_hud_label(status_panel,Vector2(15,75),Vector2(215,22),"✧ MOONSHARDS 0/3",13,Color("#f0aee2"))
+	relic_label=make_hud_label(status_panel,Vector2(247,75),Vector2(215,22),"◇ RELICS 0/5",13,Color("#ffd78e"))
+	make_hud_label(status_panel,Vector2(15,105),Vector2(88,18),"GLIDE ENERGY",9,Color("#a1b6db"))
+	bar=ProgressBar.new()
+	bar.position=Vector2(105,109)
+	bar.size=Vector2(355,12)
+	bar.max_value=GLIDE_MAX
+	bar.show_percentage=false
+	var bar_background:=StyleBoxFlat.new()
+	bar_background.bg_color=Color("#151e3b")
+	bar_background.set_corner_radius_all(6)
+	bar.add_theme_stylebox_override("background",bar_background)
+	var bar_fill:=StyleBoxFlat.new()
+	bar_fill.bg_color=Color("#48d9d7")
+	bar_fill.set_corner_radius_all(6)
+	bar.add_theme_stylebox_override("fill",bar_fill)
+	status_panel.add_child(bar)
+	# Round compass badge echoes the mockup's navigation dial without requiring image assets.
+	var compass:=make_hud_panel(layer,Vector2(1159,17),Vector2(101,101),Color(.025,.05,.12,.88),Color("#44cfe6"),50)
+	make_hud_label(compass,Vector2(37,1),Vector2(27,20),"N",12,Color("#b8f5ff"),HORIZONTAL_ALIGNMENT_CENTER)
+	make_hud_label(compass,Vector2(5,38),Vector2(20,22),"W",11,Color("#c2d4f5"),HORIZONTAL_ALIGNMENT_CENTER)
+	make_hud_label(compass,Vector2(76,38),Vector2(20,22),"E",11,Color("#c2d4f5"),HORIZONTAL_ALIGNMENT_CENTER)
+	make_hud_label(compass,Vector2(38,76),Vector2(25,20),"S",11,Color("#c2d4f5"),HORIZONTAL_ALIGNMENT_CENTER)
+	make_hud_label(compass,Vector2(29,29),Vector2(42,42),"✦",26,Color("#78f0ef"),HORIZONTAL_ALIGNMENT_CENTER)
+	gate_status_label=make_hud_label(layer,Vector2(530,18),Vector2(220,32),"REALM GATE • LOCKED",12,Color("#d5c3ff"),HORIZONTAL_ALIGNMENT_CENTER)
+	# Key legends are split into small groups so they remain readable at gameplay resolution.
+	var ability_panel:=make_hud_panel(layer,Vector2(900,611),Vector2(360,91),Color(.025,.045,.105,.88),Color("#554b92"),11)
+	make_hud_label(ability_panel,Vector2(12,7),Vector2(158,29),"SPACE  GLIDE",12,Color("#b9f5ee"))
+	make_hud_label(ability_panel,Vector2(183,7),Vector2(160,29),"E  ECHOSENSE",12,Color("#e2c1ff"))
+	make_hud_label(ability_panel,Vector2(12,42),Vector2(158,29),"F  BURST",12,Color("#ffd9a1"))
+	make_hud_label(ability_panel,Vector2(183,42),Vector2(165,29),"SHIFT  DASH",12,Color("#d1c4ff"))
+	message=make_hud_label(layer,Vector2(365,144),Vector2(550,35),"",15,Color("#ffe8b0"),HORIZONTAL_ALIGNMENT_CENTER)
+	refresh_hud()
+func refresh_hud()->void:
+	if realm_label: realm_label.text=realm.to_upper()+" • EXPLORATION"
+	if crystal_label: crystal_label.text="◆ CRYSTALS %d/11"%crystals
+	if seed_label: seed_label.text="✦ MOONSEEDS %d/5"%moonseeds
+	if shard_label: shard_label.text="✧ MOONSHARDS %d/3"%moonshards
+	if relic_label: relic_label.text="◇ RELICS %d/5"%relics
+	if gate_status_label:
+		gate_status_label.text="REALM GATE • OPEN" if portal_open else "REALM GATE • LOCKED"
+		gate_status_label.add_theme_color_override("font_color",Color("#80f3df") if portal_open else Color("#d5c3ff"))
+	if bar: bar.value=GLIDE_MAX-glide
+
 func _physics_process(d:float)->void:
 	if not player:return
 	if Input.is_action_just_pressed("save_game"):
