@@ -195,7 +195,7 @@ func build_shallow_pool(p:Vector3,radius_x:float,radius_z:float)->void:
 		var ripple_mesh:=TorusMesh.new()
 		ripple_mesh.inner_radius=.92
 		ripple_mesh.outer_radius=1.0
-		ripple_mesh.radial_segments=24
+		ripple_mesh.ring_segments=24
 		ripple_mesh.rings=6
 		ripple.mesh=ripple_mesh
 		ripple.rotation.x=PI*.5
