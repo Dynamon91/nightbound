@@ -24,6 +24,8 @@ The final soundtrack is organized around the game's actual level structure. Each
 
 Boss transitions should preserve musical continuity: the exploration theme can fade or hand off into the boss theme, but the boss track itself must be substantial and memorable. Returning to exploration should use a clean musical transition rather than restarting the level theme unnecessarily.
 
+**No final soundtrack track may be marked complete until the corresponding level/boss is playable and its music has been heard in-game.**
+
 ## Composition targets
 
 | Track | Target duration | Structure |
@@ -53,6 +55,26 @@ For every level and boss, acceptance additionally requires:
 4. At least one meaningful musical variation occurs before the loop returns.
 5. Boss music has a dedicated escalation/climax section suitable for the fight.
 6. Crossfades/transitions do not abruptly restart the music when moving between exploration, boss and post-boss states.
+
+## Level-by-level soundtrack plan
+
+The following is a required production matrix, not a claim that the tracks already exist. New levels and bosses must be added here before their music is considered part of the finished soundtrack.
+
+| Gameplay section | Music identity | Target | Status |
+|---|---|---:|---|
+| Moonlit Valley | Original nocturnal exploration theme | 4–7 min | Planned |
+| Moonlit Valley — Boss | Dedicated combat theme | 4–6 min | Planned |
+| Veilwood | Original bioluminescent forest theme | 5–7 min | Planned |
+| Veilwood — Boss | Dedicated Heart-Tree/forest boss theme | 4–6 min | Planned |
+| Realm Gate | Original transition/threshold theme | 2–3 min | Planned |
+| Future Level 03 | Unique level theme | 4–7 min | Planned |
+| Future Level 03 — Boss | Dedicated boss theme | 4–6 min | Planned |
+| Future Level 04 | Unique level theme | 4–7 min | Planned |
+| Future Level 04 — Boss | Dedicated boss theme | 4–6 min | Planned |
+| Additional levels | One unique theme per level | 4–7 min | Planned |
+| Additional bosses | One unique theme per boss | 4–6 min | Planned |
+
+As the level roster grows, this table must grow with it. **“Per level + per boss” is a permanent soundtrack rule for the project.**
 
 ## Next production step
 
