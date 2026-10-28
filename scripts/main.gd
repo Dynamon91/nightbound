@@ -106,6 +106,41 @@ func add_rock(parent: Node3D, pos: Vector3, size: Vector3, color: Color, seed_va
 	parent.add_child(item)
 	return item
 
+func add_grass_tuft(parent: Node3D, pos: Vector3, scale_value: float, color: Color, seed_value: int) -> MeshInstance3D:
+	# Three crossed, tapered blades give the ground a readable silhouette without
+	# relying on more sphere-shaped placeholder bushes.
+	var vertices := PackedVector3Array()
+	var indices := PackedInt32Array()
+	var blade_angles := [0.0, 1.047, 2.094]
+	for angle_index in range(blade_angles.size()):
+		var angle: float = blade_angles[angle_index] + float(seed_value % 5) * 0.11
+		var forward := Vector3(cos(angle), 0.0, sin(angle))
+		var side_axis := Vector3(-forward.z, 0.0, forward.x)
+		var base := vertices.size()
+		var half_width := scale_value * (0.12 if angle_index == 1 else 0.16)
+		var height := scale_value * (0.72 + float((seed_value + angle_index) % 4) * 0.12)
+		var tip := forward * scale_value * 0.18 + Vector3(0, height, 0)
+		vertices.append(-side_axis * half_width)
+		vertices.append(side_axis * half_width)
+		vertices.append(tip)
+		indices.append_array(PackedInt32Array([base, base + 1, base + 2]))
+	var arrays: Array = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_INDEX] = indices
+	var tuft_mesh := ArrayMesh.new()
+	tuft_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var tuft := MeshInstance3D.new()
+	tuft.name = "MoonlitGrassTuft"
+	tuft.mesh = tuft_mesh
+	tuft.position = pos
+	var tuft_mat := material(color, 0.92)
+	tuft_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	tuft_mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
+	tuft.material_override = tuft_mat
+	parent.add_child(tuft)
+	return tuft
+
 func add_wing_membrane(parent: Node3D, side: float) -> void:
 	var mesh_instance := MeshInstance3D.new()
 	var wing_mesh := ArrayMesh.new()
@@ -220,6 +255,16 @@ func build_world() -> void:
 		for part in range(3):
 			var bush := add_sphere(self, p + Vector3((float(part) - 1.0) * 0.7, 0.35 + float(part % 2) * 0.2, 0), 0.85, Color("#315b46") if part != 1 else Color("#467452"))
 			bush.scale = Vector3(1.25, 0.8, 1.0)
+	# Small stylized grass clumps soften the hard edges between paths and valley floor.
+	for i in range(72):
+		var gx := float(((i * 17) % 83) - 41)
+		var gz := float(((i * 29) % 87) - 43)
+		if absf(gx) < 5.0 and gz > -2.0 and gz < 13.0:
+			continue # Keep the spawn and bridge approach clear for gameplay readability.
+		if absf(gx) < 9.0 and gz > 10.0 and gz < 20.0:
+			continue # Preserve the moonlit pool silhouette.
+		var grass_color := Color("#6d9b62") if i % 3 == 0 else (Color("#47785a") if i % 3 == 1 else Color("#8a9e69"))
+		add_grass_tuft(self, Vector3(gx, 0.03, gz), 0.42 + float(i % 4) * 0.12, grass_color, i)
 	for p in [Vector3(-4, 0, 5), Vector3(4, 0, 5), Vector3(-12, 0, -8), Vector3(-27, 1.0, -22), Vector3(12, 0, -12), Vector3(27, 1.0, -24), Vector3(-27, 1.0, 25), Vector3(27, 1.0, 26)]:
 		add_lantern(p)
 	for p in [Vector3(-22, 0.0, -5), Vector3(22, 0.0, -6), Vector3(-40, 1.0, 4), Vector3(40, 1.0, 5), Vector3(-20, 0.0, 30), Vector3(20, 0.0, 31), Vector3(-8, 0.0, 39), Vector3(8, 0.0, 40)]:
@@ -287,6 +332,15 @@ func build_veilwood() -> void:
 	add_solid_box(Vector3(130, -0.5, 0), Vector3(76, 1, 76), Color("#252d50"))
 	for p in [Vector3(118, 0.2, -8), Vector3(126, 0.7, -14), Vector3(137, 1.3, -20), Vector3(146, 2.0, -26), Vector3(138, 0.6, 10), Vector3(149, 1.4, 18), Vector3(158, 2.0, 25)]:
 		add_solid_box(p, Vector3(7, 0.8, 7), Color("#3c466f"))
+	# Cool-toned grass tufts break up the large flat Veilwood floor while
+	# leaving the moonstone trail and Moonseed routes easy to read.
+	for i in range(48):
+		var gx := 130.0 + float(((i * 13) % 67) - 33)
+		var gz := float(((i * 23) % 67) - 33)
+		if absf(gx - 130.0) < 4.0 and gz > -28.0 and gz < 29.0:
+			continue
+		var grass_color := Color("#426d75") if i % 3 == 0 else (Color("#4b6d85") if i % 3 == 1 else Color("#536b70"))
+		add_grass_tuft(self, Vector3(gx, 0.02, gz), 0.55 + float(i % 3) * 0.13, grass_color, 100 + i)
 	for i in range(13):
 		var side := -1.0 if i % 2 == 0 else 1.0
 		var p := Vector3(130.0 + side * (12.0 + float(i % 4) * 5.0), 0.0, -30.0 + float(i) * 5.0)
