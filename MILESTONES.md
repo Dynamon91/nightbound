@@ -37,6 +37,31 @@ The goal is an original, polished colourful 3D platforming world: a memorable ba
 | Enemy / encounter variety | 15% | Distinct enemies and encounters integrated into exploration |
 | Boss / major set pieces | 0% | Not yet implemented/verified |
 
+## Audio / music milestone
+
+**Current music implementation: 10%** — direction and integration requirements are defined; final original tracks are not yet implemented.
+
+Nightbound's soundtrack must use **long-form original compositions built for excellent seamless looping**. The intended musical character takes high-level inspiration from the energetic, syncopated, rhythmically intricate and highly percussive spirit associated with **Stewart Copeland**, while remaining distinctly original: no copied melodies, riffs, arrangements, recordings or other protected elements.
+
+| Area | Progress | Target |
+|---|---:|---|
+| Music system / realm track routing | 15% | Stable music bus, realm-aware tracks and smooth transitions |
+| Moonlit Valley theme | 0% | Original 4–6 minute evolving exploration composition with seamless loop |
+| Veilwood theme | 0% | Original 5–7 minute evolving exploration composition with seamless loop |
+| Realm Gate transition theme | 0% | Original 2–3 minute loopable transition/arrival piece |
+| Dynamic intensity layers | 0% | Exploration/discovery/Heart-Tree layers that blend without abrupt resets |
+| Loop verification | 0% | Boundary tested in the running game with no audible click or restart feeling |
+
+### Music quality rules
+
+- Music should be **long**, with several evolving sections rather than a short repeating phrase.
+- The loop point must feel musically intentional and effectively seamless.
+- Rhythmic motion should remain interesting during long exploration sessions without becoming exhausting.
+- Percussion can be agile, syncopated and intricate, drawing on the requested Copeland-inspired rhythmic spirit, but the compositions must remain original Nightbound works.
+- Realm themes should have identifiable motifs while supporting exploration and discovery.
+- Heart-Tree and major discoveries should preferably add or intensify layers instead of hard-cutting to unrelated music.
+- Final audio must use original or properly licensed material; no copyrighted recordings should be bundled as game assets.
+
 ## Visual implementation gates
 
 ### Gate A — Hero model
@@ -76,8 +101,10 @@ The milestone is considered visually reached only when the running game—not me
 2. Improve the bat's proportions, face and wing presentation.
 3. Build reusable vegetation and prop variants.
 4. Add stronger material variation to ground, stone and magical objects.
-5. Re-capture real gameplay screenshots and compare them against the mockup.
-6. Iterate until the screenshot—not the design document—shows the intended quality.
+5. Implement the long-form music system and realm-aware looping.
+6. Create original long-form realm themes with excellent seamless loops.
+7. Re-capture real gameplay screenshots and compare them against the mockup.
+8. Iterate until the screenshot—not the design document—shows the intended quality.
 
 ## Important distinction
 
