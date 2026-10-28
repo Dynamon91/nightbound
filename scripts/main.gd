@@ -46,6 +46,9 @@ var glide_bar: ProgressBar
 var glide_bar_label: Label
 var checkpoint_positions: Array[Vector3] = []
 var active_checkpoint_index := -1
+var bonus_shards := 0
+var collected_bonus_shards: Array[String] = []
+var bonus_shard_objects: Dictionary = {}
 
 func material(color: Color, roughness := 0.75) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -343,6 +346,20 @@ func build_world() -> void:
 	var crystal_positions: Array[Vector3] = [Vector3(-5, 1.0, -5), Vector3(7, 1.5, -12), Vector3(-14, 1.2, -10), Vector3(-25, 1.5, -21), Vector3(-38, 3.2, -29), Vector3(25, 1.5, -23), Vector3(38, 3.4, -33), Vector3(-25, 1.5, 24), Vector3(-38, 3.5, 35), Vector3(25, 1.6, 25), Vector3(38, 3.7, 36)]
 	for i in range(crystal_positions.size()):
 		make_crystal(crystal_positions[i], "crystal_%02d" % i)
+	# Optional high-route moonshards reward players who master the raised platforms.
+	var bonus_positions: Array[Vector3] = [Vector3(-31, 3.0, -27), Vector3(32, 3.2, -29), Vector3(-27, 5.0, -36)]
+	for i in range(bonus_positions.size()):
+		var shard_id := "moonshard_%02d" % i
+		if collected_bonus_shards.has(shard_id):
+			continue
+		var shard := add_crystal_shard(self, bonus_positions[i], 1.05, Color("#f4baff"), 0.3)
+		shard.name = shard_id
+		var shard_mat := shard.material_override as StandardMaterial3D
+		if shard_mat:
+			shard_mat.emission_enabled = true
+			shard_mat.emission = Color("#db91ff")
+			shard_mat.emission_energy_multiplier = 2.2
+		bonus_shard_objects[shard_id] = {"node": shard, "base": bonus_positions[i], "phase": float(i) * 2.1}
 	# Safe perches along the valley route; proximity activates and saves them.
 	for i in range(3):
 		var cp: Vector3 = [Vector3(0, 1.5, 3), Vector3(-25, 1.5, -21), Vector3(25, 1.5, -23)][i]
@@ -729,6 +746,20 @@ func _physics_process(delta: float) -> void:
 						heart_tree_light.light_energy = 4.5
 					show_message("VEILWOOD RESTORED — all five Moonseeds awaken the Heart-Tree!")
 				save_game()
+	for shard_id in bonus_shard_objects.keys():
+		var bonus_entry: Dictionary = bonus_shard_objects[shard_id]
+		var bonus_node: MeshInstance3D = bonus_entry["node"]
+		if is_instance_valid(bonus_node):
+			var base: Vector3 = bonus_entry["base"]
+			bonus_node.position.y = base.y + sin(ambience_time * 2.0 + float(bonus_entry["phase"])) * 0.22
+			bonus_node.rotate_y(delta * 1.8)
+			if bonus_node.global_position.distance_to(player.global_position) < 1.3:
+				bonus_shards += 1
+				collected_bonus_shards.append(str(shard_id))
+				bonus_node.queue_free()
+				bonus_shard_objects.erase(shard_id)
+				show_message("Secret Moonshard found! Bonus treasures: %d/3" % bonus_shards)
+				save_game()
 	for id in crystal_objects.keys():
 		var entry: Dictionary = crystal_objects[id]
 		var node: MeshInstance3D = entry["node"]
@@ -779,7 +810,7 @@ func _physics_process(delta: float) -> void:
 
 func refresh_hud() -> void:
 	if hud:
-		hud.text = "NIGHTBOUND  •  %s\nCrystals: %d/11  •  Echoes: %d/5  •  Moonseeds: %d/5%s\nWASD Move  |  SPACE Leap/Glide  |  F Burst  |  E Echosense\nSHIFT Shadow Dash (8 crystals)  |  P Save  |  O Load" % [current_realm, crystals, relics_found, veilwood_seeds, "  •  GATE OPEN" if portal_open else ""]
+		hud.text = "NIGHTBOUND  •  %s\nCrystals: %d/11  •  Echoes: %d/5  •  Moonseeds: %d/5%s\nWASD Move  |  SPACE Leap/Glide  |  F Burst  |  E Echosense\nSHIFT Shadow Dash (8 crystals)  |  P Save  |  O Load" % [current_realm, crystals, relics_found, veilwood_seeds, bonus_shards, "  •  GATE OPEN" if portal_open else ""]
 
 func show_message(text_value: String) -> void:
 	if message:
@@ -792,7 +823,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		load_game()
 
 func save_game() -> void:
-	var data := {"crystals": crystals, "current_realm": current_realm, "veilwood_seeds": veilwood_seeds, "collected_veilwood_seeds": collected_veilwood_seeds, "collected": collected, "collected_relics": collected_relics, "checkpoint_position": [checkpoint_position.x, checkpoint_position.y, checkpoint_position.z], "player_position": [player.position.x, player.position.y, player.position.z] if player else [0, 1.5, 3]}
+	var data := {"crystals": crystals, "current_realm": current_realm, "veilwood_seeds": veilwood_seeds, "collected_veilwood_seeds": collected_veilwood_seeds, "collected": collected, "collected_relics": collected_relics, "bonus_shards": bonus_shards, "collected_bonus_shards": collected_bonus_shards, "checkpoint_position": [checkpoint_position.x, checkpoint_position.y, checkpoint_position.z], "player_position": [player.position.x, player.position.y, player.position.z] if player else [0, 1.5, 3]}
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
 		file.store_string(JSON.stringify(data))
@@ -819,6 +850,8 @@ func load_game() -> void:
 		portal_anim_time = 1.8
 	collected = parsed.get("collected", [])
 	collected_relics = parsed.get("collected_relics", [])
+	bonus_shards = int(parsed.get("bonus_shards", 0))
+	collected_bonus_shards = parsed.get("collected_bonus_shards", [])
 	var cp = parsed.get("checkpoint_position", [0, 1.5, 3])
 	if cp is Array and cp.size() == 3:
 		checkpoint_position = Vector3(float(cp[0]), float(cp[1]), float(cp[2]))
@@ -849,6 +882,12 @@ func load_game() -> void:
 			if is_instance_valid(seed_node):
 				seed_node.queue_free()
 			veilwood_seed_objects.erase(seed_id)
+	for shard_id in collected_bonus_shards:
+		if bonus_shard_objects.has(shard_id):
+			var bonus_entry: Dictionary = bonus_shard_objects[shard_id]
+			if is_instance_valid(bonus_entry["node"]):
+				bonus_entry["node"].queue_free()
+			bonus_shard_objects.erase(shard_id)
 	for id in collected:
 		if crystal_objects.has(id):
 			var entry: Dictionary = crystal_objects[id]
