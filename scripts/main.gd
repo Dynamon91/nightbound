@@ -28,6 +28,8 @@ var body_visual: MeshInstance3D
 var head_visual: MeshInstance3D
 var tail_visual: MeshInstance3D
 var wings: Array[Node3D] = []
+var mote_nodes: Array[MeshInstance3D] = []
+var mote_origins: Array[Vector3] = []
 
 func mat(c:Color, r:=0.8)->StandardMaterial3D:
 	var m:=StandardMaterial3D.new(); m.albedo_color=c; m.roughness=r; return m
@@ -72,7 +74,17 @@ func tree(p:Vector3,scale_value:=1.0,forest_color:=Color("#304a3b"))->void:
 	var trunk:=MeshInstance3D.new(); var tm:=CylinderMesh.new(); tm.top_radius=.18*scale_value; tm.bottom_radius=.32*scale_value; tm.height=2.8*scale_value; tm.radial_segments=7; trunk.mesh=tm; trunk.position=p+Vector3(0,1.4*scale_value,0); trunk.material_override=mat(Color("#44374a"),.95); add_child(trunk)
 	var crown:=MeshInstance3D.new(); var cm:=SphereMesh.new(); cm.radius=1.45*scale_value; cm.height=2.3*scale_value; cm.radial_segments=9; cm.rings=5; crown.mesh=cm; crown.position=p+Vector3(0,3.0*scale_value,0); crown.scale=Vector3(1,.9,.82); crown.material_override=mat(forest_color,.9); add_child(crown)
 	var glow:=orb(self,p+Vector3(0,3.55*scale_value,0),.12*scale_value,Color("#83e6bd")); var gm:=glow.material_override as StandardMaterial3D; gm.emission_enabled=true; gm.emission=Color("#67dcae"); gm.emission_energy_multiplier=.8
+func build_motes(center_x:float,count:int,radius:float,glow_color:Color)->void:
+	for i in range(count):
+		var angle:=float(i)*2.399963
+		var ring:=radius*(.28+float((i*7)%17)/22.0)
+		var p:=Vector3(center_x+cos(angle)*ring,.7+float((i*11)%19)*.19,sin(angle)*ring)
+		var mote:=orb(self,p,.045+float(i%3)*.018,glow_color)
+		var material:=mote.material_override as StandardMaterial3D
+		material.emission_enabled=true; material.emission=glow_color; material.emission_energy_multiplier=1.4
+		mote_nodes.append(mote); mote_origins.append(p)
 func build_valley()->void:
+	build_motes(0,24,38,Color("#9ce9d9"))
 	var w:=WorldEnvironment.new(); var e:=Environment.new(); e.background_mode=Environment.BG_COLOR; e.background_color=Color("#10182d"); e.ambient_light_source=Environment.AMBIENT_SOURCE_COLOR; e.ambient_light_color=Color("#8195cf"); e.ambient_light_energy=.58; e.fog_enabled=true; e.fog_density=.008; w.environment=e; add_child(w)
 	var light:=DirectionalLight3D.new(); light.rotation_degrees=Vector3(-48,-32,0); light.light_color=Color("#b8ccff"); light.light_energy=1.15; light.shadow_enabled=true; add_child(light)
 	box(Vector3(0,-.5,0),Vector3(100,1,100),Color("#416b43"),true)
@@ -92,6 +104,7 @@ func build_valley()->void:
 	checkpoint(Vector3(0,1.5,3)); checkpoint(Vector3(-25,1.5,-21)); checkpoint(Vector3(25,1.5,-23))
 	box(Vector3(-2.25,2.4,-18),Vector3(.75,4.8,1),Color("#45445f"),true); box(Vector3(2.25,2.4,-18),Vector3(.75,4.8,1),Color("#45445f"),true); box(Vector3(0,4.85,-18),Vector3(5.1,.75,1),Color("#56516e"),true)
 func build_veilwood()->void:
+	build_motes(130,28,31,Color("#d5a1ff"))
 	box(Vector3(130,-.5,0),Vector3(76,1,76),Color("#252d50"),true)
 	for p in [Vector3(118,.2,-8),Vector3(126,.7,-14),Vector3(137,1.3,-20),Vector3(146,2,-26),Vector3(138,.6,10),Vector3(149,1.4,18),Vector3(158,2,25)]: box(p,Vector3(7,.8,7),Color("#3c466f"),true)
 	for p in [Vector3(111,0,-13),Vector3(116,0,8),Vector3(151,0,-6),Vector3(158,0,14),Vector3(143,0,30),Vector3(117,0,29)]: tree(p,1.3,Color("#302b50"))
@@ -149,7 +162,7 @@ func _physics_process(d:float)->void:
 	collect_near(crystal_nodes,1.25,"Crystal"); collect_near(shard_nodes,1.3,"Moonshard"); collect_near(seed_nodes,1.25,"Moonseed")
 	if crystals>=11: portal_open=true
 	if portal_open and realm=="Moonlit Valley" and player.global_position.distance_to(Vector3(0,2.5,-18))<3: realm="The Veilwood"; player.position=Vector3(130,2,4); checkpoint=Vector3(130,2,4); audio_director.call("play_track","veilwood_level_2"); save_game(); show_message("REALM SHIFT — Welcome to the Veilwood!")
-	t+=d; body_visual.rotation.z=lerpf(body_visual.rotation.z,clampf(-player.velocity.x*.018,-.16,.16),d*4); body_visual.position.y=.25+sin(t*5.0)*.025; head_visual.rotation.z=lerpf(head_visual.rotation.z,clampf(player.velocity.x*.008,-.07,.07),d*5); head_visual.rotation.x=sin(t*3.2)*.025; tail_visual.rotation.z=sin(t*4.5)*.18; for i in wings.size(): wings[i].rotation.z=sin(t*8.5)*.3*(-1 if i==0 else 1); refresh_hud()
+	t+=d; body_visual.rotation.z=lerpf(body_visual.rotation.z,clampf(-player.velocity.x*.018,-.16,.16),d*4); body_visual.position.y=.25+sin(t*5.0)*.025; head_visual.rotation.z=lerpf(head_visual.rotation.z,clampf(player.velocity.x*.008,-.07,.07),d*5); head_visual.rotation.x=sin(t*3.2)*.025; tail_visual.rotation.z=sin(t*4.5)*.18; for i in wings.size(): wings[i].rotation.z=sin(t*8.5)*.3*(-1 if i==0 else 1); for i in mote_nodes.size(): mote_nodes[i].position=mote_origins[i]+Vector3(0,sin(t*1.3+float(i)*.7)*.22,0); mote_nodes[i].rotation.y=t*.25+float(i); refresh_hud()
 func collect_near(nodes:Array[MeshInstance3D],dist:float,label:String)->void:
 	for i in range(nodes.size()-1,-1,-1):
 		var n:=nodes[i]; if not is_instance_valid(n): nodes.remove_at(i); continue
