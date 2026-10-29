@@ -1,0 +1,144 @@
+[gd_scene load_steps=14 format=3]
+
+[sub_resource type="StandardMaterial3D" id="Material_body"]
+albedo_color = Color(0.18, 0.12, 0.24, 1)
+roughness = 0.82
+
+[sub_resource type="StandardMaterial3D" id="Material_wing"]
+albedo_color = Color(0.29, 0.18, 0.38, 1)
+cull_mode = 2
+roughness = 0.78
+
+[sub_resource type="StandardMaterial3D" id="Material_muzzle"]
+albedo_color = Color(0.47, 0.32, 0.53, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Material_eye"]
+albedo_color = Color(0.82, 0.62, 1, 1)
+emission_enabled = true
+emission = Color(0.48, 0.2, 0.9, 1)
+emission_energy_multiplier = 0.5
+
+[sub_resource type="StandardMaterial3D" id="Material_glint"]
+albedo_color = Color(1, 1, 1, 1)
+
+[sub_resource type="SphereMesh" id="BodyMesh"]
+radius = 0.38
+height = 0.76
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="HeadMesh"]
+radius = 0.31
+height = 0.62
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="MuzzleMesh"]
+radius = 0.13
+height = 0.26
+radial_segments = 10
+rings = 5
+
+[sub_resource type="SphereMesh" id="EyeMesh"]
+radius = 0.055
+height = 0.11
+radial_segments = 10
+rings = 5
+
+[sub_resource type="SphereMesh" id="GlintMesh"]
+radius = 0.018
+height = 0.036
+radial_segments = 8
+rings = 4
+
+[sub_resource type="CylinderMesh" id="EarMesh"]
+top_radius = 0.015
+bottom_radius = 0.105
+height = 0.34
+radial_segments = 5
+
+[sub_resource type="BoxMesh" id="WingMesh"]
+size = Vector3(0.62, 0.42, 0.055)
+
+[sub_resource type="SphereMesh" id="FootMesh"]
+radius = 0.09
+height = 0.18
+radial_segments = 8
+rings = 4
+
+[node name="NightboundBatHeroBlockout" type="Node3D"]
+metadata/asset_status = "blockout_reference_not_final_rigged_model"
+metadata/facing_direction = "-Z"
+
+[node name="Body" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.25, 0)
+scale = Vector3(0.78, 1.15, 0.75)
+mesh = SubResource("BodyMesh")
+surface_material_override/0 = SubResource("Material_body")
+
+[node name="Head" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.82, -0.02)
+scale = Vector3(0.9, 0.95, 0.9)
+mesh = SubResource("HeadMesh")
+surface_material_override/0 = SubResource("Material_body")
+
+[node name="Muzzle" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.72, -0.28)
+scale = Vector3(0.9, 0.6, 0.65)
+mesh = SubResource("MuzzleMesh")
+surface_material_override/0 = SubResource("Material_muzzle")
+
+[node name="LeftEar" type="MeshInstance3D" parent="."]
+position = Vector3(-0.18, 1.16, -0.015)
+rotation = Vector3(0, 0, 0.16)
+mesh = SubResource("EarMesh")
+surface_material_override/0 = SubResource("Material_body")
+
+[node name="RightEar" type="MeshInstance3D" parent="."]
+position = Vector3(0.18, 1.16, -0.015)
+rotation = Vector3(0, 0, -0.16)
+mesh = SubResource("EarMesh")
+surface_material_override/0 = SubResource("Material_body")
+
+[node name="LeftEye" type="MeshInstance3D" parent="."]
+position = Vector3(-0.105, 0.86, -0.285)
+mesh = SubResource("EyeMesh")
+surface_material_override/0 = SubResource("Material_eye")
+
+[node name="RightEye" type="MeshInstance3D" parent="."]
+position = Vector3(0.105, 0.86, -0.285)
+mesh = SubResource("EyeMesh")
+surface_material_override/0 = SubResource("Material_eye")
+
+[node name="LeftEyeGlint" type="MeshInstance3D" parent="."]
+position = Vector3(-0.12, 0.88, -0.33)
+mesh = SubResource("GlintMesh")
+surface_material_override/0 = SubResource("Material_glint")
+
+[node name="RightEyeGlint" type="MeshInstance3D" parent="."]
+position = Vector3(0.09, 0.88, -0.33)
+mesh = SubResource("GlintMesh")
+surface_material_override/0 = SubResource("Material_glint")
+
+[node name="LeftWing" type="MeshInstance3D" parent="."]
+position = Vector3(-0.43, 0.43, 0.04)
+rotation = Vector3(0, 0, 0.18)
+mesh = SubResource("WingMesh")
+surface_material_override/0 = SubResource("Material_wing")
+
+[node name="RightWing" type="MeshInstance3D" parent="."]
+position = Vector3(0.43, 0.43, 0.04)
+rotation = Vector3(0, 0, -0.18)
+mesh = SubResource("WingMesh")
+surface_material_override/0 = SubResource("Material_wing")
+
+[node name="LeftFoot" type="MeshInstance3D" parent="."]
+position = Vector3(-0.15, -0.18, -0.015)
+mesh = SubResource("FootMesh")
+surface_material_override/0 = SubResource("Material_muzzle")
+
+[node name="RightFoot" type="MeshInstance3D" parent="."]
+position = Vector3(0.15, -0.18, -0.015)
+mesh = SubResource("FootMesh")
+surface_material_override/0 = SubResource("Material_muzzle")
