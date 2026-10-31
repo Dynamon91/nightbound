@@ -1,0 +1,732 @@
+{
+  "project": "Nightbound",
+  "timestamp_utc": "2026-10-31T13:19:10.759917+00:00",
+  "file_count": 145,
+  "files": [
+    {
+      "path": "NIGHTBOUND_ASSET_PACK_01_3D_CONCEPTS.zip",
+      "bytes": 2176679,
+      "sha256": "eaafad73811cf69ceb7e621cb3a166ba3ea7fdc8cdfa364f94b836e14d2fbf69"
+    },
+    {
+      "path": "NIGHTBOUND_ASSET_PACK_01_README.md",
+      "bytes": 2151,
+      "sha256": "ef57d83b2a7be462244054a1948a3c46263fb8c6ad8509b8310e15138de224db"
+    },
+    {
+      "path": "NIGHTBOUND_ASSET_PACK_02_HERO_BAT_BLOCKOUT.zip",
+      "bytes": 14070,
+      "sha256": "49bbddf8bf4c92a225abf5b7f58a5c35bb47dcaa298b235469d03a12e11c6872"
+    },
+    {
+      "path": "NIGHTBOUND_ASSET_PACK_03_HERO_BAT_V2.zip",
+      "bytes": 248453,
+      "sha256": "cd24c2810e154fbc2b07e4d1349c0dcbd9b1641a5f79112f038437d873ea666e"
+    },
+    {
+      "path": "NIGHTBOUND_BAT_MODEL_README.md",
+      "bytes": 1181,
+      "sha256": "718b905bafedae6845a93dc8ecbaf9ac4ae200fec1e874269b2ff0978ea09b08"
+    },
+    {
+      "path": "NIGHTBOUND_CHARACTER_CREATURE_PACK_04/README.md",
+      "bytes": 1110,
+      "sha256": "dabb74b9732bbf3b8e8aea95b72229d32eb9c4af85fc538016ed76a1355d64eb"
+    },
+    {
+      "path": "NIGHTBOUND_CHARACTER_CREATURE_PACK_04/nightbound_character_creature_pack_preview.png",
+      "bytes": 194101,
+      "sha256": "205a68a0fb02f917a3ec04a38bb1bd8bd688af5e5266a5efe5224ce2575d0375"
+    },
+    {
+      "path": "NIGHTBOUND_CHARACTER_CREATURE_PACK_04.zip",
+      "bytes": 209344,
+      "sha256": "091a583ab8a45b0072f564487215afabd5b406788c44bb2212baf8fceda4813c"
+    },
+    {
+      "path": "NIGHTBOUND_CREATURES_NPCS_PACK_05/README.md",
+      "bytes": 931,
+      "sha256": "9f3f9fb78ec1a8c033edf7e989f22081292cfd135cc2565c9e76aa0ae689263b"
+    },
+    {
+      "path": "NIGHTBOUND_CREATURES_NPCS_PACK_05/nightbound_pack05_preview.png",
+      "bytes": 22772,
+      "sha256": "c6f2b8d8d38163d40e907c4bf2f1f111295fc4be5e6b1d2cea8b8edead07e138"
+    },
+    {
+      "path": "NIGHTBOUND_CREATURES_NPCS_PACK_05.zip",
+      "bytes": 38151,
+      "sha256": "a076aeb08f2ee184275e94df8ae171e504b135285927751834e3d51aae7a3025"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V3/README.md",
+      "bytes": 859,
+      "sha256": "4b8b03bfc4fae764b43eead2e2f882f582d661a874c341842bde0ee07f7a98b1"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V3/nightbound_main_hero_bat_v3.glb",
+      "bytes": 96720,
+      "sha256": "6f88f516f8b47ac9c0e82c154431342521b47768ed7c1907b0cd99207da0b601"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V3/nightbound_main_hero_bat_v3_preview.png",
+      "bytes": 17560,
+      "sha256": "00ce1231b4ec7c6a243b595a89da291e86b7644d03f2900af57ad551632fcb5b"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V3/nightbound_main_hero_bat_v3_render.png",
+      "bytes": 89492,
+      "sha256": "6dc536f50e22120f4712c04f83b85f13de96d25f86838553d5544d8f1311eefb"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V4/nightbound_main_hero_bat_v4.glb",
+      "bytes": 124460,
+      "sha256": "9f8d6c465863e08d89de3323f716731678b5cb43ed8590c2928cdd68a39d4dc6"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V4/nightbound_main_hero_bat_v4_render.png",
+      "bytes": 105457,
+      "sha256": "280563243e403e238c7aed4da39529197ed90aa5e3d230d2eee37f798133a548"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V4_1/README.md",
+      "bytes": 882,
+      "sha256": "85159ca0f3d0690721f56b97d0e84eaf28e6946b3caf8c0aa2d502ca95511169"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V4_1/nightbound_main_hero_bat_v4_1.glb",
+      "bytes": 117832,
+      "sha256": "5ec8943d0463604aa4aa232ad4eb38173f2c1b651c8965c127183d153922b294"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V4_1/nightbound_main_hero_bat_v4_1_render.png",
+      "bytes": 114650,
+      "sha256": "fa07667080b08614490029e5df9cd3497f91dbe50fc67c51b0e11e3adaa24dd8"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V4_1.zip",
+      "bytes": 148528,
+      "sha256": "55e633c4639842d899b1a6442793f9a799b7eb1c0a10c715df1dffde7d9bdc8b"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V4_2/README.md",
+      "bytes": 794,
+      "sha256": "6c6017a329c935450020d6419426d414726250c6679386c2bac9fcbcc7448ed4"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V4_2/nightbound_main_hero_bat_v4_2.glb",
+      "bytes": 117992,
+      "sha256": "50c81974ba13e29444ef2a2532b0b772749848462f206756e0d8742379551427"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V4_2/nightbound_main_hero_bat_v4_2_preview_reference.png",
+      "bytes": 114650,
+      "sha256": "fa07667080b08614490029e5df9cd3497f91dbe50fc67c51b0e11e3adaa24dd8"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V4_2.zip",
+      "bytes": 148506,
+      "sha256": "9a6d5314fbfce6278d49cb7f406f0c9998c31abf3e48f826f66f0d339a6e0aab"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V4_PNG_AND_GLB.zip",
+      "bytes": 141635,
+      "sha256": "2e72a66d88c67581b3865a7a2ad9bd70316752c44fadcbd44ec717c1ec310b47"
+    },
+    {
+      "path": "NIGHTBOUND_HERO_BAT_V6_PACK.zip",
+      "bytes": 184110,
+      "sha256": "3369f3ea3f95384efe268df1cbcad3848bf2791aa4e26f4945d5320319463061"
+    },
+    {
+      "path": "NIGHTBOUND_INTRO_MENU_DEMO_V1/Nightbound_Intro_Cinematic.mp4",
+      "bytes": 2216763,
+      "sha256": "c2dc13334ef808c8c3fe4296e8a626e8be02c3a411fe1956973c45077e586e20"
+    },
+    {
+      "path": "NIGHTBOUND_INTRO_MENU_DEMO_V1/Nightbound_Intro_Loop.gif",
+      "bytes": 12240150,
+      "sha256": "e617bea4d6b9171f658e0cf29603e4c2823987e39e241f34db6412a9abffb49c"
+    },
+    {
+      "path": "NIGHTBOUND_INTRO_MENU_DEMO_V1/Nightbound_Menu_Interattivo.html",
+      "bytes": 3979154,
+      "sha256": "d8d46bccaf36cfc5c256e88aa9c1572ac7b51836a68c646b8c9d28f099a694be"
+    },
+    {
+      "path": "NIGHTBOUND_INTRO_MENU_DEMO_V1/README.md",
+      "bytes": 1276,
+      "sha256": "bf13079d8c2b192f351c7ec36af6f1d3f479bee9f0da8680157b9917d0f41244"
+    },
+    {
+      "path": "NIGHTBOUND_INTRO_MENU_DEMO_V1/nightbound_title_background.png",
+      "bytes": 2976618,
+      "sha256": "324a496cf5db0524d211f81d1490b409e7a11a17199e2368cb87e6662b0e505d"
+    },
+    {
+      "path": "NIGHTBOUND_INTRO_MENU_DEMO_V1.zip",
+      "bytes": 20264847,
+      "sha256": "a518b8d548054abe13a7bc090db70d5de8d93c5926693436068cc514e595f0ae"
+    },
+    {
+      "path": "NIGHTBOUND_MAIN_HERO_BAT_V3.zip",
+      "bytes": 46937,
+      "sha256": "6178bae53c68a659586fa14e4d54881ee598608c5fd00e4d367502159223da2d"
+    },
+    {
+      "path": "NIGHTBOUND_MODELS_PACK_06/README.md",
+      "bytes": 689,
+      "sha256": "da2a13d95ee975b17e7fd5f1ee218002dd19b72ea5332bc0522fb9e0266dddf4"
+    },
+    {
+      "path": "NIGHTBOUND_MODELS_PACK_06/nightbound_pack06_preview.png",
+      "bytes": 22156,
+      "sha256": "bebf172bbbe87a4db741a0caa76575b7833e0f49f494ec255c1accae3b6f66a0"
+    },
+    {
+      "path": "NIGHTBOUND_MODELS_PACK_06.zip",
+      "bytes": 45747,
+      "sha256": "b94457fa0bf463b33b1c39d73d2784fc0a22f830324ef9570eb2fbc00a3c836a"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V1/nightbound_moonlit_run_v1.mid",
+      "bytes": 9934,
+      "sha256": "369a5868075817531bec6028a280cdb9cc5fed50c01f2ef5c119bf3139b9b953"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V1/nightbound_moonlit_run_v1.wav",
+      "bytes": 8759216,
+      "sha256": "f85c720da4d90c3eb0138797039bfca9ae265b2030d8670044f340501938f9ec"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V1.zip",
+      "bytes": 5620211,
+      "sha256": "8cf6bbd8ade97d93abc0687bfd10728dbc992cabef402c017d89d73dc747855e"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V10/README.md",
+      "bytes": 575,
+      "sha256": "00fec026742d190f186e9be59071cf84b9244a865b5e2eaf5312d4f69d9ff150"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V10/nightbound_hollow_keep_rhythm_v10.mid",
+      "bytes": 11143,
+      "sha256": "3a5f91bfde61b61c2b2a0664756096dfd08bdf92c829e12b6e9a20ffa2a94659"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V10/nightbound_hollow_keep_rhythm_v10.wav",
+      "bytes": 8194108,
+      "sha256": "27c99a457d51271ed91eef7aacafe8b0db364487bcb08af529e6acd422d6da54"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V10.zip",
+      "bytes": 6321500,
+      "sha256": "0ced3f0bf1959155a56fec4b3049ff7bd27891fe08d2b6c464036a247997d849"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V11/README.md",
+      "bytes": 834,
+      "sha256": "64daa7c9afabc2f59c02d75a46fd5f9e4ebe2c1020875199848449bcb6d14746"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V11/nightbound_hollow_keep_rhythm_v11.mid",
+      "bytes": 13298,
+      "sha256": "3f70491dd1372b65168c3cb434820590cc0d9b92d903aecb45607e4e95a15083"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V11/nightbound_hollow_keep_rhythm_v11.wav",
+      "bytes": 8194108,
+      "sha256": "ce6f6fea483972b997fe9ace52bbe2e3adc2d89eca4d3ec6dd48e4518479ca0d"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V11.zip",
+      "bytes": 6194701,
+      "sha256": "66d913aa3b58bb9b6ab66b02853dd6e4755020d3b7dddc7b0bc11754aa1a4c15"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V12/README.md",
+      "bytes": 1383,
+      "sha256": "30cf7570632e0cdc8af315ba452b711da510db2093357d1d69e6af8aa965f457"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V12/boss_final_push_v12.wav",
+      "bytes": 1365720,
+      "sha256": "872c7f73e0aafce0b517ba2753d85c225effdb90d5f5ad588f9118d8ed5bf36c"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V12/boss_intro_v12.wav",
+      "bytes": 682884,
+      "sha256": "bd8c405c99b2f45271f51d4c4c0af368c5a62e76546e8a49cd06550851f7735e"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V12/boss_phase1_loop_v12.wav",
+      "bytes": 2731396,
+      "sha256": "60329f2f0f401f0d368139b193c7c631b4dfdcdd872c855925030ae3dcd2a3aa"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V12/boss_phase2_loop_v12.wav",
+      "bytes": 2731400,
+      "sha256": "18dcf75e22109fd32ac1b316035d4948c54af158be1d6d01b1a4450326c9a63f"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V12/boss_victory_sting_v12.wav",
+      "bytes": 308744,
+      "sha256": "9536fee67a04974f8dcc2ebbac735b7350e4bb67194f0300281bd2250b712e7d"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V12/nightbound_adaptive_boss_cue_map_v12.mid",
+      "bytes": 13487,
+      "sha256": "0baf82a3078271a3e26db7262ab1dd1a753770b2fc9b1706d7f95b5a9688a08a"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V12.zip",
+      "bytes": 5880777,
+      "sha256": "6c7e48ef46c58341e0c9b05a3bff995ac4d75621478599006c8f659586b01cc8"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V13/README.md",
+      "bytes": 1840,
+      "sha256": "924ea97ded3cdb95beecc57e197494bd48f1d7c07bd9f4ab6206652421257584"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V13/final_to_victory_v13.wav",
+      "bytes": 341460,
+      "sha256": "efcf11524a084225f3d5967cb50d3df5124d497c37edc20a7809fb4bd539e07f"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V13/intro_to_phase1_v13.wav",
+      "bytes": 341460,
+      "sha256": "4fc97fa310af0a23783016614d2a128f9cd65740e79b39aa596f75723f1868d7"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V13/nightbound_boss_transition_map_v13.mid",
+      "bytes": 710,
+      "sha256": "8d04db4e35a821d4d05c2a174f703208344ff14f25008e2de9f9fd6d456d3c2e"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V13/phase1_to_phase2_v13.wav",
+      "bytes": 341460,
+      "sha256": "b4a7e92ccefdc5c248eeea85b6769d145751d42d832e64e6030898cdd475d051"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V13/phase2_to_final_v13.wav",
+      "bytes": 341460,
+      "sha256": "cd7fcba279cded2f4b717ae9ac4332c15729160257b2a819b5fd107acbd4b4fb"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V13.zip",
+      "bytes": 1194114,
+      "sha256": "421f9949f9bd7d72777e24b9e797ebcb1864532f3f8f2424cf7193ab4d4a5955"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V14/README.md",
+      "bytes": 690,
+      "sha256": "a47fbccf1ba5769382451b8a1cd73d2b44dc6852a17baf445f5c3c4d52ad5fa6"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V14/nightbound_hollow_keep_boss_identity_v14.mid",
+      "bytes": 7194,
+      "sha256": "e3389591814103989312fae4d87b5b8849439f794ce433f6e080a140c3056f2e"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V14/nightbound_hollow_keep_boss_identity_v14.wav",
+      "bytes": 5462752,
+      "sha256": "8385af33800ef4455d800e935593903d34f562deaf3d0cb5f7f67acc23b12748"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V14.zip",
+      "bytes": 4557266,
+      "sha256": "4b59eac208cbaff512b936b6ef168abf78b34a29cccaa8cd0610f6579f1138b3"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V15/README.md",
+      "bytes": 828,
+      "sha256": "eaa2b719ffcd844fada8b7f0fa580122e663d955afd306b2be76f91029bd9296"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V15/boss_menu_theme_v15.wav",
+      "bytes": 1365720,
+      "sha256": "89ac337352dbc499ce44664de26987afb96f496ec4827793633116625be28c57"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V15/boss_phase1_theme_v15.wav",
+      "bytes": 5462752,
+      "sha256": "c1fde66de4c46bdb2be04eacde56d229fd8607d568ddbd040586a1da9e5288bc"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V15/boss_phase2_theme_v15.wav",
+      "bytes": 5462752,
+      "sha256": "8d00c4a32105e8f8aba8e11fcec15d26fee1505a4a07f0e8499404b6ffba59f5"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V15/nightbound_boss_variations_v15.mid",
+      "bytes": 1112,
+      "sha256": "9e07964639c22f3873d60e71f4e84bb387e2b4874624abc36ca12bddf7a0f384"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V15.zip",
+      "bytes": 10305968,
+      "sha256": "c5716e08aeccf08fb07958b5b6fc19df5a5555343eae99132185477c8874019d"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V2/README.md",
+      "bytes": 670,
+      "sha256": "6151816a636746c6ced501d41c90339989c6082e4dbe61c0af1628c02af355d4"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V2/nightbound_moonlit_run_v2.mid",
+      "bytes": 12824,
+      "sha256": "eac5d41e04ef9269d858da97404075f9113343ae847d9267c9d83dd863f96492"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V2/nightbound_moonlit_run_v2.wav",
+      "bytes": 11767140,
+      "sha256": "3d6d439e3d7ceaf90159f572c1b0bb842b1090eeaf19212e6340b4c5b895118f"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V2.zip",
+      "bytes": 10459034,
+      "sha256": "1f3d2c13c07d0fe43c1ae38dc3d9030682c9eb23ec1d5462e4e12d9ca18a25ad"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V3/README.md",
+      "bytes": 685,
+      "sha256": "a649911b9fb20e8de1bec8dc5f558ca5eb0396d5de6e24e7e6f5ad1eb2021132"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V3/nightbound_moonlit_run_v3.mid",
+      "bytes": 12956,
+      "sha256": "9999337c3975d9ef2a17fbd1ef6e879bb7d24e15b5ffe8cb8513afe266e6bb81"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V3/nightbound_moonlit_run_v3.wav",
+      "bytes": 11678940,
+      "sha256": "d6411f6bdb684104ce634bd6860cfbbbb4c1d053be438f1d2190d022bbd4287b"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V3.zip",
+      "bytes": 10794942,
+      "sha256": "63879cab68d46dc7cfc66f7188da86edbc7090e5d856b5f0fb99c41a298482c4"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V4/README.md",
+      "bytes": 542,
+      "sha256": "52b5f49ac09b07c767a779c8adde117a6a6260a6b73243b9c5f0397a66e6636f"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V4/nightbound_moonlit_run_v4.mid",
+      "bytes": 17755,
+      "sha256": "b8283eb7fb7c41d94752d9c46413643499ee9a4f66ef0696a1e15dd0dc333f4a"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V4/nightbound_moonlit_run_v4.wav",
+      "bytes": 11678940,
+      "sha256": "d9c73a8cc35535898b0c4f0f569b87843c5449da4532f91814e503d9a8b70af1"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V4.zip",
+      "bytes": 11187489,
+      "sha256": "dcc07aaf8e6695313ba54f61d2983eb3d33821d0e866d1a79a80df3a9676f0be"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V5/README.md",
+      "bytes": 645,
+      "sha256": "1f5d2377de47d383b123c5c9d9cbc49b9ad0b6c11ba2541b0fc5546a2da81306"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V5/nightbound_moonlit_run_v5_loop.mid",
+      "bytes": 15965,
+      "sha256": "eeb93f497e6609d915723fb1c6cb5538937a7ef99cd39081925bf1234a973a0d"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V5/nightbound_moonlit_run_v5_loop.wav",
+      "bytes": 11678940,
+      "sha256": "c35ecdc4ac9b0bb04e9eb9550df07eda17d14c8ba753e494eac7a32e14ace6f6"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V5.zip",
+      "bytes": 9813195,
+      "sha256": "cb03fdc574946589a0b8d8d164e93dcba88ba29eb1dba32f38581969e2abc042"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V6/README.md",
+      "bytes": 645,
+      "sha256": "025970ef01b317c476e50b0804ac8a46bdfa9365fc304940473661a0b445be9e"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V6/nightbound_moonlit_run_v6.mid",
+      "bytes": 15965,
+      "sha256": "eeb93f497e6609d915723fb1c6cb5538937a7ef99cd39081925bf1234a973a0d"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V6/nightbound_moonlit_run_v6_seamless_loop.wav",
+      "bytes": 11678940,
+      "sha256": "7fa1d9935ec317ab5cde6ccb3b7a61f566bb38251344d160654590a1f7ee18ac"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V6.zip",
+      "bytes": 9816814,
+      "sha256": "057aabf05cb75ce3433bd0b3cd834e419b5b45d558d071c8b01ecdead63a355a"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V7/README.md",
+      "bytes": 828,
+      "sha256": "8acd799ba3e9ac0058fd7a0eb8e3e4198442bf6510a50ed61af6ac23ce4459e6"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V7/nightbound_moonlit_run_v7.mid",
+      "bytes": 17095,
+      "sha256": "462f9e8250bd79f508d4590422c3b5e36d190f1efea20d669482a920d3b5226c"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V7/nightbound_moonlit_run_v7_loop.wav",
+      "bytes": 11678940,
+      "sha256": "510649ed86f4f86bea33be6ebae2908bde836c541d92652460e8b5446bc3f3b2"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V7.zip",
+      "bytes": 10347606,
+      "sha256": "0d28e2e42e19bfefffa193ac94dcdfda79c80fe262392396003404a740823dec"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V8/README.md",
+      "bytes": 1012,
+      "sha256": "154c5f3c76a0c0a070752bee8d4e8969c09a96ada511cebff918acd97c5d1eec"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V8/nightbound_hollow_keep_boss_v8.mid",
+      "bytes": 9406,
+      "sha256": "efab55dce86994921455fb22aad150f0f3637e41a0e7781bb71cc8718f094425"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V8/nightbound_hollow_keep_boss_v8.wav",
+      "bytes": 8467244,
+      "sha256": "20cd02862c862fbe95f6451c6ab1b7fbb4eb639979616c79aaf88a5b4f6daacc"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V8.zip",
+      "bytes": 5333944,
+      "sha256": "9c80a827bb37979e61f7a3e87cafad38d901788e076dbfc93b69c5f1a6d8b293"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V9/README.md",
+      "bytes": 711,
+      "sha256": "535a00a0efe117bff78adade86f738386bfec14a35331a88496b2d600fa242c6"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V9/nightbound_hollow_keep_boss_phase2_v9.mid",
+      "bytes": 1688,
+      "sha256": "d7e4c7d18033596b879bdbf7d6bf77cf92799b6841fc6e999b786b5750a3cd5c"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V9/nightbound_hollow_keep_boss_phase2_v9.wav",
+      "bytes": 8467244,
+      "sha256": "d81c9a9113e89c8c119e85f0785dced959d19a987ed62071ba72eb620c553cfb"
+    },
+    {
+      "path": "NIGHTBOUND_MUSIC_V9.zip",
+      "bytes": 5755832,
+      "sha256": "7a4ceb214dde2a81b68f5b6a4f52e7fbc6858cab69f7e9278a247e9755618fcd"
+    },
+    {
+      "path": "Nightbound_Hero_Bat_V2_1_Blender.py",
+      "bytes": 6717,
+      "sha256": "a452716669011b9ce9c4dc113fa1e572dbf07bf63445cdb3cc7dae5ebc807fba"
+    },
+    {
+      "path": "Nightbound_Hero_Bat_V2_Blender.py",
+      "bytes": 6574,
+      "sha256": "a5308f5f852f637439eab1ebe938ebe38d7722049f540bec41becf425886c39a"
+    },
+    {
+      "path": "Nightbound_Hero_Bat_V3.glb",
+      "bytes": 105940,
+      "sha256": "cc9f0caa2fc3a539697749661fc82f55b247cf821ae7ec2f7c9a89c01272249f"
+    },
+    {
+      "path": "Nightbound_Hero_Bat_V3_preview.png",
+      "bytes": 67181,
+      "sha256": "854caf621f1bed778b457be012d6098cd99c1984526ca61c907aebaa4d9a7a1c"
+    },
+    {
+      "path": "Nightbound_Hero_Bat_V4.glb",
+      "bytes": 113876,
+      "sha256": "41caefdacc742771bc9735d2a1fc8d14db9156f38f7f128a94d64602871b3227"
+    },
+    {
+      "path": "Nightbound_Hero_Bat_V4_preview.png",
+      "bytes": 68951,
+      "sha256": "181c8d5c82cce59988cef94db59b7db48921e743e2a87c5b262710770774e14e"
+    },
+    {
+      "path": "Nightbound_Hero_Bat_V5.glb",
+      "bytes": 129856,
+      "sha256": "64a5216621ca68db3aa40c4f030d890a6eb5a5168883961dde5e74ebf4c310b1"
+    },
+    {
+      "path": "Nightbound_Hero_Bat_V5_preview.png",
+      "bytes": 71424,
+      "sha256": "eb7a2c53db8e04fee94d7edd755b26a1d198b06403f4d19dca331eb751bbe05c"
+    },
+    {
+      "path": "Nightbound_Hero_Bat_V6_Animated.glb",
+      "bytes": 134656,
+      "sha256": "280330289df505522da1615b0b6d60748f1d3709e8cae0e6b889b4c4d533c746"
+    },
+    {
+      "path": "Nightbound_Hero_Bat_V6_README.md",
+      "bytes": 1830,
+      "sha256": "ea11438854b1fe4321060826c1b8153c366dc4de6d450a075def55213590b9ed"
+    },
+    {
+      "path": "Nightbound_Hero_Bat_V6_preview.png",
+      "bytes": 136538,
+      "sha256": "bbc0e8612d5b4fea1ceadfd9259925f76cc37fffdcbdb02e0a5803b40d3a30f9"
+    },
+    {
+      "path": "a_detailed_concept_art_asset_sheet_layout_for_a.png",
+      "bytes": 2256292,
+      "sha256": "4244a99a3d8b86fd62813a6510161778f469fbc54dbb5fcce68a942cba5896a5"
+    },
+    {
+      "path": "avventura_notturna_verso_il_castello_di_cristallo.png",
+      "bytes": 3055967,
+      "sha256": "bced858e8bd0d6568e1f63ab777c5d4b6cd1978d62ae3324ca7f146f85d376d5"
+    },
+    {
+      "path": "bat_verso_il_castello_lunare.png",
+      "bytes": 2976618,
+      "sha256": "324a496cf5db0524d211f81d1490b409e7a11a17199e2368cb87e6662b0e505d"
+    },
+    {
+      "path": "build_nightbound_v3.py",
+      "bytes": 5397,
+      "sha256": "8a40b5e88f01c381b8f8f831ae59ff8afc565f1bbdf25c62ea1366e509014498"
+    },
+    {
+      "path": "build_nightbound_v4.py",
+      "bytes": 5746,
+      "sha256": "59a795e08baae68b85222b940dc926c15fc2be9ee7f3d28b3e7550b846a95d5a"
+    },
+    {
+      "path": "build_nightbound_v5.py",
+      "bytes": 6907,
+      "sha256": "ef9c632228a9d96431ef036b1eac0dd1c45061b7e91868ad9e910857f99a8eec"
+    },
+    {
+      "path": "build_nightbound_v6.py",
+      "bytes": 17436,
+      "sha256": "88672097fb4d0c62d41ed9e142c4e9010b2058b6a05422b42d0a074c3e5ef23c"
+    },
+    {
+      "path": "image.png",
+      "bytes": 3465920,
+      "sha256": "b011ff1943162f00b95b068f7cf22cbfd60c7af7337c9fa79819e277ff6fc520"
+    },
+    {
+      "path": "imagegen.png",
+      "bytes": 2976618,
+      "sha256": "324a496cf5db0524d211f81d1490b409e7a11a17199e2368cb87e6662b0e505d"
+    },
+    {
+      "path": "lineup_dei_personaggi_di_nightbound.png",
+      "bytes": 2482959,
+      "sha256": "bfe0fde303437880289592416b6a2e661a105e4e18040da633e626190140e6fc"
+    },
+    {
+      "path": "menu_di_nightbound_nella_valle_lunare.png",
+      "bytes": 2654966,
+      "sha256": "a5ee4a3537400ced902faaec07f7a99ed32a86b8da3ebd3df011bb0c390c6872"
+    },
+    {
+      "path": "menu_fantasy_di_nightbound_al_chiaro_di_luna.png",
+      "bytes": 2659215,
+      "sha256": "46891a81fd1c6116e10b80cdae631090b9339ea5eaafb46a1078f49cd294138d"
+    },
+    {
+      "path": "menu_principale_di_nightbound_valle_lunare.png",
+      "bytes": 2805804,
+      "sha256": "eb52c8524df34fa40efea09aa8533629070838cabd6849b9c14a533a481d65d0"
+    },
+    {
+      "path": "menù_notturno_nella_valle_lunare.png",
+      "bytes": 2884008,
+      "sha256": "78049d4406f11dc924a7af0c18662af0a7d2ec7774e896c7be95882ae44b716e"
+    },
+    {
+      "path": "nightbound_bat_hero_blockout.glb",
+      "bytes": 43336,
+      "sha256": "4ea746137f3b9f67dfd0f300d3e7e10363a480a8b3a7341a8e2e1dd3d34d33db"
+    },
+    {
+      "path": "nightbound_bat_hero_preview.png",
+      "bytes": 91609,
+      "sha256": "de587cca248ab526b886abbbc50f2c2cf9f3ed12362937cf34681087f2dfeec2"
+    },
+    {
+      "path": "nightbound_bat_v2/README.md",
+      "bytes": 671,
+      "sha256": "60cb38e446d05c5fcb0f1336073abee0c7ba1763a580bfc44d720b7a157163af"
+    },
+    {
+      "path": "nightbound_bat_v2/nightbound_bat_hero_v2_preview.png",
+      "bytes": 226145,
+      "sha256": "68589106d1e8c5faf21cb78064017d7246ff850e970bdfd8f0fb39136ae42880"
+    },
+    {
+      "path": "nightbound_reference_hero_crop.png",
+      "bytes": 1006670,
+      "sha256": "0ef98c0405818706261608e847515d39380323be263d439b5319077f5ce9d50d"
+    },
+    {
+      "path": "user-qCZmiws76uj5ld6BVMnt5dwI/264ac0e0d64945d4901f56738f94bc08/mnt/data/NIGHTBOUND_HERO_BAT_V4_1/nightbound_main_hero_bat_v4_1_render.png",
+      "bytes": 114650,
+      "sha256": "fa07667080b08614490029e5df9cd3497f91dbe50fc67c51b0e11e3adaa24dd8"
+    },
+    {
+      "path": "user-qCZmiws76uj5ld6BVMnt5dwI/375645eb21ed4d57a1471220da943caf/mnt/data/Nightbound_Hero_Bat_V5_preview.png",
+      "bytes": 71424,
+      "sha256": "eb7a2c53db8e04fee94d7edd755b26a1d198b06403f4d19dca331eb751bbe05c"
+    },
+    {
+      "path": "user-qCZmiws76uj5ld6BVMnt5dwI/375645eb21ed4d57a1471220da943caf/mnt/data/Nightbound_Hero_Bat_V6_preview.png",
+      "bytes": 136447,
+      "sha256": "65f72d288c72a19598f337fcaff3ba33b5970f2510f560ccc0e5770096dfdb78"
+    },
+    {
+      "path": "user-qCZmiws76uj5ld6BVMnt5dwI/375645eb21ed4d57a1471220da943caf/mnt/data/image.png",
+      "bytes": 3465920,
+      "sha256": "b011ff1943162f00b95b068f7cf22cbfd60c7af7337c9fa79819e277ff6fc520"
+    },
+    {
+      "path": "user-qCZmiws76uj5ld6BVMnt5dwI/375645eb21ed4d57a1471220da943caf/mnt/data/nightbound_reference_hero_crop.png",
+      "bytes": 1006670,
+      "sha256": "0ef98c0405818706261608e847515d39380323be263d439b5319077f5ce9d50d"
+    },
+    {
+      "path": "user-qCZmiws76uj5ld6BVMnt5dwI/62b050328c98490999f93abc3de4748d/mnt/data/a_detailed_concept_art_asset_sheet_layout_for_a.png",
+      "bytes": 2256292,
+      "sha256": "4244a99a3d8b86fd62813a6510161778f469fbc54dbb5fcce68a942cba5896a5"
+    },
+    {
+      "path": "user-qCZmiws76uj5ld6BVMnt5dwI/efe55f2d79894a0495738f29ad67354e/mnt/data/NIGHTBOUND_HERO_BAT_V4/nightbound_main_hero_bat_v4_render.png",
+      "bytes": 105457,
+      "sha256": "280563243e403e238c7aed4da39529197ed90aa5e3d230d2eee37f798133a548"
+    },
+    {
+      "path": "user-qCZmiws76uj5ld6BVMnt5dwI/efe55f2d79894a0495738f29ad67354e/mnt/data/NIGHTBOUND_HERO_BAT_V4_1/nightbound_main_hero_bat_v4_1_render.png",
+      "bytes": 114650,
+      "sha256": "fa07667080b08614490029e5df9cd3497f91dbe50fc67c51b0e11e3adaa24dd8"
+    },
+    {
+      "path": "user-qCZmiws76uj5ld6BVMnt5dwI/f0b31e072d1345269cb7b8780364c19e/mnt/data/bat_verso_il_castello_lunare.png",
+      "bytes": 2976618,
+      "sha256": "324a496cf5db0524d211f81d1490b409e7a11a17199e2368cb87e6662b0e505d"
+    },
+    {
+      "path": "volo_notturno_verso_il_castello_incantato.png",
+      "bytes": 2850415,
+      "sha256": "02d0f86dab7e575e85c2d83f49f0cc501d53caccd87c925112bf0b62a78d8061"
+    }
+  ]
+}
