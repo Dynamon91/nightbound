@@ -26,3 +26,10 @@ Mockup originale, lineup Hero Bat/Lira/nemici/NPC, arte dei livelli e castello, 
 5. Il menu HTML e i modelli GLB sono prototipi; l'integrazione nel progetto principale deve essere testata.
 
 *Backup creato su richiesta per evitare la perdita dei file.*
+
+## File binari disponibili anche su GitHub
+- [Immagine originale di sfondo del menu](images/nightbound_title_background.png) — PNG binario salvato come Git blob.
+- [Menu HTML interattivo standalone](intro_menu/Nightbound_Menu_Interattivo.html) — include l'immagine dello sfondo incorporata.
+- [Sorgenti dei modelli V2–V6](source/) e relativi README.
+
+**Limite attuale:** gli altri PNG, GLB, GIF, MP4 e i pacchetti audio si trovano negli archivi di backup ChatGPT Library indicati sopra; non sono ancora stati caricati come singoli file binari su GitHub.
