@@ -1,26 +1,38 @@
-# Nightbound — Asset backup tracking (2026-10-31)
+# Nightbound — Backup status (updated 2026-10-31)
 
-This folder records the backup state of the Nightbound work created in ChatGPT.
+## Verified GitHub backups
 
-## What exists
-- Original Godot project and initial preview are in the repository.
-- Newly generated assets include Hero Bat model iterations (V2–V6), GLB previews, NPC/enemy concept sheets, world/level concepts, title and menu images, an animated introduction (GIF and MP4), HTML interactive-menu prototype, and original music files (WAV/MIDI).
+**Uploaded to the `main` branch and checked against the repository tree:**
 
-## IMPORTANT: binary upload status
-**The new binary assets listed above have NOT been uploaded to this GitHub repository by this operation.** They are preserved in the downloadable Nightbound backup archives supplied in the ChatGPT conversation. The linked ChatGPT files must be downloaded by the project owner and committed to this repository for durable GitHub storage.
+- **3D characters:** original bat blockout GLB and Hero Bat V3, V4, V5 and V6 Animated GLBs, with separate PNG previews.
+- **Modeling source:** Blender V2/V2.1 and Python generator scripts V3–V6, plus technical readmes.
+- **Concept and menu art:** character lineup, main-world/castle references, generated menu PNG concepts, original hero reference crop, and the original 3D concept ZIP.
+- **Intro:** original MP4, compact playable GIF, original 720×405 GIF split *losslessly* into six parts with a `restore_gif.py` script and SHA-256 verification.
+- **Interactive menu:** full original standalone HTML (embedded background) and a smaller fallback HTML file.
+- **Creature/model packs:** NIGHTBOUND_CHARACTER_CREATURE_PACK_04.zip, NIGHTBOUND_CREATURES_NPCS_PACK_05.zip, NIGHTBOUND_MODELS_PACK_06.zip, NIGHTBOUND_HERO_BAT_V6_PACK.zip.
+- **Music:** V15 music ZIP in six lossless parts, with `restore_music_v15.py` and SHA-256 verification.
+- **File inventory:** `backup/manifests/NIGHTBOUND_BACKUP_MANIFEST_2026-10-31.json` lists 145 local files and SHA-256 checksums.
 
-## Suggested destination paths
-- `art/concepts/` — generated PNG references, mockups and menu art
-- `assets/models/` — GLB hero and creature models
-- `assets/music/` — WAV and MIDI files
-- `assets/intro/` — animated GIF and MP4 intro
-- `ui/menu/` — interactive HTML menu prototype
-- `backup/manifests/` — SHA-256 inventory JSON from local archive
+At this update, `backup/` has **58 tracked files, about 63.85 MB** (including recovery scripts and split parts). This was verified from GitHub's recursive tree.
 
-## Safety and verification
-- Do not mark GLB imports as tested in Godot unless they pass a Godot 4 run.
-- A concept image is not an implemented 3D level.
-- The menu's demo saves are not connected to the game's save system.
-- The GitHub repo is not a complete backup until the binary files are actually uploaded.
+## Full local backup (not all uploaded to GitHub)
 
-Original visual reference: [Nightbound_v1_0_preview.png](../../Nightbound_v1_0_preview.png).
+All **13 separate ZIP archive parts** of the original backup and the complete checksum manifest were also uploaded successfully to the user's **ChatGPT Library**, folder `/Nightbound/Backup_2026-10-31/` (approximately 302 MB of ZIP files).
+
+**Important:** The GitHub backup contains many important assets, but **not every one of the 145 original files**. Remaining prior music versions and duplicate historical archives are preserved in the Library ZIP backups. A full GitHub mirror of all archive bytes has not been claimed.
+
+## Recoverable files
+
+- `backup/assets/models/` — GLB hero model iterations
+- `backup/assets/previews/` — model PNG previews
+- `backup/assets/concepts/` — character/world concept art
+- `backup/assets/menu/` — menu artwork + original HTML menu
+- `backup/assets/intro/` — MP4, small playable GIF and original GIF backup parts
+- `backup/assets/music/v15/` — newest music ZIP backup parts
+- `backup/packages/` — other asset packs
+
+Follow each split archive's README and check the checksum before using it. Normal project files and original mockup remain in the repository root.
+
+## Implementation vs concept
+
+These assets are backed up, **not** all integrated or engine-tested in Godot 4. Concept images are not playable levels, the menu's browser save slots are only a demo, and the animated GLB has not passed an in-engine integration test.
