@@ -15,6 +15,8 @@ var _info_panel: PanelContainer
 var _info_heading: Label
 var _info_body: Label
 var _settings_box: VBoxContainer
+var _confirm_new_button: Button
+var _info_close_button: Button
 var _menu_buttons: Array[Button] = []
 var _motes: Array[ColorRect] = []
 var _mote_positions: Array[Vector2] = []
@@ -176,8 +178,11 @@ func _build_info_panel() -> void:
     volume_slider.value_changed.connect(_set_volume)
     _settings_box.add_child(volume_slider)
 
-    var back := _make_button("←  Indietro", _close_info)
-    content.add_child(back)
+    _confirm_new_button = _make_button("Sì, sovrascrivi e ricomincia", _confirm_new_game)
+    _confirm_new_button.hide()
+    content.add_child(_confirm_new_button)
+    _info_close_button = _make_button("←  Indietro", _close_info)
+    content.add_child(_info_close_button)
 
 func _build_intro() -> void:
     _intro_layer = ColorRect.new()
@@ -249,8 +254,10 @@ func _show_info(heading: String, details: String, show_settings: bool = false) -
     _info_heading.text = heading
     _info_body.text = details
     _settings_box.visible = show_settings
+    _confirm_new_button.hide()
     _info_panel.visible = true
     _refresh_layout()
+    _info_close_button.grab_focus()
 
 func _close_info() -> void:
     _info_panel.hide()
@@ -264,7 +271,7 @@ func _show_extras() -> void:
 
 func _load_game() -> void:
     if FileAccess.file_exists(SAVE_PATH):
-        _show_info("Salvataggio trovato", "Un salvataggio locale è disponibile. Premi Continua dal menù principale per riprendere.")
+        _launch_game()
     else:
         _show_info("Nessun salvataggio", "Inizia una nuova partita. I progressi saranno salvati sul dispositivo.")
 
@@ -276,10 +283,17 @@ func _continue_game() -> void:
 
 func _start_new_game() -> void:
     if FileAccess.file_exists(SAVE_PATH):
-        var error := DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
-        if error != OK:
-            _show_info("Salvataggio protetto", "Non è stato possibile cancellare il salvataggio precedente.")
-            return
+        _show_info("Nuova partita", "Esiste già un salvataggio. Vuoi cancellarlo e ricominciare dall'inizio?")
+        _confirm_new_button.show()
+        _confirm_new_button.grab_focus()
+        return
+    _launch_game()
+
+func _confirm_new_game() -> void:
+    var error := DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+    if error != OK:
+        _show_info("Salvataggio protetto", "Non è stato possibile cancellare il salvataggio precedente.")
+        return
     _launch_game()
 
 func _launch_game() -> void:

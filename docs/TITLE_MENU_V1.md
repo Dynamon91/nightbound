@@ -10,8 +10,8 @@ This milestone introduces a **native, interactive Godot 4 title menu**, as disti
 - Background: slight zoom/rotation, moonlight modulation and 22 drifting motes; motion can be disabled in Options.
 - Buttons: New Game, Continue, Load, Options, Extras, Exit.
 - Continue uses the existing `user://nightbound_save.json` saved by the gameplay scene.
-- New Game deletes that single save file first; this is intentional **and currently has no overwrite confirmation**.
-- Load displays whether a save exists and directs the player to Continue; it is not a separate slot selector.
+- New Game asks for confirmation before deleting the single save file; existing saves are protected until confirmation.
+- Load opens the same single-slot save used by Continue when available; it is not yet a multi-slot selector.
 - Options saves reduced-motion and master-volume preferences in `user://nightbound_menu.cfg`.
 - Controls use built-in Godot UI focus and navigation; mouse, keyboard, and gamepad focus are intended.
 
@@ -28,5 +28,6 @@ GitHub CI should validate both title and gameplay startup. Interactive saving, k
 2. Navigate menu using arrow keys, mouse and gamepad.
 3. Open Options, move volume slider, toggle reduced motion, restart and verify persistence.
 4. Start a new game and confirm playable world appears.
-5. Save using P, return to menu by restarting, then confirm Continue is enabled.
-6. Confirm all gameplay controls and both realms still work as before.
+5. Save using P, return to menu using Esc/B, then confirm Continue is enabled.
+6. Verify New Game asks for confirmation when a save exists; test both cancel and overwrite.
+7. Confirm all gameplay controls and both realms still work as before.

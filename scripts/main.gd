@@ -944,6 +944,10 @@ func refresh_hud()->void:
 
 func _physics_process(d:float)->void:
 	if not player:return
+	if Input.is_action_just_pressed("ui_cancel"):
+		save_game()
+		get_tree().change_scene_to_file("res://scenes/title_menu.tscn")
+		return
 	if Input.is_action_just_pressed("save_game"):
 		save_game(); show_message("Game saved — progress secured.")
 	if Input.is_action_just_pressed("load_game"):

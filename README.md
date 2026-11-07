@@ -4,6 +4,8 @@ Nightbound is an original **3D third-person exploration-platformer prototype** s
 
 ## Implemented in the current repository
 
+- Native Godot 4 animated title menu and skippable intro, with New Game, Continue, Load, Options, Extras and Quit
+- Local save-compatible menu navigation; confirmed overwrite before restarting; Esc/B returns from gameplay to menu
 - Third-person bat character and follow camera
 - A small 3D valley with collision-backed ground and raised platforms
 - Bridge, trees and a realm-gate landmark
@@ -40,13 +42,15 @@ The percentage is a planning estimate, not a measured visual score. A Godot 4.3 
 
 ## Run
 
+The project now opens on `scenes/title_menu.tscn`; choose **Nuova partita** to load `scenes/main.tscn`. Press **Esc/B** while playing to save and return to the title screen.
+
 1. Install Godot 4.x from the [official download page](https://godotengine.org/download/).
 2. Open this folder in Godot Project Manager.
 3. Run the main scene.
 
 ## Verification
 
-The GitHub Actions workflow imports/parses the project and launches the main scene headlessly for 120 frames. This confirms a basic automated startup check; it does **not** replace interactive visual testing or prove every mechanic works as intended.
+The GitHub Actions workflow imports/parses the project and launches both the title scene and gameplay scene headlessly for 120 frames each. This confirms a basic automated startup check; it does **not** replace interactive visual testing or prove every mechanic works as intended.
 
 The preview image supplied separately is concept art, not a screenshot captured from a running build.
 
