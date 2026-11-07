@@ -25,6 +25,8 @@ jobs:
         run: |
           test -f project.godot
           test -f scenes/main.tscn
+          test -f scenes/title_menu.tscn
+          test -f scripts/title_menu.gd
           test -f scripts/main.gd
       - name: Import and parse project in headless mode
         run: |
@@ -34,10 +36,22 @@ jobs:
             echo "Godot import emitted a script parse/load error."
             exit 1
           fi
-      - name: Launch main scene for 120 frames
+      - name: Launch native title menu for 120 frames
         run: |
           set -o pipefail
-          Godot_v4.3-stable_linux.x86_64 --headless --path . --quit-after 120 2>&1 | tee /tmp/nightbound-headless.log
+          Godot_v4.3-stable_linux.x86_64 --headless --path . --quit-after 120 2>&1 | tee /tmp/nightbound-menu-headless.log
+          if grep -E "SCRIPT ERROR:|ERROR: Failed to load script|ERROR: Can.t add child|ERROR: Invalid assignment" /tmp/nightbound-menu-headless.log; then
+            echo "The title menu emitted a script/runtime error."
+            exit 1
+          fi
+          if ! grep -q "NIGHTBOUND_MENU_READY" /tmp/nightbound-menu-headless.log; then
+            echo "The native title menu did not finish initialization."
+            exit 1
+          fi
+      - name: Launch gameplay scene for 120 frames
+        run: |
+          set -o pipefail
+          Godot_v4.3-stable_linux.x86_64 --headless --path . res://scenes/main.tscn --quit-after 120 2>&1 | tee /tmp/nightbound-headless.log
           if grep -E "SCRIPT ERROR:|ERROR: Failed to load script|ERROR: Can.t add child|ERROR: Invalid assignment" /tmp/nightbound-headless.log; then
             echo "The main scene emitted a script/runtime error."
             exit 1
@@ -46,7 +60,7 @@ jobs:
             echo "The main scene did not signal that world generation finished."
             exit 1
           fi
-      - name: Capture actual game window screenshot
+      - name: Capture actual animated title menu screenshot
         if: github.event_name != 'pull_request'
         run: |
           set -eu
@@ -59,7 +73,7 @@ jobs:
             # Wait for world creation to finish, not merely for the Godot splash screen.
             ready=0
             for attempt in $(seq 1 30); do
-              if grep -q "NIGHTBOUND_SCENE_READY" /tmp/nightbound-godot.log; then
+              if grep -q "NIGHTBOUND_MENU_READY" /tmp/nightbound-godot.log; then
                 ready=1
                 break
               fi
@@ -70,7 +84,7 @@ jobs:
               sleep 2
             done
             if [ "$ready" -ne 1 ]; then
-              echo "Timed out waiting for NIGHTBOUND_SCENE_READY."
+              echo "Timed out waiting for NIGHTBOUND_MENU_READY."
               cat /tmp/nightbound-godot.log
               exit 1
             fi
@@ -83,9 +97,9 @@ jobs:
             colors=0
             file_bytes=0
             for attempt in 1 2 3 4 5 6 7 8; do
-              import -window root -crop 1280x720+0+0 "$RUNNER_TEMP/Nightbound-gameplay.png"
-              colors="$(identify -format "%k" "$RUNNER_TEMP/Nightbound-gameplay.png")"
-              file_bytes="$(stat -c %s "$RUNNER_TEMP/Nightbound-gameplay.png")"
+              import -window root -crop 1280x720+0+0 "$RUNNER_TEMP/Nightbound-title.png"
+              colors="$(identify -format "%k" "$RUNNER_TEMP/Nightbound-title.png")"
+              file_bytes="$(stat -c %s "$RUNNER_TEMP/Nightbound-title.png")"
               if [ "$colors" -ge 32 ] && [ "$file_bytes" -ge 60000 ]; then
                 break
               fi
@@ -96,11 +110,11 @@ jobs:
                 exit 1
               fi
             done
-            identify "$RUNNER_TEMP/Nightbound-gameplay.png"
-            mean="$(convert "$RUNNER_TEMP/Nightbound-gameplay.png" -colorspace gray -format "%[fx:mean]" info:)"
-            echo "Gameplay screenshot unique colors: $colors; normalized grayscale mean: $mean"
+            identify "$RUNNER_TEMP/Nightbound-title.png"
+            mean="$(convert "$RUNNER_TEMP/Nightbound-title.png" -colorspace gray -format "%[fx:mean]" info:)"
+            echo "Title screenshot unique colors: $colors; normalized grayscale mean: $mean"
             if [ "$colors" -lt 32 ] || [ "$file_bytes" -lt 60000 ]; then
-              echo "Gameplay screenshot is blank or still a splash screen (colors=$colors; bytes=$file_bytes)."
+              echo "Title screenshot is blank or still a splash screen (colors=$colors; bytes=$file_bytes)."
               cat /tmp/nightbound-godot.log
               exit 1
             fi
@@ -114,15 +128,15 @@ jobs:
             kill "$game_pid" 2>/dev/null || true
             wait "$game_pid" 2>/dev/null || true
           '
-          test -s "$RUNNER_TEMP/Nightbound-gameplay.png"
-          test "$(identify -format '%wx%h' "$RUNNER_TEMP/Nightbound-gameplay.png")" = "1280x720"
+          test -s "$RUNNER_TEMP/Nightbound-title.png"
+          test "$(identify -format '%wx%h' "$RUNNER_TEMP/Nightbound-title.png")" = "1280x720"
       - name: Upload gameplay screenshot
         if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
         with:
-          name: Nightbound-gameplay-screenshot
+          name: Nightbound-title-screenshot
           path: |
-            ${{ runner.temp }}/Nightbound-gameplay.png
+            ${{ runner.temp }}/Nightbound-title.png
             ${{ runner.temp }}/Nightbound-godot.log
           if-no-files-found: error
           retention-days: 30
