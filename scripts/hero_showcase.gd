@@ -31,6 +31,14 @@ func _ready() -> void:
     add_child(_hero)
     _player = _find_animation_player(_hero)
     _play_clip(0)
+    var clips_found := 0
+    for clip in CLIPS:
+        if not _resolve_clip(clip).is_empty():
+            clips_found += 1
+    if clips_found == CLIPS.size():
+        print("NIGHTBOUND_HERO_ANIMATIONS_READY")
+    else:
+        push_warning("Only %d of %d expected GLB animations were imported." % [clips_found, CLIPS.size()])
     print("NIGHTBOUND_HERO_MODEL_LOADED")
     print("NIGHTBOUND_HERO_SHOWCASE_READY")
 
@@ -131,11 +139,22 @@ func _find_animation_player(node: Node) -> AnimationPlayer:
             return candidate
     return null
 
+func _resolve_clip(clip: String) -> String:
+    if _player == null:
+        return ""
+    if _player.has_animation(clip):
+        return clip
+    for candidate in _player.get_animation_list():
+        if String(candidate).ends_with(clip):
+            return String(candidate)
+    return ""
+
 func _play_clip(index: int) -> void:
     _clip_index = clampi(index, 0, CLIPS.size() - 1)
     var clip := CLIPS[_clip_index]
-    if _player != null and _player.has_animation(clip):
-        _player.play(clip)
+    var imported_name := _resolve_clip(clip)
+    if not imported_name.is_empty():
+        _player.play(imported_name)
         _caption.text = "Animazione: " + clip + "   •   GLB importato in Godot"
     else:
         _caption.text = "Modello 3D importato • clip " + clip + " non disponibile"

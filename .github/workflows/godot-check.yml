@@ -74,6 +74,10 @@ jobs:
             echo "Hero V6 GLB was not imported into the showcase."
             exit 1
           fi
+          if ! grep -q "NIGHTBOUND_HERO_ANIMATIONS_READY" /tmp/nightbound-hero-headless.log; then
+            echo "Hero V6 glTF clips Glide/Flap/Bank_Left/Bank_Right were not all imported."
+            exit 1
+          fi
       - name: Capture actual animated title menu screenshot
         if: github.event_name != 'pull_request'
         run: |
@@ -144,6 +148,47 @@ jobs:
           '
           test -s "$RUNNER_TEMP/Nightbound-title.png"
           test "$(identify -format '%wx%h' "$RUNNER_TEMP/Nightbound-title.png")" = "1280x720"
+      - name: Capture actual Hero Bat V6 showcase screenshot
+        if: github.event_name != 'pull_request'
+        run: |
+          set -eu
+          export LIBGL_ALWAYS_SOFTWARE=1
+          export GODOT_SILENCE_ROOT_WARNING=1
+          xvfb-run -a -s "-screen 0 1280x720x24" sh -c '
+            set -eu
+            Godot_v4.3-stable_linux.x86_64 --path . res://scenes/hero_showcase.tscn --rendering-method gl_compatibility --display-driver x11 --resolution 1280x720 --windowed >/tmp/nightbound-showcase.log 2>&1 &
+            hero_pid=$!
+            ready=0
+            for attempt in $(seq 1 30); do
+              if grep -q "NIGHTBOUND_HERO_SHOWCASE_READY" /tmp/nightbound-showcase.log; then
+                ready=1
+                break
+              fi
+              if ! kill -0 "$hero_pid" 2>/dev/null; then
+                cat /tmp/nightbound-showcase.log
+                exit 1
+              fi
+              sleep 2
+            done
+            if [ "$ready" -ne 1 ]; then
+              cat /tmp/nightbound-showcase.log
+              exit 1
+            fi
+            sleep 3
+            import -window root -crop 1280x720+0+0 "$RUNNER_TEMP/Nightbound-hero-v6.png"
+            test "$(identify -format "%wx%h" "$RUNNER_TEMP/Nightbound-hero-v6.png")" = "1280x720"
+            colors="$(identify -format "%k" "$RUNNER_TEMP/Nightbound-hero-v6.png")"
+            bytes="$(stat -c %s "$RUNNER_TEMP/Nightbound-hero-v6.png")"
+            echo "Hero showcase screenshot colors=$colors bytes=$bytes"
+            if [ "$colors" -lt 32 ] || [ "$bytes" -lt 35000 ]; then
+              echo "Hero screenshot appears blank."
+              cat /tmp/nightbound-showcase.log
+              exit 1
+            fi
+            cp /tmp/nightbound-showcase.log "$RUNNER_TEMP/Nightbound-hero.log"
+            kill "$hero_pid" 2>/dev/null || true
+            wait "$hero_pid" 2>/dev/null || true
+          '
       - name: Upload gameplay screenshot
         if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
@@ -151,6 +196,8 @@ jobs:
           name: Nightbound-title-screenshot
           path: |
             ${{ runner.temp }}/Nightbound-title.png
+            ${{ runner.temp }}/Nightbound-hero-v6.png
+            ${{ runner.temp }}/Nightbound-hero.log
             ${{ runner.temp }}/Nightbound-godot.log
           if-no-files-found: error
           retention-days: 30
