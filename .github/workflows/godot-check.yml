@@ -27,6 +27,8 @@ jobs:
           test -f scenes/main.tscn
           test -f scenes/title_menu.tscn
           test -f scripts/title_menu.gd
+          test -f scenes/hero_showcase.tscn
+          test -f scripts/hero_showcase.gd
           test -f scripts/main.gd
       - name: Import and parse project in headless mode
         run: |
@@ -58,6 +60,18 @@ jobs:
           fi
           if ! grep -q "NIGHTBOUND_SCENE_READY" /tmp/nightbound-headless.log; then
             echo "The main scene did not signal that world generation finished."
+            exit 1
+          fi
+      - name: Launch imported Hero Bat V6 3D showcase
+        run: |
+          set -o pipefail
+          Godot_v4.3-stable_linux.x86_64 --headless --path . res://scenes/hero_showcase.tscn --quit-after 120 2>&1 | tee /tmp/nightbound-hero-headless.log
+          if grep -E "SCRIPT ERROR:|ERROR: Failed to load script|ERROR: Can.t add child|ERROR: Invalid assignment" /tmp/nightbound-hero-headless.log; then
+            echo "Hero showcase emitted a script/runtime error."
+            exit 1
+          fi
+          if ! grep -q "NIGHTBOUND_HERO_MODEL_LOADED" /tmp/nightbound-hero-headless.log; then
+            echo "Hero V6 GLB was not imported into the showcase."
             exit 1
           fi
       - name: Capture actual animated title menu screenshot

@@ -6,6 +6,7 @@ Nightbound is an original **3D third-person exploration-platformer prototype** s
 
 - Native Godot 4 animated title menu and skippable intro, with New Game, Continue, Load, Options, Extras and Quit
 - Local save-compatible menu navigation; confirmed overwrite before restarting; Esc/B returns from gameplay to menu
+- Hero Bat V6 model-review scene linked from Extra, with orbiting camera and selectable imported GLB animation clips
 - Third-person bat character and follow camera
 - A small 3D valley with collision-backed ground and raised platforms
 - Bridge, trees and a realm-gate landmark

@@ -16,6 +16,7 @@ var _info_heading: Label
 var _info_body: Label
 var _settings_box: VBoxContainer
 var _confirm_new_button: Button
+var _showcase_button: Button
 var _info_close_button: Button
 var _menu_buttons: Array[Button] = []
 var _motes: Array[ColorRect] = []
@@ -181,6 +182,9 @@ func _build_info_panel() -> void:
     _confirm_new_button = _make_button("Sì, sovrascrivi e ricomincia", _confirm_new_game)
     _confirm_new_button.hide()
     content.add_child(_confirm_new_button)
+    _showcase_button = _make_button("Vedi Hero Bat V6 in 3D", _open_showcase)
+    _showcase_button.hide()
+    content.add_child(_showcase_button)
     _info_close_button = _make_button("←  Indietro", _close_info)
     content.add_child(_info_close_button)
 
@@ -255,6 +259,7 @@ func _show_info(heading: String, details: String, show_settings: bool = false) -
     _info_body.text = details
     _settings_box.visible = show_settings
     _confirm_new_button.hide()
+    _showcase_button.hide()
     _info_panel.visible = true
     _refresh_layout()
     _info_close_button.grab_focus()
@@ -267,7 +272,14 @@ func _show_options() -> void:
     _show_info("Opzioni", "Preferenze salvate localmente sul dispositivo.", true)
 
 func _show_extras() -> void:
-    _show_info("Extra", "Nightbound — avventura originale con un pipistrello protagonista.\n\nConcept e prototipo in sviluppo. Le immagini non sono screenshot di gameplay.")
+    _show_info("Extra", "Esplora il modello V6 importato direttamente in Godot 4.\nLa galleria non è ancora parte del gameplay.")
+    _showcase_button.show()
+    _showcase_button.grab_focus()
+
+func _open_showcase() -> void:
+    var error := get_tree().change_scene_to_file("res://scenes/hero_showcase.tscn")
+    if error != OK:
+        _show_info("Modello non disponibile", "Impossibile aprire la galleria. Codice: %d" % error)
 
 func _load_game() -> void:
     if FileAccess.file_exists(SAVE_PATH):
